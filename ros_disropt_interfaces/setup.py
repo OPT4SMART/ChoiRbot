@@ -7,7 +7,7 @@ setup(
     version='0.0.1',
     maintainer='OPT4SMART',
     maintainer_email='info@opt4smart.eu',
-    description='TODO: Package description',
+    description='Interfaces for ros_disropt',
     license='GNU General Public License v3.0',
     packages=[package_name],
     data_files=[
