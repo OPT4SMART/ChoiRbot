@@ -1,0 +1,6 @@
+float64[] goal_position
+---
+float64[] final_position
+---
+float64[] current_position
+float64 distance
