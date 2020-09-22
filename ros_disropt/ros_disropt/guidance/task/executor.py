@@ -1,11 +1,10 @@
 from rclpy.action import ActionClient
 from rclpy.node import Node
 from typing import Callable
-from threading import Timer
 from ros_disropt_interfaces.action import PositionAction
 from ros_disropt_interfaces.msg import PositionTask
 from ros_disropt_interfaces.srv import PositionTaskService
-from . import RobotData
+from .. import RobotData
 import numpy as np
 
 class TaskExecutor:

@@ -8,6 +8,17 @@ from disropt.agents import Agent
 from threading import Event
 from scipy.spatial import distance_matrix
 
+# class PDVRPOptimizer(Optimizer):
+#     def __init__(self, robot_id: int, network_size: int, task_pos: np.ndarray, task_indices: list, task_demand: np.ndarray,
+#                  n_tot_tasks: int, service_times: np.ndarray, starting_point: np.ndarray, vehicle_speed: float, capacity: float,
+#                  epsilon: float=0.9, use_runavg: bool=True, initial_load: float=0.0,
+#                  pending_tasks: list = [], pickup_delivery_pairs: dict = {},
+#                  in_neighbors: list=None, out_neighbors: list=None,
+#                  resolution_strategy: str=None, cost_function: str='euclidean', event: Event=None, **kwargs):
+
+# def retrieve_cost(self):
+#         solution, _, _ = self.algorithm.get_result()
+#         return (self.cost_vector.T @ solution).flatten()
 
 class TaskOptimizer(Optimizer):
     def __init__(self, robot_id: int, network_size: int, task_list: np.ndarray, task_indices: list, starting_point: np.ndarray, in_neighbors: list=None, out_neighbors: list=None, 

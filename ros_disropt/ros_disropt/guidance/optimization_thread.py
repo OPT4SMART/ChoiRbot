@@ -5,7 +5,8 @@ from threading import Thread, Event
 import numpy as np
 
 from ros_disropt_interfaces.msg import PositionTask
-from .guidance import Guidance, TaskGuidance
+from .guidance import Guidance
+from .task import TaskGuidance
 from ..scenario import Optimizer, TaskOptimizer, PDVRPOptimizer
 from . import OptimizationSettings
 

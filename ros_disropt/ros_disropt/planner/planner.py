@@ -4,8 +4,10 @@ from rclpy.action import ActionServer
 from ros_disropt_interfaces.action import PositionAction
 from threading import Event
 from geometry_msgs.msg import Point
-from ..utils.position_getter import position_subscribe
 import numpy as np
+
+from ..utils.position_getter import pose_subscribe
+from .. import Pose
 
 
 class Planner(Node):
@@ -13,25 +15,23 @@ class Planner(Node):
     def __init__(self, agent_id: int, pos_handler: str=None, pos_topic: str=None):
         super().__init__('agent_{}_planner'.format(agent_id))
         self.agent_id = agent_id
-        self.position = None
-        self.orientation = None
-        self.subscription = position_subscribe(pos_handler, pos_topic, self,
-            self.pose_callback, callback_group=ReentrantCallbackGroup())
+        self.current_pose = Pose(None, None)
+        self.subscription = pose_subscribe(pos_handler, pos_topic, self,
+            self.current_pose, self.pose_callback,
+            callback_group=ReentrantCallbackGroup())
 
         self.get_logger().info('Planner {} started'.format(agent_id))
         self._goalreached_event = Event()
         self.checkdistance_gc = self.create_guard_condition(self.check_distance)
         self.goal_point = None
 
-    def pose_callback(self, position, orientation):
-        self.position = position
-        self.orientation = orientation
+    def pose_callback(self):
         self.checkdistance_gc.trigger()
 
     def check_distance(self):
         if self.goal_point is not None:
-            if np.linalg.norm(self.position[:-1]-self.goal_point) < 0.05:
-                self.get_logger().info("Goal reached - current position: {}".format(self.position[:-1]))
+            if np.linalg.norm(self.current_pose.position[:-1]-self.goal_point) < 0.05:
+                self.get_logger().info("Goal reached - current position: {}".format(self.current_pose.position[:-1]))
                 self._goalreached_event.set()
 
 
@@ -66,7 +66,7 @@ class PointToPointPlanner(Planner):
         self._goalreached_event.wait()
         self.goal_point = None
 
-        final_position = np.copy(self.position)
+        final_position = np.copy(self.current_pose.position)
         self.get_logger().info('Robot moved at position {}'.format(final_position))
         result.final_position = list(final_position)
         return result
