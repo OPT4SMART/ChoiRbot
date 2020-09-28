@@ -19,3 +19,7 @@ class Guidance(Node):
         self.current_pose = Pose(None, None)
 
         self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)
+        self.communicator = self.instantiate_communicator()
+
+    def instantiate_communicator(self):
+        return ROSCommunicator(self.agent_id, self.agent_count, self.in_neighbors)

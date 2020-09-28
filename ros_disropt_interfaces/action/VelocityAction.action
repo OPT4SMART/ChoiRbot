@@ -1,5 +1,0 @@
-float64[] goal_velocity
----
-float64[] final_velocity
----
-float64[] current_velocity
