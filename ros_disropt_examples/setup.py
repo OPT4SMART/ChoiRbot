@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from glob import glob
 
 package_name = 'ros_disropt_examples'
@@ -6,14 +6,14 @@ package_name = 'ros_disropt_examples'
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name],
+    packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, glob('launch/*.launch.py')),
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'ros_disropt'],
     zip_safe=True,
     maintainer='OPT4SMART',
     maintainer_email='info@opt4smart.eu',
@@ -22,12 +22,13 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'ros_disropt_agent_i = scripts.main_i:main',
-            'ros_disropt_guidance_i = scripts.guidance_i:main_guidance',
-            'ros_disropt_table = scripts.guidance_i:main_table',
-            'ros_disropt_planner= scripts.planner_i:main_planner',
-            'ros_disropt_controller= scripts.controller:main',
-            'ros_disropt_singleintplanner = scripts.singleint_planner_i:main'
+            'ros_disropt_agent_i = ros_disropt_examples.main_i:main',
+            'ros_disropt_guidance_i = ros_disropt_examples.guidance_i:main_guidance',
+            'ros_disropt_table = ros_disropt_examples.guidance_i:main_table',
+            'ros_disropt_planner= ros_disropt_examples.planner_i:main_planner',
+            'ros_disropt_controller= ros_disropt_examples.controller:main',
+            'ros_disropt_singleintplanner = ros_disropt_examples.singleint_planner_i:main',
+            'ros_disropt_formationcontrol = ros_disropt_examples.formationcontrol_guidance_i:main'
         ],
     },
 )

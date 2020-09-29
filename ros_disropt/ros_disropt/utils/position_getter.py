@@ -1,6 +1,6 @@
 import numpy as np
 from rclpy.qos import QoSProfile
-from rclpy import Node
+from rclpy.node import Node
 from typing import Callable
 from rclpy.callback_groups import CallbackGroup
 from .. import Pose
@@ -8,7 +8,6 @@ from .. import Pose
 
 def pose_subscribe(handler: str, topic: str, node: Node, dest_pose: Pose,
     callback: Callable=None, callback_group: CallbackGroup=None, qos: QoSProfile=QoSProfile(depth=10)):
-
     if not handler in ['pubsub', 'tf', 'tf2', 'vicon']:
         raise TypeError('odom_handler must be pubsub, tf, tf2 or vicon')
 

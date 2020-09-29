@@ -31,27 +31,27 @@ def generate_launch_description():
             # prefix=['run_on_terminal'],
             parameters=[{'N': N}]))
 
-    for i in range(N):
+    # for i in range(N):
 
-        in_neighbors  = np.nonzero(Adj[:, i])[0].tolist()
-        out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
+    #     in_neighbors  = np.nonzero(Adj[:, i])[0].tolist()
+    #     out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
 
-        list_description.append(Node(
-            package='ros_disropt', node_executable='ros_disropt_guidance_i', output='screen',
-            prefix=['xterm -hold -e'],
-            # prefix=['run_on_terminal'],
-            parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors,
-            'out_neigh': out_neighbors}]))
+    #     list_description.append(Node(
+    #         package='ros_disropt', node_executable='ros_disropt_guidance_i', output='screen',
+    #         prefix=['xterm -hold -e'],
+    #         # prefix=['run_on_terminal'],
+    #         parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors,
+    #         'out_neigh': out_neighbors}]))
 
-        list_description.append(Node(
-            package='ros_disropt', node_executable='ros_disropt_planner', output='screen',
-            # prefix=['xterm -hold -e'],
-            parameters=[{'agent_id': i}]))
+    #     list_description.append(Node(
+    #         package='ros_disropt', node_executable='ros_disropt_planner', output='screen',
+    #         # prefix=['xterm -hold -e'],
+    #         parameters=[{'agent_id': i}]))
         
-        list_description.append(Node(
-            package='ros_disropt', node_executable='ros_disropt_controller', output='screen',
-            # prefix=['xterm -hold -e']
-            parameters=[{'agent_id': i}]))
+    #     list_description.append(Node(
+    #         package='ros_disropt', node_executable='ros_disropt_controller', output='screen',
+    #         # prefix=['xterm -hold -e']
+    #         parameters=[{'agent_id': i}]))
 
         # square_area = 3.0 # agents are spawned randomly in a square with this side length
         # random_pose = (square_area*(np.random.rand(2,1)).flatten()).tolist()
