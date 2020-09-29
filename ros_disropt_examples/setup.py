@@ -26,7 +26,8 @@ setup(
             'ros_disropt_guidance_i = scripts.guidance_i:main_guidance',
             'ros_disropt_table = scripts.guidance_i:main_table',
             'ros_disropt_planner= scripts.planner_i:main_planner',
-            'ros_disropt_controller= scripts.controller:main'
+            'ros_disropt_controller= scripts.controller:main',
+            'ros_disropt_singleintplanner = scripts.singleint_planner_i:main'
         ],
     },
 )
