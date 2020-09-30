@@ -27,7 +27,7 @@ setup(
             'ros_disropt_table = ros_disropt_examples.guidance_i:main_table',
             'ros_disropt_planner= ros_disropt_examples.planner_i:main_planner',
             'ros_disropt_controller= ros_disropt_examples.controller:main',
-            'ros_disropt_singleintplanner = ros_disropt_examples.singleint_planner_i:main',
+            'ros_disropt_singleintegrator = ros_disropt_examples.single_integrator_i:main',
             'ros_disropt_formationcontrol = ros_disropt_examples.formationcontrol_guidance_i:main'
         ],
     },

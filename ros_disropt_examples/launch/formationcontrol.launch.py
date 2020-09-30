@@ -29,18 +29,18 @@ def generate_launch_description():
         out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
 
         list_description.append(Node(
-            package='ros_disropt_examples', node_executable='ros_disropt_singleintplanner', output='screen',
+            package='ros_disropt_examples', node_executable='ros_disropt_singleintegrator', output='screen',
             #prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_formationcontrol', output='screen',
-            # prefix=['xterm -hold -e'],
-            parameters=[{'agent_id': i}]))
-
-        list_description.append(Node(
-            package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
             prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
+
+        # list_description.append(Node(
+        #     package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
+        #     prefix=['xterm -hold -e'],
+        #     parameters=[{'agent_id': i}]))
 
     return LaunchDescription(list_description)

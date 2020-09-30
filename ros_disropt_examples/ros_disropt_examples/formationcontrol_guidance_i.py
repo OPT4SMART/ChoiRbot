@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from ros_disropt.guidance.formation_control import FormationControlGuidance
+from ros_disropt.guidance.distributed_control import FormationControlGuidance
 import numpy as np
 
 def main():
