@@ -8,9 +8,8 @@ from copy import deepcopy
 
 class FormationControlGuidance(DistributedControl):
 
-    def __init__(self, agent_id: int, N: int, in_neigh: List[int], out_neigh: List[int], weights:np.ndarray, 
-                 update_frequency: float, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(agent_id, N, in_neigh, out_neigh, update_frequency, pos_handler, pos_topic)
+    def __init__(self, weights:np.ndarray, update_frequency: float, pos_handler: str=None, pos_topic: str=None):
+        super().__init__(update_frequency, pos_handler, pos_topic)
         self.x_neigh = {}
         self.weights = weights
         self.formation_control_gain = 0.1

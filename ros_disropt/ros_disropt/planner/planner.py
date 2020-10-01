@@ -12,15 +12,16 @@ from .. import Pose
 
 class Planner(Node):
 
-    def __init__(self, agent_id: int, pos_handler: str=None, pos_topic: str=None):
-        super().__init__('agent_{}_planner'.format(agent_id))
-        self.agent_id = agent_id
+    def __init__(self, pos_handler: str=None, pos_topic: str=None):
+        super().__init__('planner', allow_undeclared_parameters=True,
+            automatically_declare_parameters_from_overrides=True)
+        self.agent_id = self.get_parameter('agent_id').value
         self.current_pose = Pose(None, None)
         self.subscription = pose_subscribe(pos_handler, pos_topic, self,
             self.current_pose, self.pose_callback,
             callback_group=ReentrantCallbackGroup())
 
-        self.get_logger().info('Planner {} started'.format(agent_id))
+        self.get_logger().info('Planner {} started'.format(self.agent_id))
         self._goalreached_event = Event()
         self.checkdistance_gc = self.create_guard_condition(self.check_distance)
         self.goal_point = None
@@ -37,14 +38,14 @@ class Planner(Node):
 
 class PointToPointPlanner(Planner):
 
-    def __init__(self, agent_id: int, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(agent_id, pos_handler, pos_topic)
+    def __init__(self, pos_handler: str=None, pos_topic: str=None):
+        super().__init__(pos_handler, pos_topic)
         self._action_server = ActionServer(
             self,
             PositionAction,
-            'positiontask_{}'.format(agent_id),
+            'positionaction',
             self.execute_callback)
-        self.tocontrol_publisher = self.create_publisher(Point, '/agent_{}/goal'.format(self.agent_id), 10)
+        self.tocontrol_publisher = self.create_publisher(Point, 'goal', 10)
 
     def execute_callback(self, goal_handle):
         action_goal = goal_handle.request

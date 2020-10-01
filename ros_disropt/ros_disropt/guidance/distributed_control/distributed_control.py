@@ -9,9 +9,9 @@ from time import sleep
 
 class DistributedControl(Guidance):
 
-    def __init__(self, agent_id: int, N: int, in_neigh: List[int], out_neigh: List[int], update_frequency: float, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(agent_id, N, in_neigh, out_neigh, pos_handler, pos_topic)
-        self.publisher_ = self.create_publisher(Point, 'agent_{}_velocity'.format(agent_id), 1)
+    def __init__(self, update_frequency: float, pos_handler: str=None, pos_topic: str=None):
+        super().__init__(pos_handler, pos_topic)
+        self.publisher_ = self.create_publisher(Point, 'velocity', 1)
         self.update_frequency = update_frequency
         self.timer = self.create_timer(1.0/update_frequency, self.control)
 

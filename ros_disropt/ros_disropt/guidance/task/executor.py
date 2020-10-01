@@ -38,7 +38,7 @@ class PositionTaskExecutor(TaskExecutor):
         self.planner_client = ActionClient(
             node,
             PositionAction,
-            'positiontask_{}'.format(agent_id))
+            'positionaction')
 
         self._send_goal_future = None
         self._get_result_future = None

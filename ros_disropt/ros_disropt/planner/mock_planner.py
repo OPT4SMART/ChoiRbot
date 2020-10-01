@@ -9,22 +9,23 @@ import numpy as np
 
 class MockPlanner(Node):
 
-    def __init__(self, agent_id: int):
-        super().__init__('agent_{}_planner'.format(agent_id))
-        self.agent_id = agent_id
-        self.get_logger().info('Planner {} started'.format(agent_id))
+    def __init__(self):
+        super().__init__('planner', allow_undeclared_parameters=True,
+            automatically_declare_parameters_from_overrides=True)
+        self.agent_id = self.get_parameter('agent_id').value
+        self.get_logger().info('Planner {} started'.format(self.agent_id))
 
 class MockPointToPointPlanner(MockPlanner):
 
-    def __init__(self, agent_id: int):
-        super().__init__(agent_id)
-        np.random.seed(agent_id)
+    def __init__(self):
+        super().__init__()
+        np.random.seed(self.agent_id)
         self._action_server = ActionServer(
             self,
             PositionAction,
-            'positiontask_{}'.format(agent_id),
+            'positionaction',
             self.execute_callback)
-        self.odom_publisher = self.create_publisher(Odometry, '/agent_{}/odom'.format(agent_id), 10)
+        self.odom_publisher = self.create_publisher(Odometry, 'odom', 10)
         self.odom_timer = self.create_timer(1/100, self.odom_publish)
         self.current_pos = 3*np.random.rand(2)
 

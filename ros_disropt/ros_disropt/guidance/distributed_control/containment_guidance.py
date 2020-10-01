@@ -8,8 +8,8 @@ from copy import deepcopy
 
 class ContainmentGuidance(DistributedControl):
 
-    def __init__(self, agent_id: int, N: int, in_neigh: List[int], out_neigh: List[int], update_frequency: float, is_leader: bool, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(agent_id, N, in_neigh, out_neigh, update_frequency, pos_handler, pos_topic)
+    def __init__(self, update_frequency: float, is_leader: bool, pos_handler: str=None, pos_topic: str=None):
+        super().__init__(update_frequency, pos_handler, pos_topic)
         self.is_leader = is_leader
         self.containment_gain = 0.1
 

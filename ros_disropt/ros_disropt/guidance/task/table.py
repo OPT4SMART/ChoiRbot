@@ -13,11 +13,11 @@ class TaskTable(Node):
     def __init__(self, N, service_type):
         super().__init__('task_table')
         self.N = N
-        self.publisher = self.create_publisher(Empty, 'optimization_trigger', 10)
+        self.publisher = self.create_publisher(Empty, '/optimization_trigger', 10)
         self.gc = self.create_guard_condition(self.send_new_tasks)
         self.timer = self.create_timer(5, self.timer_callback)
-        self.task_list_srv = self.create_service(service_type, 'task_list', self.task_list_service)
-        self.task_completion_srv = self.create_service(TaskCompletionService, 'task_completion', self.task_completion_service)
+        self.task_list_srv = self.create_service(service_type, '/task_list', self.task_list_service)
+        self.task_completion_srv = self.create_service(TaskCompletionService, '/task_completion', self.task_completion_service)
         self.task_list = []
         self.task_list_comm = [] # task list to be communicated to agents
         self.agents_requested_task_list = [] # agents having already requested task list
@@ -135,7 +135,7 @@ class PDPositionTaskTable(TaskTable):
 
     def __init__(self, N, n_groups, tasks_per_group, seed, log_prefix):
         super(PDPositionTaskTable, self).__init__(N, PositionTaskService)
-        self.task_permission_srv = self.create_service(TaskPermissionService, 'task_permission', self.task_permission_service)
+        self.task_permission_srv = self.create_service(TaskPermissionService, '/task_permission', self.task_permission_service)
         self.task_permissions = {} # each key corresponds to a task
         self.times_tasks_generated = 0
         self.n_groups = n_groups

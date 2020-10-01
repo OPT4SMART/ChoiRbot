@@ -9,10 +9,11 @@ import numpy as np
 
 class RvizSpawner(Node):
 
-    def __init__(self, agent_id, pose_handler: str=None, pose_topic: str=None):
-        super().__init__('agent_{}_rviz'.format(agent_id))
-        self.agent_id = agent_id
-        self.publisher_ = self.create_publisher(Marker, 'visualization_marker', 1)
+    def __init__(self, pose_handler: str=None, pose_topic: str=None):
+        super().__init__('rviz', allow_undeclared_parameters=True,
+            automatically_declare_parameters_from_overrides=True)
+        self.agent_id = self.get_parameter('agent_id').value
+        self.publisher_ = self.create_publisher(Marker, '/visualization_marker', 1)
 
         self.current_pose = Pose(None, None)
         self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)

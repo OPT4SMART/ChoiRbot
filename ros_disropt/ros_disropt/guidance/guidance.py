@@ -1,5 +1,4 @@
 from rclpy.node import Node
-from typing import List
 from .. import Pose
 
 from ..utils.position_getter import pose_subscribe
@@ -9,13 +8,14 @@ from ..communicators import ROSCommunicator
 
 class Guidance(Node):
 
-    def __init__(self, agent_id: int, N: int, in_neigh: List[int], out_neigh: List[int], # data: RobotData,
+    def __init__(self, # data: RobotData,
                  pose_handler: str=None, pose_topic: str=None):
-        super().__init__('agent_{}_guidance'.format(agent_id))
-        self.agent_id = agent_id
-        self.agent_count = N
-        self.in_neighbors = in_neigh
-        self.out_neighbors = out_neigh
+        super().__init__('guidance', allow_undeclared_parameters=True,
+            automatically_declare_parameters_from_overrides=True)
+        self.agent_id = self.get_parameter('agent_id').value
+        self.agent_count = self.get_parameter('N').value
+        self.in_neighbors = self.get_parameter('in_neigh').value
+        self.out_neighbors = self.get_parameter('out_neigh').value
         # self.data = data
         self.current_pose = Pose(None, None)
 

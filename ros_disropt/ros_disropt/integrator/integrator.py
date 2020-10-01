@@ -5,13 +5,14 @@ import numpy as np
 
 class Integrator(Node):
 
-    def __init__(self, agent_id: int, steptime: float):
-        super().__init__('agent_{}_planner'.format(agent_id))
-        self.agent_id = agent_id
-        self.get_logger().info('Planner {} started'.format(agent_id))
+    def __init__(self, steptime: float):
+        super().__init__('integrator', allow_undeclared_parameters=True,
+            automatically_declare_parameters_from_overrides=True)
+        self.agent_id = self.get_parameter('agent_id').value
         self.steptime = steptime
-        self.odom_publisher = self.create_publisher(Odometry, '/agent_{}/odom'.format(agent_id), 10)
+        self.odom_publisher = self.create_publisher(Odometry, 'odom', 10)
         self.odom_timer = self.create_timer(steptime, self.integrate)
+        self.get_logger().info('Integrator {} started'.format(self.agent_id))
 
     def execute_callback(self, msg):
         self.u = np.array([msg.x, msg.y, msg.z])

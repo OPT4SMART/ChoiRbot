@@ -8,7 +8,6 @@ from rclpy.executors import SingleThreadedExecutor
 from std_msgs.msg import ByteMultiArray, MultiArrayDimension
 
 from threading import Event
-from disropt.communicators import Communicator
 import dill
 
 from .callback_groups import AuthorizationCallbackGroup
@@ -23,11 +22,10 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class ROSCommunicator(Communicator, metaclass=Singleton):
+class ROSCommunicator(metaclass=Singleton):
 
     def __init__(self, agent_id, size, neighbors, synchronous_mode = True):
-        super(ROSCommunicator, self).__init__()
-
+        
         # initialize variables
         self.size = size
         self.rank = agent_id
@@ -41,8 +39,8 @@ class ROSCommunicator(Communicator, metaclass=Singleton):
 
         # initialize publisher and subscriptions
         self.qos_profile = self._getQoSProfile()
-        self.node = Node('disropt_agent_{}'.format(agent_id))
-        self.publisher = self.node.create_publisher(ByteMultiArray, 'disropt{}'.format(agent_id), self.qos_profile) # FIXME naming convention
+        self.node = Node('communicator')
+        self.publisher = self.node.create_publisher(ByteMultiArray, 'communicator', self.qos_profile)
         self._subscribe(neighbors)
     
     def _getQoSProfile(self):
@@ -67,7 +65,7 @@ class ROSCommunicator(Communicator, metaclass=Singleton):
                 # create subscription
                 self.subscriptions[i] = self.node.create_subscription(
                     ByteMultiArray,
-                    'disropt{}'.format(i), # FIXME naming convention
+                    '/agent_{}/communicator'.format(i),
                     lambda msg, node=i: self._subscription_callback(msg, node),
                     self.qos_profile, callback_group=cbgroup)
 

@@ -16,10 +16,11 @@ class TaskGuidance(Guidance):
     # nel frattempo sta in ascolto per eventuali optimization trigger,
     # che vengono gestiti in base alla strategia dinamica/statica scelta
 
-    def __init__(self, agent_id: int, N: int, in_neigh: List[int], out_neigh: List[int], optimizer_cls: Type[TaskOptimizer],
+    def __init__(self, optimizer_cls: Type[TaskOptimizer],
             manager: TaskManager, task_executor_cls: Type[TaskExecutor], data: RobotData, opt_settings: OptimizationSettings,
             pos_handler: str=None, pos_topic: str=None):
-        super().__init__(agent_id, N, in_neigh, out_neigh, data, pos_handler, pos_topic)
+        super().__init__(pos_handler, pos_topic)
+        self.data = data
         self.optimizer_cls = optimizer_cls
         self.task_manager = manager
         self.current_task = None
@@ -28,16 +29,16 @@ class TaskGuidance(Guidance):
 
         # triggering mechanism to start optimization
         self.opt_trigger_subscription = self.create_subscription(
-                Empty, 'optimization_trigger', self.start_optimization, 10)
-        self.task_list_client = self.create_client(task_executor_cls.service, 'task_list')
-        self.task_completion_client = self.create_client(TaskCompletionService, 'task_completion')
-        self.task_permission_client = self.create_client(TaskPermissionService, 'task_permission')
+                Empty, '/optimization_trigger', self.start_optimization, 10)
+        self.task_list_client = self.create_client(task_executor_cls.service, '/task_list')
+        self.task_completion_client = self.create_client(TaskCompletionService, '/task_completion')
+        self.task_permission_client = self.create_client(TaskPermissionService, '/task_permission')
         self.optimization_thread = None
         self.optimization_gc = self.create_guard_condition(self.optimization_ended)
         self._permission_future = None
 
         # initialize task executor
-        self.task_executor = task_executor_cls(agent_id, self, self.data)
+        self.task_executor = task_executor_cls(self.agent_id, self, self.data)
 
         # guard condition to start a new task
         self.task_gc = self.create_guard_condition(self.start_new_task)
@@ -48,7 +49,7 @@ class TaskGuidance(Guidance):
         self.task_permission_client.wait_for_service()
         self.task_executor.wait_for_services()
 
-        self.get_logger().info('Guidance {} started'.format(agent_id))
+        self.get_logger().info('Guidance {} started'.format(self.agent_id))
     
     def start_optimization(self, _):
         self.get_logger().info('Optimization triggered: requesting task list')
