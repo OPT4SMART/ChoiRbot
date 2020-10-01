@@ -10,9 +10,9 @@ class SingleIntegrator(Integrator):
         if initial_position is None:
             self.current_pos = 3*np.random.rand(3)
             self.current_pos[2] = 0.0
-            self.u = np.zeros(3)
         else:
             self.current_pos = initial_position
+        self.u = np.zeros(3)
 
     def integrate(self):
         self.current_pos += self.steptime * self.u

@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from ros_disropt.guidance.distributed_control import FormationControlGuidance
+from ros_disropt.guidance.distributed_control import ContainmentGuidance
 import numpy as np
 
 def main():
@@ -19,7 +19,7 @@ def main():
     out_neigh = np.nonzero(Adj[agent_id, :])[0].tolist()
     N = Adj.shape[0]
     
-    update_frequency = 100
+    update_frequency = 100.0
     
     if agent_id < 3:
          is_leader = True
@@ -31,7 +31,7 @@ def main():
     pos_topic = '/agent_{}/odom'.format(agent_id)
 
     
-    guidance = FormationControlGuidance(agent_id, N, in_neigh, out_neigh, 
+    guidance = ContainmentGuidance(agent_id, N, in_neigh, out_neigh, 
                                         update_frequency, is_leader, pos_handler, pos_topic)
 
     rclpy.spin(guidance)

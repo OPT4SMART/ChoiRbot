@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from ros_disropt.integrator import SingleIntegrator
 from rclpy.executors import MultiThreadedExecutor
+import numpy as np
 
 
 def main():
@@ -10,12 +11,12 @@ def main():
     agent_id = node.get_parameter('agent_id').value
 
     P = np.array([
-        [2, 2, 0,
-        [2, 0, 0,     
-        [0, 2, 0,
-        [0, 1.5, 0,
-        [1.5, 0, 0,
-         1.5, 3 ,0])
+        [2, 2, 0],
+        [2, 0, 0],     
+        [0, 2, 0],
+        [0, 3.5, 0],
+        [3.5, 0, 0],
+        [-.5, -2 ,0]])
 
     initial_pos = P[agent_id, :]
     steptime = 0.01

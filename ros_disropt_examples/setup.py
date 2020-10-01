@@ -29,7 +29,8 @@ setup(
             'ros_disropt_controller= ros_disropt_examples.controller:main',
             'ros_disropt_singleintegrator = ros_disropt_examples.single_integrator_i:main',
             'ros_disropt_formationcontrol = ros_disropt_examples.formationcontrol_guidance_i:main',
-            'ros_disropt_containment = ros_disropt_examples.containment_guidance_i:main'
+            'ros_disropt_containment = ros_disropt_examples.containment_guidance_i:main',
+            'ros_disropt_rviz = ros_disropt_examples.rviz_spawner_i:main'
         ],
     },
 )

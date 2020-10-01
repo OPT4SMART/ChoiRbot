@@ -10,10 +10,8 @@ class ContainmentGuidance(DistributedControl):
 
     def __init__(self, agent_id: int, N: int, in_neigh: List[int], out_neigh: List[int], update_frequency: float, is_leader: bool, pos_handler: str=None, pos_topic: str=None):
         super().__init__(agent_id, N, in_neigh, out_neigh, update_frequency, pos_handler, pos_topic)
-        self.x_neigh = {}
-        self.weights = weights
-        self.formation_control_gain = 0.1
         self.is_leader = is_leader
+        self.containment_gain = 0.1
 
     def control(self):
         pos = np.copy(self.current_pose.position)
@@ -28,7 +26,7 @@ class ContainmentGuidance(DistributedControl):
         if not self.is_leader:
             for ii in neigh_data:
                 pos_ii = neigh_data[ii]
-                error = pos_ii - current_pose.position
+                error = self.containment_gain*(pos_ii - current_pose.position)
                 u += error
         return u
         
