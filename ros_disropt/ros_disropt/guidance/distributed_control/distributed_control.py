@@ -1,10 +1,5 @@
-import numpy as np
-import rclpy
 from geometry_msgs.msg import Vector3
-from typing import List
-from .. import RobotData
 from ..guidance import Guidance
-from time import sleep
 
 
 class DistributedControlGuidance(Guidance):
@@ -16,9 +11,20 @@ class DistributedControlGuidance(Guidance):
         self.timer = self.create_timer(1.0/update_frequency, self.control)
 
     def control(self):
-        pass
+        # skip if position is not available yet
+        if self.current_pose.position is None:
+            return
+        
+        # exchange current position with neighbors
+        data = self.communicator.neighbors_exchange(self.current_pose.position, self.in_neighbors, self.out_neighbors, False)
 
-    def send_message(self, u):
+        # compute input
+        u = self.evaluate_velocity(data)
+
+        # send input to planner/controller
+        self.send_input(u)
+
+    def send_input(self, u):
         msg = Vector3()
 
         msg.x = u[0]
@@ -27,6 +33,5 @@ class DistributedControlGuidance(Guidance):
 
         self.publisher_.publish(msg)
 
-    def evaluate_velocity(self, current_pose, neigh_data):
-        print("parent method")
-        pass
+    def evaluate_velocity(self, neigh_data):
+        raise NotImplementedError

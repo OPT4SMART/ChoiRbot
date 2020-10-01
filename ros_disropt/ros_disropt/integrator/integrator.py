@@ -39,7 +39,7 @@ class Integrator(Node):
         self.send_odom()
 
     def integrate(self):
-        pass
+        raise NotImplementedError
 
     def send_odom(self):
         point = Point(x=self.current_pos[0], y=self.current_pos[1], z=self.current_pos[2])

@@ -1,32 +1,17 @@
 import numpy as np
-import rclpy
-from geometry_msgs.msg import Point
-from typing import List
 from .distributed_control import DistributedControlGuidance
-from copy import deepcopy
 
 
 class ContainmentGuidance(DistributedControlGuidance):
 
-    def __init__(self, update_frequency: float, is_leader: bool, pos_handler: str=None, pos_topic: str=None):
+    def __init__(self, update_frequency: float, is_leader: bool, gain: float=0.1, pos_handler: str=None, pos_topic: str=None):
         super().__init__(update_frequency, pos_handler, pos_topic)
         self.is_leader = is_leader
-        self.containment_gain = 0.1
+        self.containment_gain = gain
 
-    def control(self):
-        pos = np.copy(self.current_pose.position)
-        if pos.ndim is not 0:
-            pose = deepcopy(self.current_pose)
-            data = self.communicator.neighbors_exchange(pose.position, self.in_neighbors, self.out_neighbors, False)
-            u = self.evaluate_velocity(pose, data)
-            self.send_message(u)
-
-    def evaluate_velocity(self, current_pose, neigh_data):
+    def evaluate_velocity(self, neigh_data):
         u = np.zeros(3)
         if not self.is_leader:
-            for ii in neigh_data:
-                pos_ii = neigh_data[ii]
-                error = self.containment_gain*(pos_ii - current_pose.position)
-                u += error
+            for pos_ii in neigh_data.values():
+                u += self.containment_gain*(pos_ii - self.current_pose.position)
         return u
-        
