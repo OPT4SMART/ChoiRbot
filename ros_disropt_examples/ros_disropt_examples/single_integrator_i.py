@@ -9,5 +9,16 @@ def main():
     node = Node('node', allow_undeclared_parameters=True, automatically_declare_parameters_from_overrides=True)
     agent_id = node.get_parameter('agent_id').value
 
-    integrator = SingleIntegrator(agent_id, 0.01)
+    P = np.array([
+        [2, 2, 0,
+        [2, 0, 0,     
+        [0, 2, 0,
+        [0, 1.5, 0,
+        [1.5, 0, 0,
+         1.5, 3 ,0])
+
+    initial_pos = P[agent_id, :]
+    steptime = 0.01
+
+    integrator = SingleIntegrator(agent_id, steptime, initial_pos)
     rclpy.spin(integrator)
