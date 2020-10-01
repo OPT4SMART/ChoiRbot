@@ -10,7 +10,6 @@ class Integrator(Node):
         self.agent_id = agent_id
         self.get_logger().info('Planner {} started'.format(agent_id))
         self.steptime = steptime
-        self.subscription = self.create_subscription(Point, 'agent_{}_velocity'.format(agent_id), self.execute_callback, 1)
         self.odom_publisher = self.create_publisher(Odometry, '/agent_{}/odom'.format(agent_id), 10)
         self.odom_timer = self.create_timer(steptime, self.integrate)
 
