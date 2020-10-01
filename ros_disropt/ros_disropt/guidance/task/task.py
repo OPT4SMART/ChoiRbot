@@ -1,8 +1,7 @@
-from rclpy.task import Future
 from std_msgs.msg import Empty
-from typing import Type, List
+from typing import Type
 
-from ros_disropt_interfaces.srv import TaskCompletionService, TaskPermissionService
+from ros_disropt_interfaces.srv import TaskCompletionService
 from ...scenario import TaskOptimizer
 from .. import OptimizationSettings, RobotData
 from .dynamic import TaskManager
@@ -32,10 +31,8 @@ class TaskGuidance(Guidance):
                 Empty, '/optimization_trigger', self.start_optimization, 10)
         self.task_list_client = self.create_client(task_executor_cls.service, '/task_list')
         self.task_completion_client = self.create_client(TaskCompletionService, '/task_completion')
-        self.task_permission_client = self.create_client(TaskPermissionService, '/task_permission')
         self.optimization_thread = None
         self.optimization_gc = self.create_guard_condition(self.optimization_ended)
-        self._permission_future = None
 
         # initialize task executor
         self.task_executor = task_executor_cls(self.agent_id, self, self.data)
@@ -46,7 +43,6 @@ class TaskGuidance(Guidance):
         # wait for services
         self.task_list_client.wait_for_service()
         self.task_completion_client.wait_for_service()
-        self.task_permission_client.wait_for_service()
         self.task_executor.wait_for_services()
 
         self.get_logger().info('Guidance {} started'.format(self.agent_id))
@@ -91,34 +87,10 @@ class TaskGuidance(Guidance):
         # get task
         task = self.task_manager.get_task()
 
-        # TODO maybe we don't want to always ask permission to table
-
         # ask table permission to perform task
-        self.get_logger().info('Got new task (seq_num {}) - asking permission'.format(task.seq_num))
-        request = TaskPermissionService.Request()
-        request.agent_id = self.agent_id
-        request.task_seq_num = task.seq_num
+        self.get_logger().info('Got new task (seq_num {}) - starting execution'.format(task.seq_num))
         self.current_task = task
-
-        # sending request
-        future = self.task_permission_client.call_async(request)
-        future.add_done_callback(self._permission_callback)
-    
-    def _permission_callback(self, future: Future):
-        # extract result
-        response = future.result()
-
-        if response.permission_granted:
-            # permission granted - execute task
-            self.get_logger().info('Permission granted for task (seq_num {}) - starting execution'.format(self.current_task.seq_num))
-            self.task_executor.execute_async(self.current_task, self.task_ended)
-
-            # TODO mark some of future tasks as pending
-        else:
-            # permission denied - clean and start new task
-            self.get_logger().info('Permission denied for task (seq_num {})'.format(self.current_task.seq_num))
-            self.current_task = None
-            self.task_gc.trigger()
+        self.task_executor.execute_async(self.current_task, self.task_ended)
     
     def task_ended(self):
         # log to console

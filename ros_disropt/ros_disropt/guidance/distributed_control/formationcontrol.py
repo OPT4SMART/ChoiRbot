@@ -2,11 +2,11 @@ import numpy as np
 import rclpy
 from geometry_msgs.msg import Point
 from typing import List
-from .distributed_control import DistributedControl
+from .distributed_control import DistributedControlGuidance
 from copy import deepcopy
 
 
-class FormationControlGuidance(DistributedControl):
+class FormationControlGuidance(DistributedControlGuidance):
 
     def __init__(self, weights:np.ndarray, update_frequency: float, pos_handler: str=None, pos_topic: str=None):
         super().__init__(update_frequency, pos_handler, pos_topic)

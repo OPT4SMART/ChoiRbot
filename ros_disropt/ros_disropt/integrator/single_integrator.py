@@ -1,21 +1,23 @@
 from .integrator import Integrator
+from geometry_msgs.msg import Vector3
 import numpy as np
 
 
 class SingleIntegrator(Integrator):
 
-    def __init__(self, steptime: float, initial_position: np.ndarray=None):
-        super().__init__(steptime)
-        self.subscription = self.create_subscription(Point, 'velocity', self.execute_callback, 1)
+    def __init__(self, integration_freq: float, odom_freq: float=None, initial_position: np.ndarray=None):
+        super().__init__(integration_freq, odom_freq, initial_position)
 
-        if initial_position is None:
-            np.random.seed(self.agent_id)
-            self.current_pos = 3*np.random.rand(3)
-            self.current_pos[2] = 0.0
-        else:
-            self.current_pos = initial_position
+        # create input subscription
         self.u = np.zeros(3)
+        self.subscription = self.create_subscription(Vector3, 'velocity', self.input_callback, 1)
+        
+        self.get_logger().info('Integrator {} started'.format(self.agent_id))
+    
+    def input_callback(self, msg):
+        # save new input
+        self.u = np.array([msg.x, msg.y, msg.z])
+        self.get_logger().info('New robot input is {}'.format(self.u))
 
     def integrate(self):
-        self.current_pos += self.steptime * self.u
-        self.send_odom()
+        self.current_pos += self.samp_time * self.u

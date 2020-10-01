@@ -2,11 +2,11 @@ import numpy as np
 import rclpy
 from geometry_msgs.msg import Point
 from typing import List
-from .distributed_control import DistributedControl
+from .distributed_control import DistributedControlGuidance
 from copy import deepcopy
 
 
-class ContainmentGuidance(DistributedControl):
+class ContainmentGuidance(DistributedControlGuidance):
 
     def __init__(self, update_frequency: float, is_leader: bool, pos_handler: str=None, pos_topic: str=None):
         super().__init__(update_frequency, pos_handler, pos_topic)

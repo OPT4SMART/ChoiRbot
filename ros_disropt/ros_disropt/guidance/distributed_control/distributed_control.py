@@ -1,17 +1,17 @@
 import numpy as np
 import rclpy
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Vector3
 from typing import List
 from .. import RobotData
 from ..guidance import Guidance
 from time import sleep
 
 
-class DistributedControl(Guidance):
+class DistributedControlGuidance(Guidance):
 
     def __init__(self, update_frequency: float, pos_handler: str=None, pos_topic: str=None):
         super().__init__(pos_handler, pos_topic)
-        self.publisher_ = self.create_publisher(Point, 'velocity', 1)
+        self.publisher_ = self.create_publisher(Vector3, 'velocity', 1)
         self.update_frequency = update_frequency
         self.timer = self.create_timer(1.0/update_frequency, self.control)
 
@@ -19,7 +19,7 @@ class DistributedControl(Guidance):
         pass
 
     def send_message(self, u):
-        msg = Point()
+        msg = Vector3()
 
         msg.x = u[0]
         msg.y = u[1]

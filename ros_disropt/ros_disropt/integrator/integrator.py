@@ -5,18 +5,38 @@ import numpy as np
 
 class Integrator(Node):
 
-    def __init__(self, steptime: float):
+    def __init__(self, integration_freq: float, odom_freq: float=None, initial_position: np.ndarray=None):
         super().__init__('integrator', allow_undeclared_parameters=True,
             automatically_declare_parameters_from_overrides=True)
+        
+        # get agent id
         self.agent_id = self.get_parameter('agent_id').value
-        self.steptime = steptime
-        self.odom_publisher = self.create_publisher(Odometry, 'odom', 10)
-        self.odom_timer = self.create_timer(steptime, self.integrate)
-        self.get_logger().info('Integrator {} started'.format(self.agent_id))
 
-    def execute_callback(self, msg):
-        self.u = np.array([msg.x, msg.y, msg.z])
-        self.get_logger().info('Robot new input is {}'.format(self.u))
+        # create odom publisher
+        self.current_pos = np.zeros(3)
+        self.odom_publisher = self.create_publisher(Odometry, 'odom', 10)
+
+        # create integration/odometry timer(s)
+        self.samp_time = 1.0/integration_freq
+
+        if odom_freq is None or integration_freq == odom_freq:
+            self.int_timer = self.create_timer(self.samp_time, self.integrate_and_send_odom)
+        else:
+            self.odom_samp_time = 1.0/odom_freq
+            self.int_timer = self.create_timer(self.samp_time, self.integrate)
+            self.odom_timer = self.create_timer(self.odom_samp_time, self.send_odom)
+
+        # get initial position or generate a new one with x,y in [0,3] and z=0
+        if initial_position is None:
+            np.random.seed(self.agent_id)
+            self.current_pos = 3*np.random.rand(3)
+            self.current_pos[2] = 0.0
+        else:
+            self.current_pos = initial_position.copy()
+    
+    def integrate_and_send_odom(self):
+        self.integrate()
+        self.send_odom()
 
     def integrate(self):
         pass
