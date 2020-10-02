@@ -12,7 +12,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PositionTaskArray.msg"
   "srv/PositionTaskService.srv"
   "srv/TaskCompletionService.srv"
-  "srv/TaskPermissionService.srv"
 )
 
 # Install the python module for this package

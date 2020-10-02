@@ -1,4 +1,0 @@
-uint32 agent_id
-uint32 task_seq_num
----
-bool permission_granted

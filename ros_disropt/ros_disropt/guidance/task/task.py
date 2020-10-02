@@ -4,7 +4,6 @@ from typing import Type
 from ros_disropt_interfaces.srv import TaskCompletionService
 from ...scenario import TaskOptimizer
 from .. import OptimizationSettings, RobotData
-from .dynamic import TaskManager
 from .executor import TaskExecutor
 from ..guidance import Guidance
 
@@ -16,15 +15,15 @@ class TaskGuidance(Guidance):
     # che vengono gestiti in base alla strategia dinamica/statica scelta
 
     def __init__(self, optimizer_cls: Type[TaskOptimizer],
-            manager: TaskManager, task_executor_cls: Type[TaskExecutor], data: RobotData, opt_settings: OptimizationSettings,
+            task_executor_cls: Type[TaskExecutor], data: RobotData, opt_settings: OptimizationSettings,
             pos_handler: str=None, pos_topic: str=None):
         super().__init__(pos_handler, pos_topic)
         self.data = data
         self.optimizer_cls = optimizer_cls
-        self.task_manager = manager
-        self.current_task = None
         self.opt_settings = opt_settings
+        self.current_task = None
         self.pending_tasks = []
+        self.task_queue = []
 
         # triggering mechanism to start optimization
         self.opt_trigger_subscription = self.create_subscription(
@@ -51,7 +50,7 @@ class TaskGuidance(Guidance):
         self.get_logger().info('Optimization triggered: requesting task list')
 
         # remove all enqueued tasks
-        self.task_manager.empty_tasks()
+        self.task_queue = []
 
         # request updated task list
         request = self.task_executor.service.Request(agent_id=self.agent_id)
@@ -69,23 +68,19 @@ class TaskGuidance(Guidance):
         # collect results from external thread
         result = self.optimization_thread.get_result()
         self.get_logger().info('Assigned tasks {}'.format([task.seq_num for task in result]))
-        self.task_manager.update_tasks(result)
+        self.task_queue = result
         self.optimization_thread = None
 
         # start new task
         self.task_gc.trigger()
     
     def start_new_task(self):
-        # stop if a task is already in execution
-        if self.current_task is not None:
-            return
-
-        # stop if there are no new tasks
-        if not self.task_manager.has_tasks():
+        # stop if a task is already in execution or if there are no new tasks
+        if self.current_task is not None or not self.task_queue:
             return
         
         # get task
-        task = self.task_manager.get_task()
+        task = self.task_queue.pop(0)
 
         # ask table permission to perform task
         self.get_logger().info('Got new task (seq_num {}) - starting execution'.format(task.seq_num))

@@ -70,9 +70,8 @@ class TaskOptimizationThread(OptimizationThread):
         received_task_list = self.future.result().tasks
         
         # prepare problem data
-        filtered_task_list = self.guidance.task_manager.filter_tasks(received_task_list)
-        tasks = np.array([np.array(t.coordinates) for t in filtered_task_list.tasks])
-        task_indices = [t.id for t in filtered_task_list.tasks]
+        tasks = np.array([np.array(t.coordinates) for t in received_task_list.tasks])
+        task_indices = [t.id for t in received_task_list.tasks]
         agent_id = self.guidance.agent_id
         N = self.guidance.agent_count
         starting_pos = self.guidance.current_position[:-1]
@@ -91,7 +90,7 @@ class TaskOptimizationThread(OptimizationThread):
 
         # save result as list of PositionTask
         task_index = task_indices.index(results[1]) # results[1] is the task ID
-        self.result = [filtered_task_list.tasks[task_index]] # (THERE IS ONLY ONE TASK BECAUSE WE ASSUME N = M)
+        self.result = [received_task_list.tasks[task_index]] # (THERE IS ONLY ONE TASK BECAUSE WE ASSUME N = M)
     
     def get_result(self) -> List[PositionTask]:
         return self.result
@@ -124,15 +123,14 @@ class PDVRPOptimizationThread(OptimizationThread):
         received_task_list = self.future.result().tasks
         
         # prepare problem data
-        filtered_task_list = self.guidance.task_manager.filter_tasks(received_task_list)
-        tasks = np.array([np.array(t.coordinates) for t in filtered_task_list.tasks])
-        task_indices = [t.id for t in filtered_task_list.tasks]
-        tasks_print = [(t.seq_num, "P" if t.load > 0 else "D") for t in filtered_task_list.tasks]
+        tasks = np.array([np.array(t.coordinates) for t in received_task_list.tasks])
+        task_indices = [t.id for t in received_task_list.tasks]
+        tasks_print = [(t.seq_num, "P" if t.load > 0 else "D") for t in received_task_list.tasks]
         self.guidance.get_logger().info('Received tasks: {}'.format(tasks_print))
         self.guidance.get_logger().info('Indices of received tasks: {}'.format(task_indices))
 
-        demand = np.array([t.load for t in filtered_task_list.tasks])
-        service_times = np.array([t.service_time for t in filtered_task_list.tasks])
+        demand = np.array([t.load for t in received_task_list.tasks])
+        service_times = np.array([t.service_time for t in received_task_list.tasks])
         task_count = received_task_list.all_tasks_count
         speed = self.guidance.data.speed
         capacity = self.guidance.data.capacity
@@ -147,13 +145,13 @@ class PDVRPOptimizationThread(OptimizationThread):
         iters = self.settings.max_iterations
 
         # create map of seq_num => id
-        id_map = {t.seq_num:t.id for t in filtered_task_list.tasks}
+        id_map = {t.seq_num:t.id for t in received_task_list.tasks}
 
         # list of pending deliveries that must be performed by this agent (task.id)
         pending_tasks = [id_map[i] for i in self.guidance.pending_tasks]
 
         # make dictionary with pickup/delivery pairs (key = pickup task.id, value = delivery task.id)
-        pd_pairs = {t.id:id_map[t.corresponding_delivery] for t in filtered_task_list.tasks if t.load > 0}
+        pd_pairs = {t.id:id_map[t.corresponding_delivery] for t in received_task_list.tasks if t.load > 0}
 
         # initialize and start optimization
         self.guidance.get_logger().info('Starting optimization')
@@ -169,7 +167,7 @@ class PDVRPOptimizationThread(OptimizationThread):
 
         # save result
         result_idx = [task_indices.index(t[1]) for t in result] # ordered indices of tasks in "result" (t[1] is the ID of a task)
-        self.result = [filtered_task_list.tasks[j] for j in result_idx] # save as list of PositionTask objects
+        self.result = [received_task_list.tasks[j] for j in result_idx] # save as list of PositionTask objects
     
     def get_result(self) -> List[PositionTask]:
         return self.result
