@@ -2,7 +2,7 @@ from rclpy.node import Node
 from .. import Pose
 
 from ..utils.position_getter import pose_subscribe
-from ..communicators import ROSCommunicator
+from ..communicator import Communicator
 
 
 class Guidance(Node):
@@ -13,7 +13,7 @@ class Guidance(Node):
         
         # get parameters
         self.agent_id = self.get_parameter('agent_id').value
-        self.agent_count = self.get_parameter('N').value
+        self.n_agents = self.get_parameter('N').value
         self.in_neighbors = self.get_parameter('in_neigh').value
         self.out_neighbors = self.get_parameter('out_neigh').value
 
@@ -25,4 +25,4 @@ class Guidance(Node):
         self.communicator = self.instantiate_communicator()
 
     def instantiate_communicator(self):
-        return ROSCommunicator(self.agent_id, self.agent_count, self.in_neighbors)
+        return Communicator(self.agent_id, self.n_agents, self.in_neighbors)

@@ -10,8 +10,8 @@ from std_msgs.msg import ByteMultiArray, MultiArrayDimension
 from threading import Event
 import dill
 
-from .callback_groups import AuthorizationCallbackGroup
-from .executors import SpinSomeExecutor
+from .callback_group import AuthorizationCallbackGroup
+from .executor import SpinSomeExecutor
 
 
 class Singleton(type):
@@ -22,7 +22,7 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class ROSCommunicator(metaclass=Singleton):
+class Communicator(metaclass=Singleton):
 
     def __init__(self, agent_id, size, neighbors, synchronous_mode = True):
         
