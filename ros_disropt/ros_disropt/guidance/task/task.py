@@ -24,16 +24,20 @@ class TaskGuidance(Guidance):
         self.optimizer = optimizer
         self.task_executor = executor
         self.current_task = None
-        self.pending_tasks = []
         self.task_queue = []
 
         # triggering mechanism to start optimization
         self.opt_trigger_subscription = self.create_subscription(
                 Empty, '/optimization_trigger', self.start_optimization, 10)
+        
+        # create and start optimization thread
+        self.optimization_ended_gc = self.create_guard_condition(self.optimization_ended)
+        self.optimization_thread = TaskOptimizationThread(self, optimizer, self.optimization_ended_gc)
+        self.optimization_thread.start()
+
+        # task list and task completion services
         self.task_list_client = self.create_client(executor.service, '/task_list')
         self.task_completion_client = self.create_client(TaskCompletionService, '/task_completion')
-        self.optimization_thread = None
-        self.optimization_gc = self.create_guard_condition(self.optimization_ended)
 
         # guard condition to start a new task
         self.task_gc = self.create_guard_condition(self.start_new_task)
@@ -57,19 +61,16 @@ class TaskGuidance(Guidance):
         request = self.task_executor.service.Request(agent_id=self.agent_id)
         future = self.task_list_client.call_async(request)
 
-        # launch task optimization on a new thread
-        thread = TaskOptimizationThread(future, self.optimization_thread, self, self.optimizer)
-        thread.start()
-        self.optimization_thread = thread
+        # launch optimization
+        self.optimization_thread.optimize(future)
     
     def optimization_ended(self):
         self.get_logger().info('Optimization ended')
 
-        # collect results from external thread
-        result = self.optimization_thread.get_result()
+        # collect results
+        result = self.optimizer.get_result()
         self.get_logger().info('Assigned tasks {}'.format([task.seq_num for task in result]))
         self.task_queue = result
-        self.optimization_thread = None
 
         # start new task
         self.task_gc.trigger()
@@ -104,37 +105,29 @@ class TaskGuidance(Guidance):
 
 class TaskOptimizationThread(OptimizationThread):
 
-    def __init__(self, future: Future, old_thread: 'TaskOptimizationThread', guidance: TaskGuidance, optimizer: TaskOptimizer):
-        super().__init__(old_thread, guidance, optimizer)
-        self.future = future
-        self.result = None
-        self.fetch_data_event = None
+    data_ready_event = None
+    data_ready_future = None
     
-    def run(self):
+    def optimize(self, future: Future):
+        self.data_ready_future = future
+
         # prepare handling of asynchronous request
-        self.fetch_data_event = Event()
+        self.data_ready_event = Event()
 
         def unblock(_):
-            self.fetch_data_event.set()
+            self.data_ready_event.set()
         
-        self.future.add_done_callback(unblock)
+        self.data_ready_future.add_done_callback(unblock)
 
         # call method of parent class
-        super().run()
+        super().optimize()
 
     def do_optimize(self):
-        # wait for problem data to be ready
-        self.fetch_data_event.wait()
-        received_task_list = self.future.result().tasks
+        # wait for problem data to be ready (TODO should also wait on self._halt_event)
+        self.data_ready_event.wait()
+        self.guidance.get_logger().info('Data received: starting optimization')
 
         # initialize and start optimization
-        # TODO forse conviene chiamare un metodo della classe guida per il logging, in questo modo si customizza maggiormente
-        self.guidance.get_logger().info('Starting optimization')
-        self.optimizer.create_problem(received_task_list)
+        data = self.data_ready_future.result()
+        self.optimizer.create_problem(data)
         self.optimizer.optimize()
-    
-    def get_result(self):
-        return self.optimizer.get_result()
-    
-    def get_cost(self):
-        return self.optimizer.get_cost()
