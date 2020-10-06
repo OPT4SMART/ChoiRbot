@@ -49,17 +49,20 @@ def generate_launch_description():
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_singleintegrator', output='screen',
+            node_namespace='agent_{}'.format(i),
             #prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'weights': weights}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_formationcontrol', output='screen',
+            node_namespace='agent_{}'.format(i),
             prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
 
-        # list_description.append(Node(
-        #     package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
-        #     prefix=['xterm -hold -e'],
-        #     parameters=[{'agent_id': i}]))
+        list_description.append(Node(
+            package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
+            node_namespace='agent_{}'.format(i),
+            prefix=['xterm -hold -e'],
+            parameters=[{'agent_id': i}]))
 
     return LaunchDescription(list_description)

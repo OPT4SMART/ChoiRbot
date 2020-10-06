@@ -47,9 +47,4 @@ def generate_launch_description():
             prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
 
-        # list_description.append(Node(
-        #     package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
-        #     prefix=['xterm -hold -e'],
-        #     parameters=[{'agent_id': i}]))
-
     return LaunchDescription(list_description)
