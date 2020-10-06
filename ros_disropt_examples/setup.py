@@ -22,9 +22,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'ros_disropt_agent_i = ros_disropt_examples.main_i:main',
-            'ros_disropt_guidance_i = ros_disropt_examples.guidance_i:main_guidance',
-            'ros_disropt_table = ros_disropt_examples.guidance_i:main_table',
+            'ros_disropt_task_guidance = ros_disropt_examples.task_guidance:main_guidance',
+            'ros_disropt_table = ros_disropt_examples.task_guidance:main_table',
             'ros_disropt_planner= ros_disropt_examples.planner_i:main_planner',
             'ros_disropt_controller= ros_disropt_examples.controller:main',
             'ros_disropt_unicycle_vel= ros_disropt_examples.unicycle_controller:main',

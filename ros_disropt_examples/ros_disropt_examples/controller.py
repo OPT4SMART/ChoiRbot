@@ -29,7 +29,7 @@ def main(args=None):
     agent_id = node.get_parameter('agent_id').value
 
     pos_handler = 'pubsub'
-    pos_topic = '/agent_{}/odom'.format(agent_id)
+    pos_topic = 'odom'
     # pos_handler = 'vicon'
     # pos_topic = '/vicon/T{}/T{}'.format(agent_id, agent_id)
     

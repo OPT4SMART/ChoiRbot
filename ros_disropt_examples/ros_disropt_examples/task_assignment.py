@@ -1,21 +1,39 @@
-from ros_disropt.scenario import TaskOptimizer
-from disropt.agents import Agent
-from disropt.algorithms import Consensus
-from itertools import chain
-import numpy as np
+import rclpy
+from rclpy.node import Node
+from ros_disropt.guidance import TaskGuidance, PositionTaskTable, RobotData, PositionTaskExecutor
+from ros_disropt.optimizer import TaskOptimizer
 import time
 
+def main_guidance():
+    rclpy.init(args=None)
 
-def task_assignment(id, N, neigh, tasklist, taskindices, starting):
+    opt_settings = {'max_iterations': 20}
+    executor = PositionTaskExecutor()
+    optimizer = TaskOptimizer(settings=opt_settings)
 
-    task_opt = TaskOptimizer(id, N, tasklist, taskindices, starting, in_neighbors=neigh)
-    ################
-    task_opt.instantiate_algorithm()
-    time.sleep(1)
+    pos_handler = 'pubsub'
+    pos_topic = 'odom'
+    # pos_handler = 'vicon'
+    # pos_topic = '/vicon/T{}/T{}'.format(guidance.agent_id, guidance.agent_id)
+    
+    guidance = TaskGuidance(optimizer, executor, None, pos_handler, pos_topic)
 
-    print("Agent {} A,b are {}".format(id, task_opt.problemConstraints()))
-    print('Agent {} starting'.format(id))
+    rclpy.spin(guidance)
 
-    task_opt.optimize(iterations=100)
-    print('Agente {} has basis {}'.format(id, task_opt.algorithm.B))
-    print('Agent {} will do task {}'.format(id, task_opt.retrieve_results()))
+    rclpy.shutdown()
+
+def main_table():
+    rclpy.init(args=None)
+
+    node = Node('table_parameters', allow_undeclared_parameters=True, automatically_declare_parameters_from_overrides=True)
+    N = node.get_parameter('N').value
+
+    table = PositionTaskTable(N)
+    table.gc.trigger()
+
+    node.get_logger().info('Waiting for 5 seconds')
+    time.sleep(5)
+
+    rclpy.spin(table)
+
+    rclpy.shutdown()
