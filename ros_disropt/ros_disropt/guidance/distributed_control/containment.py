@@ -4,10 +4,10 @@ from .distributed_control import DistributedControlGuidance
 
 class ContainmentGuidance(DistributedControlGuidance):
 
-    def __init__(self, update_frequency: float, is_leader: bool, gain: float=0.1, pos_handler: str=None, pos_topic: str=None):
+    def __init__(self, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None):
         super().__init__(update_frequency, pos_handler, pos_topic)
-        self.is_leader = is_leader
         self.containment_gain = gain
+        self.is_leader = self.get_parameter('is_leader').value
 
     def evaluate_velocity(self, neigh_data):
         u = np.zeros(3)

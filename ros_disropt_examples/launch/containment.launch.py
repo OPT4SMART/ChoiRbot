@@ -24,19 +24,6 @@ def generate_launch_description():
                     [0, 1, 0, 1, 0, 1],
                     [1, 0, 1, 0, 1, 0]])
 
-    # Weight matrix to control inter-agent distances
-    d = 0.3
-    ddiag = np.sqrt(5)*d
-
-    W = np.array([
-        [0, d, 0, d, 0, ddiag],
-        [d, 0, d, 0, d, 0],
-        [0, d, 0, ddiag, 0, d],
-        [d, 0, ddiag, 0, d, 0],
-        [0, d, 0, d, 0, d],
-        [ddiag, 0, d, 0, d, 0]
-    ])
-    
     #######################
 
     list_description = []
@@ -45,12 +32,15 @@ def generate_launch_description():
 
         in_neighbors  = np.nonzero(Adj[:, i])[0].tolist()
         out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
-        weights = W[i,:].tolist()
+        if i<3:
+            is_leader = True
+        else:
+            is_leader = False
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_singleintegrator', output='screen',
             #prefix=['xterm -hold -e'],
-            parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'weights': weights}]))
+            parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'is_leader': is_leader}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_formationcontrol', output='screen',

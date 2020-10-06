@@ -5,10 +5,10 @@ from .distributed_control import DistributedControlGuidance
 
 class FormationControlGuidance(DistributedControlGuidance):
 
-    def __init__(self, weights: np.ndarray, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None):
+    def __init__(self, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None):
         super().__init__(update_frequency, pos_handler, pos_topic)
-        self.weights = weights
         self.formation_control_gain = gain
+        self.weights = self.get_parameter('weights').value
 
     def evaluate_velocity(self, neigh_data):
         u = np.zeros(3)
