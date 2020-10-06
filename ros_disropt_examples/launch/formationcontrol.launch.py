@@ -25,18 +25,32 @@ def generate_launch_description():
                     [1, 0, 1, 0, 1, 0]])
 
     # Weight matrix to control inter-agent distances
-    d = 0.3
-    ddiag = np.sqrt(5)*d
+    D= 4.0
+    a = D/4.0
+    b = np.sqrt(3)*a
+    L = np.sqrt(a**2 * b**2)
+    D1 = np.sqrt((2*a)**2 + (2*b)**2)
 
     W = np.array([
-        [0, d, 0, d, 0, ddiag],
-        [d, 0, d, 0, d, 0],
-        [0, d, 0, ddiag, 0, d],
-        [d, 0, ddiag, 0, d, 0],
-        [0, d, 0, d, 0, d],
-        [ddiag, 0, d, 0, d, 0]
+        [0,         L,      0,     D1,    0,     2.0*a],
+        [L,         0,      L,     0,     4.0*a, 0],
+        [0,         L,      0,     2.0*a, 0,     D1],
+        [D1,        0,      2.0*a, 0,     L,     0],
+        [0,         4.0*a,  0,     L,     0,     L],
+        [2.0*a,     0,      D1,    0,     L,     0]
+    ])
+
+    P = np.array([
+        [-b, a , 0],
+        [0, 2.0*a, 0],      
+        [b, a, 0],
+        [b, -a, 0],
+        [0, -2.0*a, 0],
+        [-b, -a, 0]
     ])
     
+    P += np.random.rand(6,3)
+
     #######################
 
     list_description = []
@@ -46,23 +60,24 @@ def generate_launch_description():
         in_neighbors  = np.nonzero(Adj[:, i])[0].tolist()
         out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
         weights = W[i,:].tolist()
+        initial_pos = P[i, :].tolist()
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_singleintegrator', output='screen',
             node_namespace='agent_{}'.format(i),
             #prefix=['xterm -hold -e'],
-            parameters=[{'agent_id': i}]))
+            parameters=[{'agent_id': i, 'init_pos': initial_pos}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_formationcontrol', output='screen',
             node_namespace='agent_{}'.format(i),
-            prefix=['xterm -hold -e'],
+            #prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'weights': weights}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
             node_namespace='agent_{}'.format(i),
-            prefix=['xterm -hold -e'],
+            #prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
 
     return LaunchDescription(list_description)

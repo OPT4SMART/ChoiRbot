@@ -11,7 +11,7 @@ class Integrator(Node):
         
         # get agent id
         self.agent_id = self.get_parameter('agent_id').value
-        self.initial_position = self.get_parameter('init_pos').value
+        init_pos = self.get_parameter('init_pos').value
 
         # create odom publisher
         self.current_pos = np.zeros(3)
@@ -28,12 +28,12 @@ class Integrator(Node):
             self.odom_timer = self.create_timer(self.odom_samp_time, self.send_odom)
 
         # get initial position or generate a new one with x,y in [0,3] and z=0
-        if initial_position is None:
+        if init_pos is None:
             np.random.seed(self.agent_id)
             self.current_pos = 3*np.random.rand(3)
             self.current_pos[2] = 0.0
         else:
-            self.current_pos = initial_position.copy()
+            self.current_pos = np.array(init_pos)
     
     def integrate_and_send_odom(self):
         self.integrate()

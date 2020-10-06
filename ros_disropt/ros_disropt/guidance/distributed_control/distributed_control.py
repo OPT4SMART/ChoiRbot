@@ -1,6 +1,7 @@
 from geometry_msgs.msg import Vector3
 from ..guidance import Guidance
 import numpy as np
+from time import sleep
 
 
 class DistributedControlGuidance(Guidance):
@@ -9,6 +10,7 @@ class DistributedControlGuidance(Guidance):
         super().__init__(pos_handler, pos_topic)
         self.publisher_ = self.create_publisher(Vector3, 'velocity', 1)
         self.update_frequency = update_frequency
+        sleep(20)
         self.timer = self.create_timer(1.0/update_frequency, self.control)
 
     def control(self):

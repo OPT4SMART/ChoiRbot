@@ -9,7 +9,7 @@ def main():
     update_frequency = 100
 
     pos_handler = 'pubsub'
-    pos_topic = '/agent_{}/odom'.format(agent_id)
+    pos_topic = 'odom'
 
     guidance = FormationControlGuidance(update_frequency, 0.1, pos_handler, pos_topic)
 

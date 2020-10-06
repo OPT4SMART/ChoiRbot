@@ -1,30 +1,34 @@
 from .integrator import Integrator
 from geometry_msgs.msg import Twist, PoseWithCovariance, Pose, Point, Quaternion
+from nav_msgs.msg import Odometry
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
 
-class SingleIntegrator(Integrator):
+class UnicycleIntegrator(Integrator):
 
-    def __init__(self, integration_freq: float, odom_freq: float=None, initial_position: np.ndarray=None, initial_attitude: float=0.0):
-        super().__init__(integration_freq, odom_freq, initial_position)
+    def __init__(self, integration_freq: float, odom_freq: float=None):
+        super().__init__(integration_freq, odom_freq)
 
         # create input subscription
-        self.u = np.zeros(3)
-        self.subscription = self.create_subscription(Vector3, 'unicycle_velocity', self.input_callback, 1)
+        self.subscription = self.create_subscription(Twist, 'cmd_vel', self.input_callback, 1)
         
         self.get_logger().info('Integrator {} started'.format(self.agent_id))
-        self.theta = initial_attitude
+        self.theta = 0.0
+        self.v = 0.0
+        self.omega = 0.0
     
     def input_callback(self, msg):
         # save new input
         self.v = msg.linear.x
         self.omega = msg.angular.z
-        self.get_logger().info('New robot input is {}'.format(self.u))
+       #  self.get_logger().info('New robot input is {} {}'.format(self.v, self.omega))
 
     def integrate(self):
-        self.current_pos[0] += self.samp_time * self.v*cos(self.theta)
-        self.current_pos[1] += self.samp_time * self.v*sin(self.theta)
+        print(self.current_pos[0])
+        self.current_pos[0] += self.samp_time * self.v*np.cos(self.theta)
+        print(self.current_pos[0])
+        self.current_pos[1] += self.samp_time * self.v*np.sin(self.theta)
         self.theta += self.samp_time * self.omega
 
     def send_odom(self):

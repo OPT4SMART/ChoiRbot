@@ -45,22 +45,24 @@ def generate_launch_description():
         else:
             is_leader = False
         
-        initial_pos = P[agent_id, :].tolist()
+        initial_pos = P[i, :].tolist()
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_singleintegrator', output='screen',
-            #prefix=['xterm -hold -e'],
+            node_namespace='agent_{}'.format(i),
+            prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i, 'init_pos': initial_pos}]))
 
         list_description.append(Node(
-            package='ros_disropt_examples', node_executable='ros_disropt_formationcontrol', output='screen',
-            prefix=['xterm -hold -e'],
+            package='ros_disropt_examples', node_executable='ros_disropt_containment', output='screen',
+            node_namespace='agent_{}'.format(i),
+            #prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'is_leader': is_leader}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
             node_namespace='agent_{}'.format(i),
-            prefix=['xterm -hold -e'],
+            # prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
 
     return LaunchDescription(list_description)

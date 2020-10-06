@@ -7,7 +7,7 @@ import numpy as np
 def main():
     rclpy.init(args=None)
 
-    steptime = 0.01
+    freq = 100
 
-    integrator = SingleIntegrator(steptime)
+    integrator = SingleIntegrator(freq)
     rclpy.spin(integrator)

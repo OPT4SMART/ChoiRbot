@@ -17,7 +17,7 @@ class RvizSpawner(Node):
 
         self.current_pose = Pose(None, None)
         self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)
-        self.timer = self.create_timer(0.01, self.spawn)
+        self.timer = self.create_timer(0.1, self.spawn)
         self.current_time = self.get_clock().now()
         self.last_time = self.get_clock().now()
 

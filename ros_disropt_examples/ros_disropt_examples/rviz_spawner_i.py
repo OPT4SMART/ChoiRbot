@@ -7,7 +7,7 @@ def main():
     rclpy.init(args=None)
 
     pos_handler = 'pubsub'
-    pos_topic = '/agent_{}/odom'.format(agent_id)
+    pos_topic = 'odom'
 
     spawn = RvizSpawner(pos_handler, pos_topic)
 
