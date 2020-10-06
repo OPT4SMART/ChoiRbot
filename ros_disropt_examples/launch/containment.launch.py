@@ -23,6 +23,14 @@ def generate_launch_description():
                     [1, 0, 1, 0, 1, 0],
                     [0, 1, 0, 1, 0, 1],
                     [1, 0, 1, 0, 1, 0]])
+    
+    P = np.array([
+        [2, 2, 0],
+        [2, 0, 0],     
+        [0, 2, 0],
+        [0, 3.5, 0],
+        [3.5, 0, 0],
+        [-.5, -2 ,0]])
 
     #######################
 
@@ -36,14 +44,22 @@ def generate_launch_description():
             is_leader = True
         else:
             is_leader = False
+        
+        initial_pos = P[agent_id, :].tolist()
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_singleintegrator', output='screen',
             #prefix=['xterm -hold -e'],
-            parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'is_leader': is_leader}]))
+            parameters=[{'agent_id': i, 'init_pos': initial_pos}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_formationcontrol', output='screen',
+            prefix=['xterm -hold -e'],
+            parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'is_leader': is_leader}]))
+
+        list_description.append(Node(
+            package='ros_disropt_examples', node_executable='ros_disropt_rviz', output='screen',
+            node_namespace='agent_{}'.format(i),
             prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
 

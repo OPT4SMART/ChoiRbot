@@ -36,14 +36,6 @@ def generate_launch_description():
         [0, d, 0, d, 0, d],
         [ddiag, 0, d, 0, d, 0]
     ])
-
-    P = np.array([
-        [2, 2, 0],
-        [2, 0, 0],     
-        [0, 2, 0],
-        [0, 3.5, 0],
-        [3.5, 0, 0],
-        [-.5, -2 ,0]])
     
     #######################
 
@@ -54,13 +46,12 @@ def generate_launch_description():
         in_neighbors  = np.nonzero(Adj[:, i])[0].tolist()
         out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
         weights = W[i,:].tolist()
-        initial_pos = P[agent_id, :].tolist()
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_singleintegrator', output='screen',
             node_namespace='agent_{}'.format(i),
             #prefix=['xterm -hold -e'],
-            parameters=[{'agent_id': i, 'init_pos': initial_pos}]))
+            parameters=[{'agent_id': i}]))
 
         list_description.append(Node(
             package='ros_disropt_examples', node_executable='ros_disropt_formationcontrol', output='screen',
