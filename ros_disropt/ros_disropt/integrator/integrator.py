@@ -5,12 +5,13 @@ import numpy as np
 
 class Integrator(Node):
 
-    def __init__(self, integration_freq: float, odom_freq: float=None, initial_position: np.ndarray=None):
+    def __init__(self, integration_freq: float, odom_freq: float=None):
         super().__init__('integrator', allow_undeclared_parameters=True,
             automatically_declare_parameters_from_overrides=True)
         
         # get agent id
         self.agent_id = self.get_parameter('agent_id').value
+        self.initial_position = self.get_parameter('init_pos').value
 
         # create odom publisher
         self.current_pos = np.zeros(3)

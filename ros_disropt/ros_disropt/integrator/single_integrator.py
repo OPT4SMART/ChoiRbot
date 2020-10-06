@@ -5,8 +5,8 @@ import numpy as np
 
 class SingleIntegrator(Integrator):
 
-    def __init__(self, integration_freq: float, odom_freq: float=None, initial_position: np.ndarray=None):
-        super().__init__(integration_freq, odom_freq, initial_position)
+    def __init__(self, integration_freq: float, odom_freq: float=None):
+        super().__init__(integration_freq, odom_freq)
 
         # create input subscription
         self.u = np.zeros(3)
