@@ -23,7 +23,7 @@ def generate_launch_description():
     Adj = binomial_random_graph(N, p)
 
     table = Node(
-            package='ros_disropt', node_executable='ros_disropt_table', output='screen',
+            package='ros_disropt_examples', node_executable='ros_disropt_table', output='screen',
             prefix=['xterm -hold -e'], parameters=[{'N': N}])
 
     list_description = []
@@ -36,19 +36,19 @@ def generate_launch_description():
         out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
 
         list_description.append(Node(
-            package='ros_disropt', node_executable='ros_disropt_task_guidance', output='screen',
+            package='ros_disropt_examples', node_executable='ros_disropt_task_guidance', output='screen',
             node_namespace='agent_{}'.format(i),
             prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors}]))
 
         list_description.append(Node(
-            package='ros_disropt', node_executable='ros_disropt_planner', output='screen',
+            package='ros_disropt_examples', node_executable='ros_disropt_planner', output='screen',
             node_namespace='agent_{}'.format(i),
             # prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
         
         list_description.append(Node(
-            package='ros_disropt', node_executable='ros_disropt_controller', output='screen',
+            package='ros_disropt_examples', node_executable='ros_disropt_controller', output='screen',
             node_namespace='agent_{}'.format(i),
             # prefix=['xterm -hold -e']
             parameters=[{'agent_id': i}]))

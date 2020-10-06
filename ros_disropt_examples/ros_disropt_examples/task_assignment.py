@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from ros_disropt.guidance import TaskGuidance, PositionTaskTable, RobotData, PositionTaskExecutor
+from ros_disropt.guidance.task import TaskGuidance, PositionTaskTable, PositionTaskExecutor
 from ros_disropt.optimizer import TaskOptimizer
 import time
 

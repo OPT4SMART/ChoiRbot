@@ -32,7 +32,7 @@ class TaskTable(Node):
         response.tasks = self.make_task_array(filtered_tasks)
         response.tasks.all_tasks_count = len(self.task_list_comm)
 
-        task_list_print = [t.seq_num for t in self.task_list_comm]
+        task_list_print = [t.seq_num for t in filtered_tasks]
         self.get_logger().info('Sending task list to agent {}: {}'.format(agent, task_list_print))
 
         return response

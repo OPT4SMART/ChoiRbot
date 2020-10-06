@@ -1,9 +1,11 @@
-from .optimizer import Optimizer
 import numpy as np
 from disropt.algorithms import DistributedSimplex
 from disropt.functions import Variable
 from disropt.problems import LinearProblem
 from disropt.agents import Agent
+from threading import Event
+
+from .optimizer import Optimizer
 
 
 class TaskOptimizer(Optimizer):
@@ -23,7 +25,11 @@ class TaskOptimizer(Optimizer):
         self.halt_optimization = False
         self.task_list = None
         self.n_tasks = None
+        self.agent = None
         self._read_settings(**settings)
+    
+    def initialize(self, guidance: 'Guidance', halt_event: Event=None):
+        super().initialize(guidance, halt_event)
 
         # create agent
         self.agent = Agent(in_neighbors=self.guidance.in_neighbors, out_neighbors=self.guidance.out_neighbors,
@@ -39,10 +45,10 @@ class TaskOptimizer(Optimizer):
         self.n_tasks = self.guidance.n_agents
         task_positions = np.array([np.array(t.coordinates) for t in task_list.tasks])
         task_indices = [t.id for t in task_list.tasks]
-        starting_position = self.guidance.current_position[:-1]
+        starting_position = self.guidance.current_pose.position[:-1]
 
         # create problem matrices
-        c = self._generate_cost(task_positions, task_indices, starting_position)
+        c = self._generate_cost(task_positions, starting_position)
         A, b = self._generate_constraints(task_indices)
 
         # create problem object
@@ -55,10 +61,10 @@ class TaskOptimizer(Optimizer):
         # create algorithm object
         self.algorithm = DistributedSimplex(self.agent, stop_iterations=self.stop_iterations)
 
-    def _generate_cost(self, task_positions, task_indices, starting_position):
+    def _generate_cost(self, task_positions, starting_position):
         if self.cost_function == 'euclidean':
             cost_vector = np.empty((self.n_tasks, 1))
-            for idx, row in enumerate(task_positions[task_indices, :]):
+            for idx, row in enumerate(task_positions):
                 cost_vector[idx, :] = np.linalg.norm(row - starting_position)
 
         return cost_vector

@@ -122,6 +122,6 @@ class TaskOptimizationThread(OptimizationThread):
         self.guidance.get_logger().info('Data received: starting optimization')
 
         # initialize and start optimization
-        data = self.data_ready_future.result()
+        data = self.data_ready_future.result().tasks
         self.optimizer.create_problem(data)
         self.optimizer.optimize()

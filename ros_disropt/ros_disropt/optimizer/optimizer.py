@@ -1,5 +1,4 @@
 from threading import Event
-from ..guidance import Guidance
 
 
 class Optimizer():
@@ -12,7 +11,7 @@ class Optimizer():
         self.guidance = None
         self._halt_event = None
 
-    def initialize(self, guidance: Guidance, halt_event: Event=None):
+    def initialize(self, guidance: 'Guidance', halt_event: Event=None):
         if guidance is None:
             raise ValueError("guidance must be a valid instance of Guidance")
 

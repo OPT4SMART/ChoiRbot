@@ -22,7 +22,8 @@ import numpy
 from geometry_msgs.msg import Twist, Point
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
-from ros_disropt.utils.position_getter import position_subscribe
+from ros_disropt.utils.position_getter import pose_subscribe
+from ros_disropt import Pose
 
 
 class Turtlebot3Path():
@@ -66,6 +67,7 @@ class Turtlebot3PositionControl(Node):
         self.last_pose_x = 0.0
         self.last_pose_y = 0.0
         self.last_pose_theta = 0.0
+        self.current_pose = Pose(None, None)
         self.goal_pose_x = None
         self.goal_pose_y = None
         self.goal_pose_theta = None
@@ -82,7 +84,7 @@ class Turtlebot3PositionControl(Node):
         self.cmd_vel_pub = self.create_publisher(Twist, '/agent_{}/cmd_vel'.format(robot_id), qos)
 
         # Initialise subscribers
-        self.position_sub = position_subscribe(pos_handler, pos_topic, self, self.pose_callback)
+        self.position_sub = pose_subscribe(pos_handler, pos_topic, self, self.current_pose, self.pose_callback)
 
         self.goal_sub = self.create_subscription(
             Point,
@@ -100,10 +102,10 @@ class Turtlebot3PositionControl(Node):
     """*******************************************************************************
     ** Callback functions and relevant functions
     *******************************************************************************"""
-    def pose_callback(self, position, orientation):
-        self.last_pose_x = position[0]
-        self.last_pose_y = position[1]
-        _, _, self.last_pose_theta = self.euler_from_quaternion(orientation)
+    def pose_callback(self):
+        self.last_pose_x = self.current_pose.position[0]
+        self.last_pose_y = self.current_pose.position[1]
+        _, _, self.last_pose_theta = self.euler_from_quaternion(self.current_pose.orientation)
 
         self.init_odom_state = True
 
