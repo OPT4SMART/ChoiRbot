@@ -3,4 +3,4 @@ from recordclass import recordclass, RecordClass # this class provides "mutable"
 class RobotData(RecordClass):
     speed: float
 
-from .guidance import Guidance
+from .guidance import Guidance, OptimizationGuidance

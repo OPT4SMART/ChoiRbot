@@ -1,8 +1,11 @@
 from rclpy.node import Node
-from .. import Pose
+from typing import Type
 
+from .optimization_thread import OptimizationThread
+from .. import Pose
 from ..utils.position_getter import pose_subscribe
 from ..communicator import Communicator
+from ..optimizer import Optimizer
 
 
 class Guidance(Node):
@@ -26,3 +29,23 @@ class Guidance(Node):
 
     def instantiate_communicator(self):
         return Communicator(self.agent_id, self.n_agents, self.in_neighbors)
+
+
+class OptimizationGuidance(Guidance):
+
+    def __init__(self, optimizer: Optimizer, thread_t: Type[OptimizationThread],
+            pos_handler: str=None, pos_topic: str=None):
+        super().__init__(pos_handler, pos_topic)
+        
+        # save optimizer
+        self.optimizer = optimizer
+
+        # create guard condition to be triggered at end of optimization
+        self.optimization_ended_gc = self.create_guard_condition(self.optimization_ended)
+
+        # create and start optimization thread
+        self.optimization_thread = thread_t(self, self.optimizer, self.optimization_ended_gc)
+        self.optimization_thread.start()
+    
+    def optimization_ended(self):
+        raise NotImplementedError

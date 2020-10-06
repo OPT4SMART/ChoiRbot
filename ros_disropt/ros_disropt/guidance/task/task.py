@@ -7,11 +7,11 @@ from ros_disropt_interfaces.msg import PositionTask
 from ...optimizer import TaskOptimizer
 from .. import RobotData
 from .executor import TaskExecutor
-from ..guidance import Guidance
+from ..guidance import OptimizationGuidance
 from ..optimization_thread import OptimizationThread
 
 
-class TaskGuidance(Guidance):
+class TaskGuidance(OptimizationGuidance):
     # classe per livello di guida per scenari robotici task-like
     # questa classe si occupa di eseguire i task che trova in coda
     # nel frattempo sta in ascolto per eventuali optimization trigger,
@@ -19,9 +19,8 @@ class TaskGuidance(Guidance):
 
     def __init__(self, optimizer: TaskOptimizer, executor: TaskExecutor,
             data: RobotData, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(pos_handler, pos_topic)
+        super().__init__(optimizer, TaskOptimizationThread, pos_handler, pos_topic)
         self.data = data
-        self.optimizer = optimizer
         self.task_executor = executor
         self.current_task = None
         self.task_queue = []
@@ -29,11 +28,6 @@ class TaskGuidance(Guidance):
         # triggering mechanism to start optimization
         self.opt_trigger_subscription = self.create_subscription(
                 Empty, '/optimization_trigger', self.start_optimization, 10)
-        
-        # create and start optimization thread
-        self.optimization_ended_gc = self.create_guard_condition(self.optimization_ended)
-        self.optimization_thread = TaskOptimizationThread(self, optimizer, self.optimization_ended_gc)
-        self.optimization_thread.start()
 
         # task list and task completion services
         self.task_list_client = self.create_client(executor.service, '/task_list')

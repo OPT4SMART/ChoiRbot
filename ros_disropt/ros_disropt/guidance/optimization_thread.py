@@ -1,13 +1,12 @@
 from threading import Thread, Event, Lock
 from rclpy.guard_condition import GuardCondition
 
-from .guidance import Guidance
 from ..optimizer import Optimizer
 
 
 class OptimizationThread(Thread):
 
-    def __init__(self, guidance: Guidance, optimizer: Optimizer, gc_end: GuardCondition):
+    def __init__(self, guidance: 'Guidance', optimizer: Optimizer, gc_end: GuardCondition):
         super().__init__()
         self._halt_event = Event()  # event to trigger optimization stop
         self._begin_event = Event() # event to trigger optimization start
