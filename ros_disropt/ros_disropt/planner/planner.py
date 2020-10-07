@@ -46,7 +46,7 @@ class PointToPointPlanner(Planner):
     
     def pose_callback(self):
         # check distance to goal point
-        if self.goal_point is not None:
+        if self.goal_point is not None and not self._goalreached_event.is_set():
             if np.linalg.norm(self.current_pose.position[:-1]-self.goal_point) < self._tolerance:
                 self.get_logger().info("Goal reached - current position: {}".format(self.current_pose.position[:-1]))
                 self._goalreached_event.set()
@@ -69,14 +69,14 @@ class PointToPointPlanner(Planner):
 
         if self._goalreached_event.is_set(): # success
 
+            # reset goal
+            self.goal_point = None
+
             # clear event
             self._goalreached_event.clear()
 
             # notify client
             goal_handle.succeed()
-
-            # reset goal
-            self.goal_point = None
 
         else: # abort
 

@@ -70,7 +70,7 @@ class TaskGuidance(OptimizationGuidance):
     
     def start_new_task(self):
         # stop if a task is already in execution or if there are no new tasks
-        if self.current_task is not None or not self.task_queue:
+        if not self.task_queue:
             return
         
         # get task

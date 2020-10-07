@@ -52,7 +52,7 @@ class TaskOptimizer(Optimizer):
         A, b = self._generate_constraints(task_indices)
 
         # create problem object
-        x = Variable(self.n_tasks)
+        x = Variable(len(self.task_list.tasks))
         obj = c @ x
         constr = A.transpose() @ x == b
         problem = LinearProblem(objective_function=obj, constraints=constr)
@@ -63,7 +63,7 @@ class TaskOptimizer(Optimizer):
 
     def _generate_cost(self, task_positions, starting_position):
         if self.cost_function == 'euclidean':
-            cost_vector = np.empty((self.n_tasks, 1))
+            cost_vector = np.empty((len(self.task_list.tasks), 1))
             for idx, row in enumerate(task_positions):
                 cost_vector[idx, :] = np.linalg.norm(row - starting_position)
 
@@ -72,7 +72,7 @@ class TaskOptimizer(Optimizer):
     def _generate_constraints(self, task_indices):
         # TODO compute A as [A_1; A_2], where A_1 has a row of ones and A_2 is the identity (check column order)
         N = self.guidance.n_agents
-        A = np.zeros((2*N, self.n_tasks))
+        A = np.zeros((2*N, len(self.task_list.tasks)))
         b = np.ones((2*N, 1))
 
         for idx, t in enumerate(task_indices):
