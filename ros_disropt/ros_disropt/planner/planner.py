@@ -2,7 +2,7 @@ from rclpy.node import Node
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.action import ActionServer
 from ros_disropt_interfaces.action import PositionAction
-from threading import Event
+from threading import Event, Lock
 from geometry_msgs.msg import Point
 import numpy as np
 
@@ -34,7 +34,7 @@ class PointToPointPlanner(Planner):
         super().__init__(pos_handler, pos_topic)
         self._goalreached_event = Event()
         self._abort_event = Event()
-        self._or_event = OrEvent(self._goalreached_event, self._abort_event)
+        self._lock = Lock()
         self.goal_point = None
         self._tolerance = goal_tolerance
         self._action_server = ActionServer(
@@ -54,7 +54,9 @@ class PointToPointPlanner(Planner):
     def execute_callback(self, goal_handle):
         # abort any previous action
         if self.goal_point is not None:
-            self._abort_event.set()
+            with self._lock:
+                self._abort_event.set()
+                self._abort_event = Event()
         
         # read goal point
         action_goal = goal_handle.request
@@ -65,7 +67,9 @@ class PointToPointPlanner(Planner):
         self.send_to_controller()
 
         # wait for either event (abort or success)
-        self._or_event.wait()
+        with self._lock:
+            abort_event = self._abort_event
+        OrEvent(self._goalreached_event, abort_event).wait()
 
         if self._goalreached_event.is_set(): # success
 
@@ -80,9 +84,6 @@ class PointToPointPlanner(Planner):
 
         else: # abort
 
-            # clear event
-            self._abort_event.clear()
-            
             # notify client
             goal_handle.abort()
         
