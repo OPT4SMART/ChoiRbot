@@ -6,7 +6,8 @@ from threading import Event
 from geometry_msgs.msg import Point
 import numpy as np
 
-from ..utils.position_getter import pose_subscribe
+from ..utils import pose_subscribe
+from ..utils import OrEvent
 from .. import Pose
 
 
@@ -21,53 +22,89 @@ class Planner(Node):
             self.current_pose, self.pose_callback,
             callback_group=ReentrantCallbackGroup())
 
-        self.get_logger().info('Planner {} started'.format(self.agent_id))
-        self._goalreached_event = Event()
-        self.checkdistance_gc = self.create_guard_condition(self.check_distance)
-        self.goal_point = None
+        self.get_logger().info('Planner {} started'.format(self.agent_id))        
 
     def pose_callback(self):
-        self.checkdistance_gc.trigger()
-
-    def check_distance(self):
-        if self.goal_point is not None:
-            if np.linalg.norm(self.current_pose.position[:-1]-self.goal_point) < 0.05:
-                self.get_logger().info("Goal reached - current position: {}".format(self.current_pose.position[:-1]))
-                self._goalreached_event.set()
+        pass
 
 
 class PointToPointPlanner(Planner):
 
-    def __init__(self, pos_handler: str=None, pos_topic: str=None):
+    def __init__(self, goal_tolerance: float=0.05, pos_handler: str=None, pos_topic: str=None):
         super().__init__(pos_handler, pos_topic)
+        self._goalreached_event = Event()
+        self._abort_event = Event()
+        self._or_event = OrEvent(self._goalreached_event, self._abort_event)
+        self.goal_point = None
+        self._tolerance = goal_tolerance
         self._action_server = ActionServer(
             self,
             PositionAction,
             'positionaction',
             self.execute_callback)
         self.tocontrol_publisher = self.create_publisher(Point, 'goal', 10)
+    
+    def pose_callback(self):
+        # check distance to goal point
+        if self.goal_point is not None:
+            if np.linalg.norm(self.current_pose.position[:-1]-self.goal_point) < self._tolerance:
+                self.get_logger().info("Goal reached - current position: {}".format(self.current_pose.position[:-1]))
+                self._goalreached_event.set()
 
     def execute_callback(self, goal_handle):
+        # abort any previous action
+        if self.goal_point is not None:
+            self._abort_event.set()
+        
+        # read goal point
         action_goal = goal_handle.request
-        target_position = np.array(action_goal.goal_position)
-        self.get_logger().info('Moving robot to position {}'.format(target_position))
-        self.goal_point = np.copy(target_position)
+        self.goal_point = np.array(action_goal.goal_position)
+        self.get_logger().info('Moving robot to position {}'.format(self.goal_point))
 
+        # send message to controller
+        self.send_to_controller()
+
+        # wait for either event (abort or success)
+        self._or_event.wait()
+
+        if self._goalreached_event.is_set(): # success
+
+            # clear event
+            self._goalreached_event.clear()
+
+            # notify client
+            goal_handle.succeed()
+
+            # reset goal
+            self.goal_point = None
+
+        else: # abort
+
+            # clear event
+            self._abort_event.clear()
+            
+            # notify client
+            goal_handle.abort()
+        
+        # return result
+        result = PositionAction.Result()
+        result.final_position = list(self.current_pose.position)
+
+        return result
+
+    def send_to_controller(self):
         msg = Point()
-        msg.x = target_position[0]
-        msg.y = target_position[1]
-        # msg.z = target_position[2]
-        msg.z = 0.0
+        msg.x = self.goal_point[0]
+        msg.y = self.goal_point[1]
+        msg.z = self.goal_point[2]
         self.tocontrol_publisher.publish(msg)
 
-        goal_handle.succeed()
-        result = PositionAction.Result()
 
-        self._goalreached_event = Event()
-        self._goalreached_event.wait()
-        self.goal_point = None
+class TwoDimPointToPointPlanner(PointToPointPlanner):
 
-        final_position = np.copy(self.current_pose.position)
-        self.get_logger().info('Robot moved at position {}'.format(final_position))
-        result.final_position = list(final_position)
-        return result
+    def send_to_controller(self):
+        msg = Point()
+        msg.x = self.goal_point[0]
+        msg.y = self.goal_point[1]
+        msg.z = 0.0
+        self.tocontrol_publisher.publish(msg)

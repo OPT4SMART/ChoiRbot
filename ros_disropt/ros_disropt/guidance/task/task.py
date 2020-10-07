@@ -3,7 +3,6 @@ from std_msgs.msg import Empty
 from threading import Event
 
 from ros_disropt_interfaces.srv import TaskCompletionService
-from ros_disropt_interfaces.msg import PositionTask
 from ...optimizer import TaskOptimizer
 from .. import RobotData
 from .executor import TaskExecutor

@@ -2,6 +2,7 @@ from threading import Thread, Event, Lock
 from rclpy.guard_condition import GuardCondition
 
 from ..optimizer import Optimizer
+from ..utils import OrEvent
 
 
 class OptimizationThread(Thread):
@@ -73,34 +74,3 @@ class OptimizationThread(Thread):
         self._halt_if_optimizing()
         self.guidance.get_logger().info('Quitting optimization thread')
         self._quit_event.set()
-
-############################
-# OrEvent - by https://stackoverflow.com/a/12320352
-
-def or_set(self):
-    self._set()
-    self.changed()
-
-def or_clear(self):
-    self._clear()
-    self.changed()
-
-def orify(e, changed_callback):
-    e._set = e.set
-    e._clear = e.clear
-    e.changed = changed_callback
-    e.set = lambda: or_set(e)
-    e.clear = lambda: or_clear(e)
-
-def OrEvent(*events):
-    or_event = Event()
-    def changed():
-        bools = [e.is_set() for e in events]
-        if any(bools):
-            or_event.set()
-        else:
-            or_event.clear()
-    for e in events:
-        orify(e, changed)
-    changed()
-    return or_event
