@@ -24,6 +24,7 @@ class TaskGuidance(OptimizationGuidance):
         self.task_executor = executor
         self.current_task = None
         self.task_queue = []
+        self.completed_tasks = []
 
         # triggering mechanism to start optimization
         self.opt_trigger_subscription = self.create_subscription(
@@ -70,14 +71,20 @@ class TaskGuidance(OptimizationGuidance):
         self.task_gc.trigger()
     
     def start_new_task(self):
-        # stop if a task is already in execution or if there are no new tasks
+        # stop if there are no new tasks
         if not self.task_queue:
             return
         
         # get task
         task = self.task_queue.pop(0)
 
-        # ask table permission to perform task
+        # check if task was already performed
+        if task.seq_num in self.completed_tasks:
+            # trigger new task and exit
+            self.task_gc.trigger()
+            return
+
+        # execute task
         self.get_logger().info('Got new task (seq_num {}) - starting execution'.format(task.seq_num))
         self.current_task = task
         self.task_executor.execute_async(self.current_task, self.task_ended)
@@ -85,6 +92,9 @@ class TaskGuidance(OptimizationGuidance):
     def task_ended(self):
         # log to console
         self.get_logger().info('Task completed (seq_num {})'.format(self.current_task.seq_num))
+
+        # add task to list of completed tasks
+        self.completed_tasks.append(self.current_task.seq_num)
 
         # notify table that task execution has completed
         request = TaskCompletionService.Request()
