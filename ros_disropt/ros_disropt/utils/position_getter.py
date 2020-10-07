@@ -3,10 +3,9 @@ from rclpy.qos import QoSProfile
 from rclpy.node import Node
 from typing import Callable
 from rclpy.callback_groups import CallbackGroup
-from .. import Pose
 
 
-def pose_subscribe(handler: str, topic: str, node: Node, dest_pose: Pose,
+def pose_subscribe(handler: str, topic: str, node: Node, dest_pose: 'Pose',
     callback: Callable=None, callback_group: CallbackGroup=None, qos: QoSProfile=QoSProfile(depth=10)):
     if not handler in ['pubsub', 'tf', 'tf2', 'vicon']:
         raise TypeError('odom_handler must be pubsub, tf, tf2 or vicon')
@@ -24,7 +23,7 @@ def pose_subscribe(handler: str, topic: str, node: Node, dest_pose: Pose,
     
     return subscription
 
-def odom_callback(msg, dest_pose: Pose, callback: Callable):
+def odom_callback(msg, dest_pose: 'Pose', callback: Callable):
     point = msg.pose.pose.position
     quat  = msg.pose.pose.orientation
 
@@ -34,7 +33,7 @@ def odom_callback(msg, dest_pose: Pose, callback: Callable):
     if callback is not None:
         callback()
 
-def vicon_callback(msg, dest_pose: Pose, callback: Callable):
+def vicon_callback(msg, dest_pose: 'Pose', callback: Callable):
     dest_pose.position = np.array([msg.x_trans, msg.y_trans, msg.z_trans])/1000
     dest_pose.orientation = np.array([msg.x_rot, msg.y_rot, msg.z_rot, msg.w])
 
