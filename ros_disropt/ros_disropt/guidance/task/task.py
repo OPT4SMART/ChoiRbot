@@ -59,7 +59,7 @@ class TaskGuidance(OptimizationGuidance):
         # launch optimization
         self.optimization_thread.optimize(future)
     
-    def optimization_ended(self):
+    def _optimization_ended(self):
         self.get_logger().info('Optimization ended')
 
         # collect results

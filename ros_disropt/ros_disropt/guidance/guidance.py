@@ -9,8 +9,33 @@ from ..optimizer import Optimizer
 
 
 class Guidance(Node):
+    """
+    Base ROS node for guidance level
+
+    This is the base class for the guidance level in a multi-robot scenario.
+    The following ROS parameters must be set in order to instantiate the class:
+
+        - ``N`` (int): total number of agents in the network
+        - ``agent_id`` (int): ID of current agent (ranging from 0 to N-1)
+        - ``in_neigh`` (list): list of in-neighbors
+        - ``out_neigh`` (list): list of out-neighbors
+
+    Attributes:
+        agent_id: ID of agent
+        n_agents: Total number of agents
+        in_neighbors: List of in-neighbors
+        out_neighbors: List of in-neighbors
+        current_pose: Current robot pose
+        communicator: Neighboring communication facilities
+    """
 
     def __init__(self, pose_handler: str=None, pose_topic: str=None):
+        """
+        Args:
+            pose_handler (str, optional): Pose handler (see
+                :func:`~ros_disropt.utils.position_getter.pose_subscribe`). Defaults to None.
+            pose_topic (str, optional): Topic where pose is published. Defaults to None.
+        """
         super().__init__('guidance', allow_undeclared_parameters=True,
             automatically_declare_parameters_from_overrides=True)
         
@@ -25,27 +50,47 @@ class Guidance(Node):
         self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)
 
         # initialize communicator
-        self.communicator = self.instantiate_communicator()
+        self.communicator = self._instantiate_communicator()
 
-    def instantiate_communicator(self):
+    def _instantiate_communicator(self):
         return Communicator(self.agent_id, self.n_agents, self.in_neighbors)
 
 
 class OptimizationGuidance(Guidance):
+    """
+    Base ROS node for guidance level with optimization features
+
+    This Guidance class provides optimization-related features.
+    This is an abstract class and is intended to be extended before instantiation.
+    See :class:`Guidance` for information on the required ROS parameters.
+
+    Attributes:
+        optimizer: Optimizer class
+        optimization_thread: Separate thread performing optimization
+    """
 
     def __init__(self, optimizer: Optimizer, thread_t: Type[OptimizationThread],
             pos_handler: str=None, pos_topic: str=None):
+        """
+        Args:
+            optimizer (:class:`~ros_disropt.optimizer.Optimizer`): optimizer to be run by thread
+            thread_t (Type[:class:`~ros_disropt.guidance.optimization_thread.OptimizationThread`]):
+                Type of optimization thread to be instantiated
+            pose_handler (str, optional): Pose handler (see
+                :func:`~ros_disropt.utils.position_getter.pose_subscribe`). Defaults to None.
+            pose_topic (str, optional): Topic where pose is published. Defaults to None.
+        """
         super().__init__(pos_handler, pos_topic)
         
         # save optimizer
         self.optimizer = optimizer
 
         # create guard condition to be triggered at end of optimization
-        self.optimization_ended_gc = self.create_guard_condition(self.optimization_ended)
+        self._optimization_ended_gc = self.create_guard_condition(self._optimization_ended)
 
         # create and start optimization thread
-        self.optimization_thread = thread_t(self, self.optimizer, self.optimization_ended_gc)
+        self.optimization_thread = thread_t(self, self.optimizer, self._optimization_ended_gc)
         self.optimization_thread.start()
     
-    def optimization_ended(self):
+    def _optimization_ended(self):
         raise NotImplementedError

@@ -6,8 +6,22 @@ from ..utils import OrEvent
 
 
 class OptimizationThread(Thread):
+    """
+    Base class representing separate thread in which optimization tasks are performed.
+
+    This is an abstract class and is intended to be extended before instantiation.
+
+    Attributes:
+        optimizer: Optimizer class
+    """
 
     def __init__(self, guidance: 'Guidance', optimizer: Optimizer, gc_end: GuardCondition):
+        """
+        Args:
+            guidance (:class:`~ros_disropt.guidance.Guidance`): Guidance object
+            optimizer (:class:`~ros_disropt.optimizer.Optimizer`): Optimizer object
+            gc_end (GuardCondition): Guard Condition triggered at end of each optimization
+        """
         super().__init__()
         self._halt_event = Event()  # event to trigger optimization stop
         self._begin_event = Event() # event to trigger optimization start
@@ -53,9 +67,15 @@ class OptimizationThread(Thread):
         self._quit_event.clear()
     
     def do_optimize(self):
+        """
+        TODO
+        """
         raise NotImplementedError
 
     def halt(self):
+        """
+        TODO
+        """
         self.guidance.get_logger().info('Halting optimization')
         self._halt_event.set()
     
@@ -66,11 +86,17 @@ class OptimizationThread(Thread):
                 self._halt_event.set()
     
     def optimize(self):
+        """
+        TODO
+        """
         self._halt_if_optimizing()
         self.guidance.get_logger().info('Beginning optimization')
         self._begin_event.set()
     
     def quit(self):
+        """
+        TODO
+        """
         self._halt_if_optimizing()
         self.guidance.get_logger().info('Quitting optimization thread')
         self._quit_event.set()

@@ -77,7 +77,7 @@ class MPCGuidance(OptimizationGuidance):
         self.optimizer.create_opt_control_problem(self.current_pose.position, self.output_trajectories)
         self.optimization_thread.optimize()
     
-    def optimization_ended(self):
+    def _optimization_ended(self):
         # get resulting trajectories (from 0 to T-1)
         state_traj, input_traj, output_traj = self.optimizer.get_result()
 
