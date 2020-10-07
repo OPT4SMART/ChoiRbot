@@ -3,20 +3,20 @@ from threading import Event
 ############################
 # OrEvent - by https://stackoverflow.com/a/12320352
 
-def or_set(self):
-    self._set()
-    self.changed()
+def new_set(e, old_set):
+    old_set()
+    e.changed()
 
-def or_clear(self):
-    self._clear()
-    self.changed()
+def new_clear(e, old_clear):
+    old_clear()
+    e.changed()
 
 def orify(e, changed_callback):
-    e._set = e.set
-    e._clear = e.clear
+    old_set = e.set
+    old_clear = e.clear
     e.changed = changed_callback
-    e.set = lambda: or_set(e)
-    e.clear = lambda: or_clear(e)
+    e.set = lambda: new_set(e, old_set)
+    e.clear = lambda: new_clear(e, old_clear)
 
 def OrEvent(*events):
     or_event = Event()

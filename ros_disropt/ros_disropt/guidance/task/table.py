@@ -19,6 +19,7 @@ class TaskTable(Node):
         self.task_list_comm = [] # task list to be communicated to agents
         self.bipartite_graph = {} # keys correspond to seq_num, values are lists of agents allowed to perform that task
         self.largest_seq_num = 0
+        self.label = 0
 
         self.get_logger().info('Task table started')
     
@@ -31,6 +32,7 @@ class TaskTable(Node):
         # return response
         response.tasks = self.make_task_array(filtered_tasks)
         response.tasks.all_tasks_count = len(self.task_list_comm)
+        response.tasks.label = self.label
 
         task_list_print = [t.seq_num for t in filtered_tasks]
         self.get_logger().info('Sending task list to agent {}: {}'.format(agent, task_list_print))
@@ -117,6 +119,7 @@ class PositionTaskTable(TaskTable):
 
         self.task_list_comm = self.task_list.copy()
         self.times_tasks_generated += 1
+        self.label += 1
 
     def can_generate_tasks(self):
         return len(self.task_list) < self.N and self.times_tasks_generated < 8

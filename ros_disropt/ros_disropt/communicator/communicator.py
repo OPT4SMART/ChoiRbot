@@ -37,6 +37,7 @@ class Communicator(DCommunicator, metaclass=Singleton):
         self.future = None
         self.synchronous_mode = synchronous_mode
         self.executor = SingleThreadedExecutor() if synchronous_mode else None
+        self.current_label = 0
 
         # initialize publisher and subscriptions
         self.qos_profile = self._getQoSProfile()
@@ -83,7 +84,7 @@ class Communicator(DCommunicator, metaclass=Singleton):
         # prepare message
         msg = ByteMultiArray()
         msg.layout.dim = [MultiArrayDimension()]
-        msg.layout.dim[0].label = "label"
+        msg.layout.dim[0].label = str(self.current_label)
         msg.layout.dim[0].size = len(data)
         msg.layout.dim[0].stride = len(data)
         msg.data = [bytes([x]) for x in data]
@@ -111,7 +112,7 @@ class Communicator(DCommunicator, metaclass=Singleton):
             self.callback_groups[k].give_authorization()
 
         # receive a single message from all neighbors (check Event every 'timeout' seconds)
-        timeout = 0.5 if event is not None else None
+        timeout = 0.2 if event is not None else None
         while not self.future.done():
             rclpy.spin_until_future_complete(self.node, self.future, executor=self.executor, timeout_sec=timeout)
 
@@ -163,6 +164,10 @@ class Communicator(DCommunicator, metaclass=Singleton):
         return self.received_data
 
     def _subscription_callback(self, msg, node):
+        # discard messages with old label
+        if self.current_label > int(msg.layout.dim[0].label):
+            return
+
         # build up full byte string
         data = bytes(map(lambda x: x[0], msg.data))
 

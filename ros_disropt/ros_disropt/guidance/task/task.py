@@ -8,6 +8,7 @@ from .. import RobotData
 from .executor import TaskExecutor
 from ..guidance import OptimizationGuidance
 from ..optimization_thread import OptimizationThread
+from ...utils import OrEvent
 
 
 class TaskGuidance(OptimizationGuidance):
@@ -116,11 +117,15 @@ class TaskOptimizationThread(OptimizationThread):
         super().optimize()
 
     def do_optimize(self):
-        # wait for problem data to be ready (TODO should also wait on self._halt_event)
-        self.data_ready_event.wait()
-        self.guidance.get_logger().info('Data received: starting optimization')
+        # wait for problem data to be ready (or for halt event)
+        OrEvent(self.data_ready_event, self._halt_event).wait()
+        
+        # exit on halt
+        if self._halt_event.is_set():
+            return
 
         # initialize and start optimization
+        self.guidance.get_logger().info('Data received: starting optimization')
         data = self.data_ready_future.result().tasks
         self.optimizer.create_problem(data)
         self.optimizer.optimize()

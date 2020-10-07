@@ -57,6 +57,9 @@ class TaskOptimizer(Optimizer):
         constr = A.transpose() @ x == b
         problem = LinearProblem(objective_function=obj, constraints=constr)
         self.agent.problem = problem
+        
+        # set communicator label
+        self.guidance.communicator.current_label = int(task_list.label)
 
         # create algorithm object
         self.algorithm = DistributedSimplex(self.agent, stop_iterations=self.stop_iterations)
