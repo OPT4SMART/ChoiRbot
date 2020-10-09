@@ -6,11 +6,18 @@
 Welcome to ros_disropt's documentation!
 =======================================
 
+ROS2Disropt is a ROS 2 package developed within the excellence research program ERC in the project `OPT4SMART <http://www.opt4smart.eu>`_.
+
 .. toctree::
    :hidden:
 
    Home <self>
 
+
+.. toctree::
+    :hidden:
+
+    install/index.rst
 
 .. toctree::
     :hidden:
