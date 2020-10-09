@@ -17,7 +17,7 @@ ROS2Disropt is a ROS 2 package developed within the excellence research program 
 .. toctree::
     :hidden:
 
-    install/index.rst
+    installation/index.rst
 
 .. toctree::
     :hidden:
