@@ -1,9 +1,9 @@
-.. _install:
+.. _installation:
 
 Installation
 ===================
 
-| The ROS2Disropt package currently supports ROS 2 Dashing Diademata.
+| The **ChoiRbot** package currently supports ROS 2 Dashing Diademata.
 | Please refer to the `ROS 2 website <https://index.ros.org/doc/ros2/>`_ for a comprehensive tutorial on how to install ROS 2.
 
 If you do not have a ROS 2 workspace run on a terminal:
