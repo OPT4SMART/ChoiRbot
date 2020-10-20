@@ -4,12 +4,16 @@ from .distributed_control import DistributedControlGuidance
 
 
 class FormationControlGuidance(DistributedControlGuidance):
-    """Formation Control 
+    """
+    Formation Control 
 
     Implements a formation control law for systems....
     """
 
     def __init__(self, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None):
+        """
+        Init method
+        """
         super().__init__(update_frequency, pos_handler, pos_topic)
         self.formation_control_gain = gain
         self.weights = self.get_parameter('weights').value

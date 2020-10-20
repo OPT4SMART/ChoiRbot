@@ -6,9 +6,9 @@ The guidance level is a control layer providing high-level commands to the lower
 Here is a list of the implemented guidance scenarios.
 
 .. toctree::
-    Distributed Control <ros_disropt.guidance.distributed_control>
-    Distributed Task Optimization <ros_disropt.guidance.task>
-    Distributed Model Predictive Control <ros_disropt.guidance.mpc>
+   Distributed Control <choirbot.guidance.distributed_control>
+   Distributed Task Optimization <choirbot.guidance.task>
+   Distributed Model Predictive Control <choirbot.guidance.mpc>
 
 ======================
 Base Guidance classes
@@ -20,15 +20,14 @@ for the various scenarios.
 Guidance
 ----------------------
 
-.. autoclass:: ros_disropt.guidance.Guidance
+.. autoclass:: choirbot.guidance.Guidance
    :members:
    :undoc-members:
-   :show-inheritance:
 
 OptimizationGuidance
 ----------------------
 
-.. autoclass:: ros_disropt.guidance.OptimizationGuidance
+.. autoclass:: choirbot.guidance.OptimizationGuidance
    :members:
    :undoc-members:
    :show-inheritance:
@@ -44,7 +43,7 @@ algorithms on a separate thread.
 OptimizationThread
 ----------------------
 
-.. autoclass:: ros_disropt.guidance.optimization_thread.OptimizationThread
+.. autoclass:: choirbot.guidance.optimization_thread.OptimizationThread
    :members:
    :exclude-members: run
    :undoc-members:

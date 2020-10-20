@@ -10,6 +10,8 @@ from ..optimizer import Optimizer
 
 class Guidance(Node):
     """
+    Bases: :class:`rclpy.node.Node`
+
     Base ROS node for guidance level
 
     This is the base class for the guidance level in a multi-robot scenario.

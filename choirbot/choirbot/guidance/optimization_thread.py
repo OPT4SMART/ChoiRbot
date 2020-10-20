@@ -1,6 +1,7 @@
 from threading import Thread, Event, Lock
 from rclpy.guard_condition import GuardCondition
 
+from . import guidance as guidance_module
 from ..optimizer import Optimizer
 from ..utils import OrEvent
 
@@ -15,12 +16,12 @@ class OptimizationThread(Thread):
         optimizer: Optimizer class
     """
 
-    def __init__(self, guidance: 'Guidance', optimizer: Optimizer, gc_end: GuardCondition):
+    def __init__(self, guidance: 'guidance_module.Guidance', optimizer: Optimizer, gc_end: GuardCondition):
         """
         Args:
             guidance (:class:`~choirbot.guidance.Guidance`): Guidance object
             optimizer (:class:`~choirbot.optimizer.Optimizer`): Optimizer object
-            gc_end (GuardCondition): Guard Condition triggered at end of each optimization
+            gc_end (:class:`rclpy.guard_condition.GuardCondition`): Guard Condition triggered at end of each optimization
         """
         super().__init__()
         self._halt_event = Event()  # event to trigger optimization stop

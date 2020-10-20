@@ -15,7 +15,9 @@
 # sys.path.insert(0, os.path.abspath('.'))
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+from unittest.mock import MagicMock, Mock
+
+sys.path.insert(0, os.path.abspath('../../choirbot'))
 
 html_theme = "sphinx_rtd_theme"
 
@@ -27,10 +29,27 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
+              'sphinx.ext.intersphinx',
               'sphinx_autodoc_typehints',
               ]
 napoleon_use_param = True
 
+# mock modules
+MOCK_MODULES = ['rclpy', 'rclpy.node', 'rclpy.guard_condition', 'rclpy.qos', 'rclpy.callback_groups',
+    'rclpy.task', 'rclpy.duration', 'rclpy.executors', 'visualization_msgs', 'visualization_msgs.msg',
+    'std_msgs', 'std_msgs.msg', 'geometry_msgs', 'geometry_msgs.msg']
+
+class RecursiveMagicMock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = RecursiveMagicMock()
+
+# special mock classes
+sys.modules['rclpy.node'].Node = object
+sys.modules['rclpy.guard_condition'].GuardCondition = object
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -47,13 +66,17 @@ master_doc = 'index'
 
 # -- Project information -----------------------------------------------------
 
-project = 'choirbot'
+project = 'ChoiRbot'
 copyright = '2020, Andrea Testa, Andrea Camisa, Giuseppe Notarstefano'
 author = 'Andrea Testa, Andrea Camisa, Giuseppe Notarstefano'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
 
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'rclpy': ('http://docs.ros2.org/dashing/api/rclpy/', None),
+}
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -67,6 +90,7 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# the following two functions serve enable automatic documentation of __init__ methods
 def skip(app, what, name, obj, would_skip, options):
     if name == "__init__":
         return False
