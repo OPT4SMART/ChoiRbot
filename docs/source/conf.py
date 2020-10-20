@@ -37,7 +37,8 @@ napoleon_use_param = True
 # mock modules
 MOCK_MODULES = ['rclpy', 'rclpy.node', 'rclpy.guard_condition', 'rclpy.qos', 'rclpy.callback_groups',
     'rclpy.task', 'rclpy.duration', 'rclpy.executors', 'visualization_msgs', 'visualization_msgs.msg',
-    'std_msgs', 'std_msgs.msg', 'geometry_msgs', 'geometry_msgs.msg']
+    'std_msgs', 'std_msgs.msg', 'geometry_msgs', 'geometry_msgs.msg',
+    'disropt.algorithms', 'disropt.functions', 'disropt.problems', 'disropt.agents']
 
 class RecursiveMagicMock(MagicMock):
     @classmethod

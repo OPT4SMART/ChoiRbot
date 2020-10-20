@@ -6,7 +6,7 @@ Acknowledgements
 This result is part of a project that has received funding from the European Research Council (ERC)
 under the European Union’s Horizon 2020 research and innovation programme (grant agreement No 638992 - OPT4SMART).
 
-http://www.opt4smart.eu
+http://opt4smart.dei.unibo.it
 
 .. image:: ../_static/logo_ERC.png
     :width: 400px
