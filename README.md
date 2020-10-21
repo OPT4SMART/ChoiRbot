@@ -9,7 +9,10 @@ It relies on
 * numpy
 * scipy
 * recordclass
+* dill
 * disropt (optional, but required for several features)
+
+Please, refer to the [readthedocs installation page](https://choirbot.readthedocs.io/en/latest/installation/index.html) for a more detailed installation guide.
 
 To install the toolbox, create a ROS 2 workspace and, inside the `src` directory, run:
 ```
