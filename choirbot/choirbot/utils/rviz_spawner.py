@@ -42,7 +42,7 @@ class RvizSpawner(Node):
 
             msg.type = Marker.SPHERE
 
-            msg.header.frame_id = '/my_frame'
+            msg.header.frame_id = 'my_frame'
 
             msg.scale.x = 0.2
             msg.scale.y = 0.2

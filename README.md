@@ -21,7 +21,7 @@ git clone https://github.com/OPT4SMART/ChoiRbot.git .
 
 Then, from the parent directory execute:
 ```
-colcon build
+colcon build --symlink-install
 ```
 
 
@@ -34,7 +34,7 @@ colcon build
 ## Acknowledgements
 This result is part of a project that has received funding from the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme (grant agreement No 638992 - OPT4SMART).
 
-<!-- <p style="text-align:center">
+<p style="text-align:center">
   <img src="docs/source/_static/logo_ERC.png" width="200" />
   <img src="docs/source/_static/logo_OPT4Smart.png" width="200" /> 
-</p> -->
+</p>

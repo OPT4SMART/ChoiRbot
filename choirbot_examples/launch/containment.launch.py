@@ -1,6 +1,9 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from disropt.utils.graph_constructor import path_graph
+from ament_index_python.packages import get_package_share_directory
 import numpy as np
 import sys
 import argparse
@@ -14,6 +17,14 @@ def generate_launch_description():
         args = vars(ap.parse_args(sys.argv[4:])) # skip "ros2 launch choirbot main.launch.py"
     except:
         return None
+
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
+    rviz_config_dir = get_package_share_directory('choirbot_examples')
+    
+    declare_rviz_config_file_cmd = DeclareLaunchArgument(
+        'rviz_config_file',
+        default_value=os.path.join(rviz_config_dir, '', 'rvizconf.rviz'),
+        description='Full path to the RVIZ config file to use')  
     
     #######################
     N = args['nodes']
@@ -35,6 +46,11 @@ def generate_launch_description():
     #######################
 
     list_description = []
+    list_description.append(declare_rviz_config_file_cmd)
+
+    list_description.append(Node(
+            package='rviz2', node_executable='rviz2', output='screen',
+            arguments=['-d', rviz_config_file]))
 
     for i in range(N):
 
