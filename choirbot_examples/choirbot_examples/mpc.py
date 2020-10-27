@@ -2,6 +2,7 @@ import rclpy
 import numpy as np
 from math import sqrt
 from choirbot.guidance.mpc import MPCGuidance
+import time
 
 def main():
     rclpy.init(args=None)
@@ -16,8 +17,8 @@ def main():
     N = guidance.n_agents
 
     # system matrices
-    A = np.eye((1, 1))
-    B = np.eye((1, 1))*sample_time
+    A = np.eye(1)
+    B = np.eye(1)*sample_time
     C = np.zeros((2*N*(N-1), 1))
     D = np.zeros((2*N*(N-1), 1))
 
@@ -40,8 +41,8 @@ def main():
             counter += 1
 
     # cost matrices
-    Q = np.eye((1, 1))
-    R = np.eye((1, 1))
+    Q = np.eye(1)
+    R = np.eye(1)
 
     # local constraints (state)
     E = np.array([[1], [-1]])
@@ -49,10 +50,10 @@ def main():
 
     # local constraints (input)
     G = np.array([[1], [-1]])
-    h = np.ones((2, 1))
+    h = 0.5*np.ones((2, 1))
 
     # coupling constraints
-    lhs_coupling = 0.6 * np.ones((2*N*(N-1), 1))
+    lhs_coupling = 2 * np.ones((2*N*(N-1), 1))
 
     # mechanism for trajectory continuation
     def traj_continuation(x_traj):
@@ -61,15 +62,15 @@ def main():
         K = - sample_time * P / (1 + P * sample_time**2)
 
         # get last state
-        x_end = x_traj[:, -1]
+        x_end = x_traj[:, -1][:, None]
 
         # apply terminal controller
-        x_new = (A + B @ K) @ x_end
+        x_new = (A + B * K) @ x_end
 
         # compute output
         y_new = C@x_new
 
-        return y_new.flatten()
+        return y_new
 
     # initialize MPC scenario
     prediction_horizon = 10
@@ -79,9 +80,11 @@ def main():
     coupling_constraints = {'vector': lhs_coupling}
 
     guidance.initialize(prediction_horizon, system_matrices, cost_matrices,
-        traj_continuation, local_constraints, coupling_constraints)
+        traj_continuation, coupling_constraints, local_constraints)
 
     # start
+    guidance.get_logger().info('Waiting for 5 seconds before starting')
+    time.sleep(5)
     rclpy.spin(guidance)
 
     rclpy.shutdown()

@@ -32,7 +32,8 @@ setup(
             'choirbot_unicycleintegrator = choirbot_examples.unicycle_integrator_i:main',
             'choirbot_formationcontrol = choirbot_examples.formationcontrol_guidance_i:main',
             'choirbot_containment = choirbot_examples.containment_guidance_i:main',
-            'choirbot_rviz = choirbot_examples.rviz_spawner_i:main'
+            'choirbot_rviz = choirbot_examples.rviz_spawner_i:main',
+            'choirbot_mpc = choirbot_examples.mpc:main',
         ],
     },
 )
