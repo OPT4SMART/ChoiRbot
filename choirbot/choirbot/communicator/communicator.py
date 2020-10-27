@@ -25,25 +25,32 @@ class Singleton(type):
 
 class Communicator(metaclass=Singleton):
 
-    def __init__(self, agent_id, size, neighbors, synchronous_mode = True):
+    def __init__(self, agent_id, size, in_neighbors, out_neighbors = None, synchronous_mode = True, differentiated_topics = False):
         
         # initialize variables
         self.size = size
         self.rank = agent_id
         self.subscriptions = {}
+        self.publishers = {}
         self.callback_groups = {}
         self.neighbors = None
+        self.out_neighbors = out_neighbors if out_neighbors is not None else in_neighbors
         self.received_data = None
         self.future = None
         self.synchronous_mode = synchronous_mode
         self.executor = SingleThreadedExecutor() if synchronous_mode else None
         self.current_label = 0
+        self.differentiated_topics = differentiated_topics
 
         # initialize publisher and subscriptions
         self.qos_profile = self._getQoSProfile()
         self.node = Node('communicator')
-        self.publisher = self.node.create_publisher(ByteMultiArray, 'communicator', self.qos_profile)
-        self._subscribe(neighbors)
+        if not self.differentiated_topics:
+            self.publisher = self.node.create_publisher(ByteMultiArray, 'communicator', self.qos_profile)
+        else:
+            for j in out_neighbors:
+                self.publishers[j] = self.node.create_publisher(ByteMultiArray, 'communicator_{}'.format(j), self.qos_profile)
+        self._subscribe(in_neighbors)
     
     def _getQoSProfile(self):
         profile = QoSProfile(history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL)
@@ -64,10 +71,14 @@ class Communicator(metaclass=Singleton):
                 else:
                     cbgroup = None
                 
+                topic_name = '/agent_{}/communicator'.format(i)
+                if self.differentiated_topics:
+                    topic_name = '/agent_{}/communicator_{}'.format(i, self.rank)
+                
                 # create subscription
                 self.subscriptions[i] = self.node.create_subscription(
                     ByteMultiArray,
-                    '/agent_{}/communicator'.format(i),
+                    topic_name,
                     lambda msg, node=i: self._subscription_callback(msg, node),
                     self.qos_profile, callback_group=cbgroup)
 
@@ -90,7 +101,11 @@ class Communicator(metaclass=Singleton):
         msg.data = [bytes([x]) for x in data]
 
         # publish message
-        self.publisher.publish(msg)
+        if not self.differentiated_topics:
+            self.publisher.publish(msg)
+        else:
+            for j in neighbors:
+                self.publishers[j].publish(msg)
 
     def neighbors_receive(self, neighbors, event: Event = None):
         """Receive data from neighbors (waits until data are received from all neighbors)
@@ -141,6 +156,7 @@ class Communicator(metaclass=Singleton):
         Returns:
             dict: dict containing received data
         """
+        # TODO: make sure we only receive messages from requested neighbors
         if self.synchronous_mode:
             raise Exception("Cannot perform asynchronous receive because communicator is in synchronous mode")
         
@@ -194,9 +210,10 @@ class Communicator(metaclass=Singleton):
         if not dict_neigh:
             self.neighbors_send(send_obj, out_neighbors)
         else:
-            raise NotImplementedError # TODO differentiated topics for each link
-            # for j in out_neighbors:
-            #     self.neighbors_send(send_obj[j], [j])
+            if not self.differentiated_topics:
+                raise RuntimeError('Communicator must be initialized with differentiated topics in order to use dict_neigh=True')
+            for j in out_neighbors:
+                self.neighbors_send(send_obj[j], [j])
         data = self.neighbors_receive(in_neighbors, event)
 
         return data

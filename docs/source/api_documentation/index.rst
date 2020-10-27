@@ -8,4 +8,5 @@ Here you find the full documentation of the **ChoiRbot** package.
 .. toctree::
    :maxdepth: 2
 
-    Guidance <choirbot.guidance>
+   Team Guidance Layer <choirbot.guidance>
+   Graph-based communication <choirbot.communicator>
