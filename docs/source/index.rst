@@ -28,6 +28,11 @@ Please refer to :ref:`api_documentation` for a detailed description of the packa
 .. toctree::
     :hidden:
 
+    examples/index.rst
+
+.. toctree::
+    :hidden:
+
     api_documentation/index.rst
 
 
