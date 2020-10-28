@@ -30,6 +30,10 @@ Please refer to :ref:`api_documentation` for a detailed description of the packa
 
     api_documentation/index.rst
 
+.. toctree::
+    :hidden:
+
+    citing/index.rst
 
 .. toctree::
     :hidden:

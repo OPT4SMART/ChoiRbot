@@ -32,7 +32,7 @@ Finally, simply build your workspace:
 
 	pip install -r requirements.txt
 
-If you are interested in running distributed optimization procedures, you also need the Disropt package. You can install it by running:
+If you are interested in running distributed optimization procedures, you also need the `DISROPT package <https://github.com/OPT4SMART/disropt>`_. You can install it by running:
 
 .. code-block:: bash
 
