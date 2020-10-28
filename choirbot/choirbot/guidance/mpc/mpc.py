@@ -29,8 +29,6 @@ class MPCGuidance(OptimizationGuidance):
         self.system_matrices = None
         self.traj_continuation = None
         self.output_trajectories = {}
-        self.input_trajectory = None
-        self.state_trajectory = None
         self.prediction_horizon = None
         self.can_control = False
         self.iteration = 0
@@ -87,10 +85,6 @@ class MPCGuidance(OptimizationGuidance):
         # get resulting trajectories (from 0 to T-1)
         state_traj, input_traj, output_traj = self.optimizer.get_result()
 
-        # store state/input trajectories
-        self.state_trajectory = state_traj
-        self.input_trajectory = input_traj
-
         # update set of output trajectories
         self.output_trajectories[self.agent_id] = output_traj
 
@@ -100,7 +94,8 @@ class MPCGuidance(OptimizationGuidance):
 
         # apply control input and shift horizon
         self.get_logger().info('Applying control and shifting horizon')
-        self.apply_control_and_shift_horizon()
+        self.send_input(input_traj[:, 0])
+        self.shift_horizon(state_traj)
         self.communicator.current_label += 1 # increase label
 
         # mark class as ready
@@ -140,17 +135,13 @@ class MPCGuidance(OptimizationGuidance):
             # send output trajectory to agent 0
             self.communicator.neighbors_send(self.output_trajectories[self.agent_id], [0])
     
-    def apply_control_and_shift_horizon(self):
-        # apply first control input
-        self.send_input(self.input_trajectory[:, 0])
-
-        # discard first input
-        self.input_trajectory = np.delete(self.input_trajectory, (0), axis=1)
-
-        # extend local output trajectory
-        output_cont = self.traj_continuation(self.state_trajectory)
+    def shift_horizon(self, state_traj):
+        # delete first element of output trajectory
         self.output_trajectories[self.agent_id] = \
             np.delete(self.output_trajectories[self.agent_id], (0), axis=1)
+        
+        # extend local output trajectory
+        output_cont = self.traj_continuation(state_traj)
         self.output_trajectories[self.agent_id] = \
             np.append(self.output_trajectories[self.agent_id], output_cont, axis=1)
     
