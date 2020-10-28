@@ -26,7 +26,7 @@ class RvizSpawner(Node):
         
         current_pos = np.copy(self.current_pose.position)
         self.current_time = self.get_clock().now()
-        if current_pos.ndim is not 0:
+        if current_pos.ndim != 0:
             msg = Marker()
             msg.pose.position.x = current_pos[0]
             msg.pose.position.y = current_pos[1]

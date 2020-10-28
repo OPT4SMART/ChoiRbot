@@ -65,6 +65,7 @@ The launch file to run the simulation is
   :linenos:
 
 
+
 .. rubric:: References
 
 .. [MeEg11] Notarstefano, G., Egerstedt, M., Haque, M. (2011). Containment in leader--follower networks with switching communication topologies. Automatica, 47(5), 1035-1040.
