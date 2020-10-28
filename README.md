@@ -1,3 +1,7 @@
+| :warning: Information for end users |
+|:------------------------------------|
+| Example files and documentation pages are currently being uploaded. The latest version will be available soon. |
+
 **ChoiRbot** is a ROS 2 toolbox developed within the excellence research program ERC in the project [OPT4SMART](http://opt4smart.dei.unibo.it).
 **ChoiRbot** provides a comprehensive set of libraries to execute complex distributed multi-robot tasks, such as model predictive control and task assignment, either in simulation or experimentally. The toolbox mainly focuses on networks of heterogeneous robots without a central coordinator. It provides utilities for the solution of distributed optimization problems and can be also used to implement distributed feedback laws.
 
