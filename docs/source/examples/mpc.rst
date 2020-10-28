@@ -166,6 +166,7 @@ features, therefore the resulting class for the Team Guidance layer must extend 
 class :class:`~choirbot.guidance.OptimizationGuidance`, which requires the method
 ``_optimization_ended`` (called at the end of an optimization) to be implemented.
 For the new class, we will require
+
 * an initialization block that stores information on the control scenario (system matrices,
   cost function, constraints, prediction horizon, output trajectory continuation)
 * a method called with a user-defined frequency and asking the optimization thread

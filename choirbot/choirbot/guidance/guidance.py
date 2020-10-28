@@ -15,6 +15,8 @@ class Guidance(Node):
     Base ROS node for guidance level
 
     This is the base class for the guidance level in a multi-robot scenario.
+    This is a basic class and should be extended before instantiation.
+
     The following ROS parameters must be set in order to instantiate the class:
 
         - ``N`` (int): total number of agents in the network

@@ -77,6 +77,8 @@ release = '0.0.1'
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'rclpy': ('http://docs.ros2.org/dashing/api/rclpy/', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None)
 }
 
 # List of patterns, relative to source directory, that match files and

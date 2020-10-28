@@ -1,5 +1,6 @@
 .. _api_documentation:
 
+====================
 API Documentation
 ====================
 Here you find the full documentation of the **ChoiRbot** package.

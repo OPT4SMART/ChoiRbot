@@ -1,5 +1,6 @@
 .. _communicator:
 
+==========================
 Graph-based communication
 ==========================
 

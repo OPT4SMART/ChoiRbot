@@ -1,16 +1,9 @@
 ======================
-Guidance Level
+Team Guidance Layer
 ======================
 
 The guidance level is a control layer providing high-level commands to the lower layers.
-Here is a list of the implemented guidance scenarios.
 
-.. toctree::
-   Distributed Control <choirbot.guidance.distributed_control>
-   Distributed Task Optimization <choirbot.guidance.task>
-   Distributed Model Predictive Control <choirbot.guidance.mpc>
-
-======================
 Base Guidance classes
 ======================
 
@@ -32,7 +25,6 @@ OptimizationGuidance
    :undoc-members:
    :show-inheritance:
 
-======================
 Optimization Threads
 ======================
 
@@ -48,3 +40,15 @@ OptimizationThread
    :exclude-members: run
    :undoc-members:
    :show-inheritance:
+
+Complex Guidance classes
+=========================
+
+Here is a list of the implemented guidance scenarios.
+
+.. toctree::
+   :maxdepth: 1
+
+   Distributed Control <choirbot.guidance.distributed_control>
+   Distributed Task Optimization <choirbot.guidance.task>
+   Distributed Model Predictive Control <choirbot.guidance.mpc>
