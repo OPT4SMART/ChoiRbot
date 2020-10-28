@@ -3,8 +3,13 @@
 Installation
 ===================
 
-| The **ChoiRbot** toolbox currently supports ROS 2 Dashing Diademata.
-| Please refer to the `ROS 2 website <https://index.ros.org/doc/ros2/>`_ for a comprehensive tutorial on how to install ROS 2.
+In this page, we cover the installation procedure for the **ChoiRbot** package.
+
+Toolbox download and build
+-------------------------------------
+
+The **ChoiRbot** toolbox currently supports ROS 2 Dashing Diademata.
+Please refer to the `ROS 2 website <https://index.ros.org/doc/ros2/>`_ for a comprehensive tutorial on how to install ROS 2. We suggest to perform the *Desktop Install* of ROS 2, which provides useful tools such as RVIZ.
 
 If you do not have a ROS 2 workspace run on a terminal:
 
@@ -26,6 +31,10 @@ Finally, simply build your workspace:
 	cd ~/dev_ws
 	colcon build --symlink-install
 
+
+Installation of required Python packages
+-------------------------------------------
+
 **ChoiRbot** requires a set of Python packages that can be installed by run, inside the ``src`` directory of your workspace:
 
 .. code-block:: bash
@@ -40,3 +49,8 @@ If you are interested in running distributed optimization procedures, you also n
 	pip install --no-deps disropt
 
 You can also install disropt by directly running ``pip install disropt``. However, this would results in the installation of additional packages that are not required by **ChoiRbot**.
+
+Installation of Gazebo
+-------------------------------------------
+
+Coming soon
