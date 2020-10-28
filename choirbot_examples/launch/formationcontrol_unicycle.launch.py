@@ -34,16 +34,17 @@ def generate_launch_description():
     D= 4.0
     a = D/4.0
     b = np.sqrt(3)*a
-    L = np.sqrt(a**2 * b**2)
+    L = np.sqrt(a**2 + b**2)
     D1 = np.sqrt((2*a)**2 + (2*b)**2)
 
     W = np.array([
-        [0,         L,      0,     D1,    0,     2.0*a],
-        [L,         0,      L,     0,     4.0*a, 0],
-        [0,         L,      0,     2.0*a, 0,     D1],
-        [D1,        0,      2.0*a, 0,     L,     0],
-        [0,         4.0*a,  0,     L,     0,     L],
-        [2.0*a,     0,      D1,    0,     L,     0]
+        [0,    L,   0,   D1,   0,   L],
+        [0,    L,   0,   D1,   0,   L],
+        [L,    0,   L,   0,    D,   0],
+        [0,    L,   0,   L,    0,   D1],
+        [D1,   0,   L,   0,    L,   0],
+        [0,    D,   0,   L,    0,   L],
+        [L,    0,   D1,  0,    L,   0]
     ])
 
     P = np.array([
