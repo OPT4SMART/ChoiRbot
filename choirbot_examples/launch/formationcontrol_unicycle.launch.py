@@ -31,22 +31,21 @@ def generate_launch_description():
                     [1, 0, 1, 0, 1, 0]])
 
     # Weight matrix to control inter-agent distances
-    D= 4.0
-    a = D/4.0
-    b = np.sqrt(3)*a
-    L = np.sqrt(a**2 + b**2)
-    D1 = np.sqrt((2*a)**2 + (2*b)**2)
+    D = 4.0
+    L = D/2.0
 
     W = np.array([
-        [0,    L,   0,   D1,   0,   L],
-        [0,    L,   0,   D1,   0,   L],
-        [L,    0,   L,   0,    D,   0],
-        [0,    L,   0,   L,    0,   D1],
-        [D1,   0,   L,   0,    L,   0],
-        [0,    D,   0,   L,    0,   L],
-        [L,    0,   D1,  0,    L,   0]
+        [0,   L,   0,   D,   0,   L],
+        [L,   0,   L,   0,   D,   0],
+        [0,   L,   0,   L,   0,   D],
+        [D,   0,   L,   0,   L,   0],
+        [0,   D,   0,   L,   0,   L],
+        [L,   0,   D,   0,   L,   0]
     ])
 
+    # Robot initial position
+    a = D/4.0
+    b = np.sqrt(3)*a
     P = np.array([
         [-b, a , 0],
         [0, 2.0*a, 0],      

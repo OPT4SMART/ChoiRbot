@@ -3,7 +3,7 @@ from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
-from disropt.utils.graph_constructor import ring_graph
+from disropt.utils.graph_constructor import binomial_random_graph
 import numpy as np
 import sys
 import argparse
@@ -21,7 +21,7 @@ def generate_launch_description():
 
     #######################
     N = args['nodes']
-    Adj = ring_graph(N)
+    Adj = binomial_random_graph(N, 0.2)
 
     P = np.random.randint(-2, 4, size=(N, 3))
     P[:, 2] = 0  # fix vertical position to 0

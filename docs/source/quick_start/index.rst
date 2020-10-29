@@ -56,14 +56,13 @@ To this end, the robots implement the dynamics
   \end{split}
 
 
-Simulation Launch File
+Launch the simulation
 --------------------------------
-The launch file to run the simulation is 
+In order to launch a simulation with :math:`6` robots, run in a terminal
 
-.. literalinclude:: ../../../choirbot_examples/launch/containment.launch.py
-  :language: Python
-  :linenos:
+.. code-block:: bash
 
+	ros2 launch choirbot_examples containment.launch.py -n 6
 
 
 .. rubric:: References
