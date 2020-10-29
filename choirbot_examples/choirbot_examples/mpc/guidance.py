@@ -2,18 +2,15 @@ import rclpy
 import numpy as np
 from math import sqrt
 from choirbot.guidance.mpc import MPCGuidance
-import time
+
 
 def main():
-    rclpy.init(args=None)
+    rclpy.init()
 
     # initialize MPC guidance class
     sample_time = 1.0 # seconds
+    guidance = MPCGuidance(sample_time, 'pubsub', 'odom')
 
-    pos_handler = 'pubsub'
-    pos_topic = 'odom'
-
-    guidance = MPCGuidance(sample_time, pos_handler, pos_topic)
     N = guidance.n_agents
 
     # system matrices
@@ -57,7 +54,7 @@ def main():
 
     # mechanism for trajectory continuation
     def traj_continuation(x_traj):
-        # we consider an LQR terminal controller u = Kx
+        # LQR terminal controller u = Kx
         P = (1 + sqrt(1 + 4 / sample_time**2))/2
         K = - sample_time * P / (1 + P * sample_time**2)
 
@@ -83,8 +80,5 @@ def main():
         traj_continuation, coupling_constraints, local_constraints)
 
     # start
-    guidance.get_logger().info('Waiting for 5 seconds before starting')
-    time.sleep(5)
     rclpy.spin(guidance)
-
     rclpy.shutdown()

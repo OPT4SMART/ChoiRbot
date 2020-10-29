@@ -2,6 +2,12 @@ from setuptools import setup, find_packages
 from glob import glob
 
 package_name = 'choirbot_examples'
+scripts = {
+    'containment':      ['guidance', 'integrator', 'rviz'],
+    'formationcontrol': ['guidance', 'controller'],
+    'mpc':              ['guidance', 'integrator', 'rviz'],
+    'taskassignment':   ['guidance', 'table', 'planner', 'controller'],
+    }
 
 setup(
     name=package_name,
@@ -12,7 +18,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, glob('launch/*.launch.py')),
-        ('share/' + package_name, glob('rviz/*.rviz')),
+        ('share/' + package_name, glob('resource/*.rviz')),
+        ('share/' + package_name, glob('resource/*.sdf')),
     ],
     install_requires=['setuptools', 'choirbot'],
     zip_safe=True,
@@ -23,17 +30,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'choirbot_task_guidance = choirbot_examples.task_assignment:main_guidance',
-            'choirbot_table = choirbot_examples.task_assignment:main_table',
-            'choirbot_planner= choirbot_examples.planner_i:main_planner',
-            'choirbot_controller= choirbot_examples.controller:main',
-            'choirbot_unicycle_vel= choirbot_examples.unicycle_controller:main',
-            'choirbot_singleintegrator = choirbot_examples.single_integrator_i:main',
-            'choirbot_unicycleintegrator = choirbot_examples.unicycle_integrator_i:main',
-            'choirbot_formationcontrol = choirbot_examples.formationcontrol_guidance_i:main',
-            'choirbot_containment = choirbot_examples.containment_guidance_i:main',
-            'choirbot_rviz = choirbot_examples.rviz_spawner_i:main',
-            'choirbot_mpc = choirbot_examples.mpc:main',
+            'choirbot_{0}_{1} = choirbot_examples.{0}.{1}:main'.format(package, file)
+            for package, files in scripts.items() for file in files
+        ] + [
+            'choirbot_turtlebot_spawner = choirbot_examples.turtlebot_spawner:main'
         ],
     },
 )

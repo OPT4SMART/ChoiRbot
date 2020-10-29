@@ -1,44 +1,37 @@
 from launch import LaunchDescription
+from launch.actions import TimerAction, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from disropt.utils.graph_constructor import path_graph
+from ament_index_python.packages import get_package_share_directory
 import numpy as np
 import sys
 import argparse
 import os
 
+
 def generate_launch_description():
-    ap = argparse.ArgumentParser(prog='ros2 launch choirbot planner.launch.py')
-    ap.add_argument("-n", "--nodes", help="number of nodes", default=3, type=int)
+    ap = argparse.ArgumentParser(prog='ros2 launch choirbot_examples formationcontrol.launch.py')
+    ap.add_argument("-l", "--length", help="length of hexagon sides", default=3, type=float)
 
-    try:
-        args = vars(ap.parse_args(sys.argv[4:])) # skip "ros2 launch choirbot main.launch.py"
-    except:
-        return None
-    
-    #######################
-    N = args['nodes']
-    Adj = np.array([[0, 1, 0, 1, 0, 1],
-                    [1, 0, 1, 0, 1, 0],
-                    [0, 1, 0, 1, 0, 1],
-                    [1, 0, 1, 0, 1, 0],
-                    [0, 1, 0, 1, 0, 1],
-                    [1, 0, 1, 0, 1, 0]])
+    # parse arguments (exception thrown on error)
+    args, _ = ap.parse_known_args(sys.argv)
+    L = float(args.length)
 
-    # Weight matrix to control inter-agent distances
-    D= 4.0
-    a = D/4.0
+    # communication matrix
+    N = 6
+    Adj = np.zeros((N,N))
+    Adj[1::2,::2] = 1 # alternated zeros and ones
+    Adj[::2,1::2] = 1
+
+    # generate matrix of desired inter-robot distances
+    W = Adj*L # adjacent robots have distance L
+    W.ravel()[3:18:7] = 2*L # opposite robots has distance 2L
+    W.ravel()[18::7]  = 2*L
+
+    # generate coordinates of hexagon with center in the origin
+    a = L/2
     b = np.sqrt(3)*a
-    L = np.sqrt(a**2 * b**2)
-    D1 = np.sqrt((2*a)**2 + (2*b)**2)
-
-    W = np.array([
-        [0,         L,      0,     D1,    0,     2.0*a],
-        [L,         0,      L,     0,     4.0*a, 0],
-        [0,         L,      0,     2.0*a, 0,     D1],
-        [D1,        0,      2.0*a, 0,     L,     0],
-        [0,         4.0*a,  0,     L,     0,     L],
-        [2.0*a,     0,      D1,    0,     L,     0]
-    ])
 
     P = np.array([
         [-b, a , 0],
@@ -49,35 +42,44 @@ def generate_launch_description():
         [-b, -a, 0]
     ])
     
-    P += np.random.rand(6,3)
+    # initial positions have a perturbation of at most L/3
+    P += np.random.uniform(-L/3, L/3, (6,3))
 
-    #######################
+    # initialize launch description
+    robot_launch = []       # launched after 10 sec (to let Gazebo open)
+    launch_description = [] # launched immediately (will contain robot_launch)
 
-    list_description = []
-
+    # add executables for each robot
     for i in range(N):
 
         in_neighbors  = np.nonzero(Adj[:, i])[0].tolist()
         out_neighbors = np.nonzero(Adj[i, :])[0].tolist()
         weights = W[i,:].tolist()
-        initial_pos = P[i, :].tolist()
+        position = P[i, :].tolist()
 
-        list_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_singleintegrator', output='screen',
+        # guidance
+        robot_launch.append(Node(
+            package='choirbot_examples', node_executable='choirbot_formationcontrol_guidance', output='screen',
             node_namespace='agent_{}'.format(i),
-            #prefix=['xterm -hold -e'],
-            parameters=[{'agent_id': i, 'init_pos': initial_pos}]))
-
-        list_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_formationcontrol', output='screen',
-            node_namespace='agent_{}'.format(i),
-            #prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'weights': weights}]))
-
-        list_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_rviz', output='screen',
+        
+        # controller
+        robot_launch.append(Node(
+            package='choirbot_examples', node_executable='choirbot_formationcontrol_control', output='screen',
             node_namespace='agent_{}'.format(i),
-            #prefix=['xterm -hold -e'],
             parameters=[{'agent_id': i}]))
+        
+        # turtlebot spawner
+        launch_description.append(Node(
+            package='choirbot_examples', node_executable='choirbot_turtlebot_spawner', output='screen',
+            parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
+    
+    # include launcher for gazebo
+    gazeebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'launch', 'gazebo.launch.py')
+    launch_description.append(IncludeLaunchDescription(PythonLaunchDescriptionSource(gazeebo_launcher)))
+    
+    # include delayed robot executables
+    timer_action = TimerAction(period=10.0, actions=[LaunchDescription(robot_launch)])
+    launch_description.append(timer_action)
 
-    return LaunchDescription(list_description)
+    return LaunchDescription(launch_description)
