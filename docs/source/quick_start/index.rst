@@ -8,7 +8,7 @@ Containment in Leader-Follower Networks for single-integrator systems
 ==================================================================================
 
 In this page, we show how to run a basic distributed cooperative robotics scenario in **ChoiRbot**.
-Specifically, we consider a containment problem in leader-follower networks as described in [MeEg11]_.
+Specifically, we consider a containment problem in leader-follower networks as described in :cite:`qs-notarstefano2011containment`
 
 
 Prerequisites
@@ -65,6 +65,9 @@ In order to launch a simulation with :math:`6` robots, run in a terminal
 	ros2 launch choirbot_examples containment.launch.py -n 6
 
 
+
 .. rubric:: References
 
-.. [MeEg11] Notarstefano, G., Egerstedt, M., Haque, M. (2011). Containment in leader--follower networks with switching communication topologies. Automatica, 47(5), 1035-1040.
+.. bibliography:: ../biblio.bib
+   :labelprefix: QS
+   :keyprefix: qs-

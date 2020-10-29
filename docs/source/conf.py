@@ -31,6 +31,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
               'sphinx.ext.intersphinx',
               'sphinx_autodoc_typehints',
+              'sphinxcontrib.bibtex',
               ]
 napoleon_use_param = True
 

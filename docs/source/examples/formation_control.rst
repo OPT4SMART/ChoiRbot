@@ -7,7 +7,7 @@ Distributed formation control for unicycle vehicles
 In this page we show how to implement a distributed formation control algorithm
 for a team of unicycle vehicles. The resulting algorithm is simulated with
 Gazebo by using Turtlebot3 ground robots.
-A reference for this example can be found in [MeEg10]_.
+A reference for this example can be found in :cite:`fc-mesbahi2010graph`.
 
 
 Prerequisites
@@ -52,7 +52,7 @@ The set of neighbors of each agent :math:`i` is denoted by
 Formation specification and distributed control law
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The desired formation is assumed to be rigid (see also [MeEg10]_) and is
+The desired formation is assumed to be rigid (see also :cite:`fc-mesbahi2010graph`) and is
 specified by a set of desired distances :math:`\{d_{ij}\}_{(i,j) \in \mathcal{E}}`
 between any two communicating robots :math:`i` and :math:`j`.
 
@@ -62,7 +62,7 @@ The distributed control law applied by each robot :math:`i` is
    u_i(t) = \sum_{j \in \mathcal{N}_i} (\|x_i(t) - x_j(t)\|^2 - d_{ij}^2) (x_j(t) - x_i(t)).
 
 
-Implementation in **ChoiRbot**
+Implementation in ChoiRbot
 --------------------------------
 
 In order to implement the formation control example in **ChoiRbot**,
@@ -190,7 +190,7 @@ The goal of the control node is to translate the vector velocity input
 :math:`u_i(t)` into the corresponding unicycle inputs :math:`v_i(t)`
 (linear velocity) and :math:`\omega_i(t)` (angular velocity).
 This translation is performed according to the approach described in
-[WiGl20]_ within the class :class:`~choirbot.controller.UnicycleVelocityController`.
+:cite:`fc-wilson2020robotarium` within the class :class:`~choirbot.controller.UnicycleVelocityController`.
 The initialization block of the class is as follows:
 
 .. code-block:: python
@@ -215,7 +215,7 @@ into a unicycle input, in the ``__init__`` method we simply create a publisher
 and a subscription for the relative topics and we initialize the quantities
 for the control translation scheme. The main job is performed by the subscription
 callback method ``control_callback``, which implements the law described in
-[WiGl20]_ and publishes the translated input in the ``cmd_vel`` topic.
+:cite:`fc-wilson2020robotarium` and publishes the translated input in the ``cmd_vel`` topic.
 
 Interfacing with Gazebo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -246,5 +246,6 @@ TODO
 
 .. rubric:: References
 
-.. [MeEg10] Mesbahi, M., Egerstedt, M. (2010). Graph theoretic methods in multiagent networks (Vol. 33). Princeton University Press.
-.. [WiGl20] Wilson, S., Glotfelter, P., Wang, L., Mayya, S., Notomista, G., Mote, M., Egerstedt, M. (2020). The robotarium: Globally impactful opportunities, challenges, and lessons learned in remote-access, distributed control of multirobot systems. IEEE Control Systems Magazine, 40(1), 26-44.
+.. bibliography:: ../biblio.bib
+   :labelprefix: FC
+   :keyprefix: fc-

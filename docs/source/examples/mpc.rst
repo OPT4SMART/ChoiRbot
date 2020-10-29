@@ -4,8 +4,8 @@ Distributed Model Predictive Control (MPC)
 
 In this page we show how to implement a distributed Model Predictive Control
 (MPC) algorithm for linear systems. We consider the classical algorithm proposed
-in the paper [RiHo07]_ applied to single-integrator systems as in the numerical
-example of [RiHo07]_. The resulting algorithm is simulated by using the integration
+in the paper :cite:`mpc-richards2007robust` applied to single-integrator systems as in the numerical
+example of :cite:`mpc-richards2007robust`. The resulting algorithm is simulated by using the integration
 features of **ChoiRbot** and visualization with RVIZ.
 
 
@@ -142,7 +142,7 @@ To implement this scheme, it is assumed that the robots already know how to
 perform such an operation.
 
 
-Implementation in **ChoiRbot**
+Implementation in ChoiRbot
 --------------------------------
 
 In order to implement the MPC example in **ChoiRbot**,
@@ -368,4 +368,6 @@ TODO
 
 .. rubric:: References
 
-.. [RiHo07] Richards, A., How, J. P. (2007). Robust distributed model predictive control. International Journal of control, 80(9), 1517-1531.
+.. bibliography:: ../biblio.bib
+   :labelprefix: MPC
+   :keyprefix: mpc-
