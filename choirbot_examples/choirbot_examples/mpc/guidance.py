@@ -2,6 +2,7 @@ import rclpy
 import numpy as np
 from math import sqrt
 from choirbot.guidance.mpc import MPCGuidance
+import time
 
 
 def main():
@@ -78,6 +79,9 @@ def main():
 
     guidance.initialize(prediction_horizon, system_matrices, cost_matrices,
         traj_continuation, coupling_constraints, local_constraints)
+    
+    guidance.get_logger().info('Waiting for 5 seconds to let all nodes be ready')
+    time.sleep(5)
 
     # start
     rclpy.spin(guidance)

@@ -13,8 +13,8 @@ def main():
     table = PositionTaskTable(N)
     table.gc.trigger()
 
-    node.get_logger().info('Waiting for 5 seconds')
-    time.sleep(5)
+    table.get_logger().info('Waiting for 10 seconds to let all nodes be ready')
+    time.sleep(10)
 
     rclpy.spin(table)
     rclpy.shutdown()

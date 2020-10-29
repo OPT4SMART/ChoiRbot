@@ -19,7 +19,7 @@ class Visualizer(Node):
         self.timer = self.create_timer(1.0/update_frequency, self.publish_message)
 
     def publish_message(self):
-        if self.current_pose is not None:
+        if self.current_pose.position is not None:
             msg = Marker()
             msg.pose.position.x = self.current_pose.position[0]
             msg.pose.position.y = self.current_pose.position[1]

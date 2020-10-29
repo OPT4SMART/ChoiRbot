@@ -13,10 +13,14 @@ import os
 def generate_launch_description():
     ap = argparse.ArgumentParser(prog='ros2 launch choirbot_examples formationcontrol.launch.py')
     ap.add_argument("-l", "--length", help="length of hexagon sides", default=3, type=float)
+    ap.add_argument("-s", "--seed", help="seed for initial positions", default=5, type=float)
 
     # parse arguments (exception thrown on error)
     args, _ = ap.parse_known_args(sys.argv)
     L = float(args.length)
+
+    # set rng seed
+    np.random.seed(args.seed)
 
     # communication matrix
     N = 6
@@ -65,7 +69,7 @@ def generate_launch_description():
         
         # controller
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_formationcontrol_control', output='screen',
+            package='choirbot_examples', node_executable='choirbot_formationcontrol_controller', output='screen',
             node_namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
@@ -75,7 +79,7 @@ def generate_launch_description():
             parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
     
     # include launcher for gazebo
-    gazeebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'launch', 'gazebo.launch.py')
+    gazeebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'gazebo.launch.py')
     launch_description.append(IncludeLaunchDescription(PythonLaunchDescriptionSource(gazeebo_launcher)))
     
     # include delayed robot executables

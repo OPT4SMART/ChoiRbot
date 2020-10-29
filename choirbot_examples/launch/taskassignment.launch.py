@@ -12,18 +12,15 @@ import os
 
 def generate_launch_description():
     ap = argparse.ArgumentParser(prog='ros2 launch choirbot_examples taskassignment.launch.py')
-    ap.add_argument("-n", "--number", help="number of robots", default=3, type=int)
-    ap.add_argument("-s", "--seed", help="seed for initial positions", default=10, type=int)
+    ap.add_argument("-n", "--number", help="number of robots", default=4, type=int)
+    ap.add_argument("-s", "--seed", help="seed for initial positions", default=3, type=int)
 
     # parse arguments (exception thrown on error)
     args, _ = ap.parse_known_args(sys.argv)
-    N = args.nodes
+    N = args.number
 
-    # set rng seed
-    np.random.seed(args.seed)
-    
-    # generate communication graph
-    Adj = binomial_random_graph(N, 0.2)
+    # generate communication graph (this function also sets the seed)
+    Adj = binomial_random_graph(N, 0.2, seed=args.seed)
 
     # generate initial positions in [-3, 3] with z = 0
     P = np.zeros((N, 3))
@@ -71,7 +68,7 @@ def generate_launch_description():
             parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
     
     # include launcher for gazebo
-    gazeebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'launch', 'gazebo.launch.py')
+    gazeebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'gazebo.launch.py')
     launch_description.append(IncludeLaunchDescription(PythonLaunchDescriptionSource(gazeebo_launcher)))
     
     # include delayed robot executables

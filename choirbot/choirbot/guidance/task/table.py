@@ -102,9 +102,7 @@ class PositionTaskTable(TaskTable):
         prob = 0.5
 
         for _ in range(n_new_tasks):
-            x_lim = [-1.2, 1.5]
-            y_lim = [-1.8, 1.5]
-            # x_lim = y_lim = [-3, 3]
+            x_lim = y_lim = [-3, 3]
             position_x = np.random.uniform(x_lim[0], x_lim[1])
             position_y = np.random.uniform(y_lim[0], y_lim[1])
             position = [position_x, position_y]

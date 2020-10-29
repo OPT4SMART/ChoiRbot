@@ -15,7 +15,7 @@ def generate_launch_description():
 
     # parse arguments (exception thrown on error)
     args, _ = ap.parse_known_args(sys.argv)
-    N = args.nodes
+    N = args.number
 
     # set rng seed
     np.random.seed(args.seed)

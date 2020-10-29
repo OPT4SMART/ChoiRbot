@@ -10,7 +10,6 @@ class DistributedControlGuidance(Guidance):
         super().__init__(pos_handler, pos_topic)
         self.publisher_ = self.create_publisher(Vector3, 'velocity', 1)
         self.update_frequency = update_frequency
-        sleep(20)
         self.timer = self.create_timer(1.0/update_frequency, self.control)
         self.get_logger().info('Guidance {} started'.format(self.agent_id))
 

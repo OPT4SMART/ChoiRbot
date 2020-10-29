@@ -12,7 +12,7 @@ import dill
 
 from .callback_group import AuthorizationCallbackGroup
 from .executor import SpinSomeExecutor
-# from disropt.communicators import Communicator as DCommunicator
+from disropt.communicators import Communicator as CommInterface
 
 
 class Singleton(type):
@@ -23,7 +23,7 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class Communicator(metaclass=Singleton):
+class Communicator(CommInterface, metaclass=Singleton):
 
     def __init__(self, agent_id, size, in_neighbors, out_neighbors = None, synchronous_mode = True, differentiated_topics = False):
         

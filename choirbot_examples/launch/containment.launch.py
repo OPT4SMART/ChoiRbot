@@ -10,17 +10,14 @@ import os
 
 def generate_launch_description():
     ap = argparse.ArgumentParser(prog='ros2 launch choirbot_examples containment.launch.py')
-    ap.add_argument("-n", "--number", help="number of robots", default=3, type=int)
-    ap.add_argument("-s", "--seed", help="seed for initial positions", default=10, type=int)
+    ap.add_argument("-n", "--number", help="number of robots", default=6, type=int)
+    ap.add_argument("-s", "--seed", help="seed for initial positions", default=3, type=int)
 
     # parse arguments (exception thrown on error)
     args, _ = ap.parse_known_args(sys.argv)
     N = args.number # shorthand
 
-    # set rng seed
-    np.random.seed(args.seed)
-
-    # generate communication graph
+    # generate communication graph (this function also sets the seed)
     Adj = binomial_random_graph(N, p=0.2, seed=args.seed)
 
     # generate initial positions in [-3, 3] with z = 0
