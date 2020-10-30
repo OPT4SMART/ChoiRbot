@@ -36,22 +36,8 @@ extensions = ['sphinx.ext.autodoc',
 napoleon_use_param = True
 
 # mock modules
-MOCK_MODULES = ['rclpy', 'rclpy.node', 'rclpy.guard_condition', 'rclpy.qos', 'rclpy.callback_groups',
-    'rclpy.task', 'rclpy.duration', 'rclpy.executors', 'visualization_msgs', 'visualization_msgs.msg',
-    'std_msgs', 'std_msgs.msg', 'geometry_msgs', 'geometry_msgs.msg',
-    'disropt.algorithms', 'disropt.functions', 'disropt.problems', 'disropt.agents']
-
-class RecursiveMagicMock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
-
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = RecursiveMagicMock()
-
-# special mock classes
-sys.modules['rclpy.node'].Node = object
-sys.modules['rclpy.guard_condition'].GuardCondition = object
+autodoc_mock_imports = ['disropt', 'rclpy', 'visualization_msgs', 'std_msgs',
+    'geometry_msgs', 'scipy', 'dill']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -79,7 +65,8 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'rclpy': ('http://docs.ros2.org/dashing/api/rclpy/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None)
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    'disropt': ('https://disropt.readthedocs.io/en/stable/', None)
 }
 
 # List of patterns, relative to source directory, that match files and
