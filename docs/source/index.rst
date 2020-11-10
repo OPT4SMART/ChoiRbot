@@ -10,7 +10,7 @@ experiments on teams of cooperating robots, with a particular focus on peer-to-p
 of robotic agents without a central coordinator.
 
 The package is already equipped with basic trajectory planning, control and dynamics integration utilities,
-so that you can just start to test your algorithm on basic robot models such as quadrotors,
+so that you can already start to test your distributed algorithms on basic robot models such as quadrotors,
 unicycle-like vehicles and single-integrator dynamical systems.
 Please refer to :ref:`api_documentation` for a detailed description of the package functionalities.
 
@@ -18,7 +18,6 @@ Please refer to :ref:`api_documentation` for a detailed description of the packa
    :hidden:
 
    Home <self>
-
 
 .. toctree::
     :hidden:

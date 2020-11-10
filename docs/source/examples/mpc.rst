@@ -14,7 +14,7 @@ Prerequisites
 We assume a working installation of **ChoiRbot** is available
 (see the :ref:`installation page <installation>`) and that the
 desktop version of ROS 2 is installed (this example requires RVIZ).
-This example also requires the `DISROPT <https://github.com/OPT4SMART/disropt>`_
+This example requires the `DISROPT <https://github.com/OPT4SMART/disropt>`_
 package to be installed.
 
 The reader is assumed to be familiar with the basic concepts
@@ -144,7 +144,6 @@ perform such an operation.
 
 Implementation in ChoiRbot
 --------------------------------
-
 In order to implement the MPC example in **ChoiRbot**,
 we consider the following nodes for each robot:
 
@@ -354,20 +353,43 @@ with a user-defined frequency and publishes the updated position in the
 
 Visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TODO
+For the visualization node we use the class :class:`choirbot.utils.Visualizer`.
+The purpose of this node is very simple: to subscribe to the ``odom`` topic
+and to forward messages to the ``/visualization_marker`` topic. RVIZ reads
+data from this topic and draws circles (representing robots) at the
+specified positions.
 
 Launch file and executables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TODO
+See :ref:`the corresponding section <launch_file>` in the formation control example.
 
 
 Running the simulation
 -----------------------------
-TODO
+To run the simulation, we simply need to execute the launch file.
+First we source the workspace:
+
+.. code-block:: bash
+
+    source install/setup.bash
+
+Now we are ready to run the example:
+
+.. code-block:: bash
+
+    ros2 launch choirbot_examples mpc.launch.py
+
+An RVIZ window will open. After a few seconds, the circles (representing robots)
+begin to move toward the origin while keeping their inter-distance within the prescribed
+bounds:
+
+.. image:: ../_static/mpc.png
+    :width: 600px
+    :align: center
 
 
 .. rubric:: References
 
 .. bibliography:: ../biblio.bib
-   :labelprefix: MPC
-   :keyprefix: mpc-
+    :labelprefix: MPC
+    :keyprefix: mpc-

@@ -24,14 +24,26 @@ def generate_launch_description():
 
     # communication matrix
     N = 6
-    Adj = np.zeros((N,N))
-    Adj[1::2,::2] = 1 # alternated zeros and ones
-    Adj[::2,1::2] = 1
+    Adj = np.array([ # alternated zeros and ones
+        [0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0]
+    ])
 
     # generate matrix of desired inter-robot distances
-    W = Adj*L # adjacent robots have distance L
-    W.ravel()[3:18:7] = 2*L # opposite robots has distance 2L
-    W.ravel()[18::7]  = 2*L
+    # adjacent robots have distance L
+    # opposite robots have distance 2L
+    W = np.array([
+        [0,   L,   0,   2*L, 0,   L],
+        [L,   0,   L,   0,   2*L, 0],
+        [0,   L,   0,   L,   0,   2*L],
+        [2*L, 0,   L,   0,   L,   0],
+        [0,   2*L, 0,   L,   0,   L],
+        [L,   0,   2*L, 0,   L,   0]
+    ])
 
     # generate coordinates of hexagon with center in the origin
     a = L/2
@@ -79,8 +91,8 @@ def generate_launch_description():
             parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
     
     # include launcher for gazebo
-    gazeebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'gazebo.launch.py')
-    launch_description.append(IncludeLaunchDescription(PythonLaunchDescriptionSource(gazeebo_launcher)))
+    gazebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'gazebo.launch.py')
+    launch_description.append(IncludeLaunchDescription(PythonLaunchDescriptionSource(gazebo_launcher)))
     
     # include delayed robot executables
     timer_action = TimerAction(period=10.0, actions=[LaunchDescription(robot_launch)])

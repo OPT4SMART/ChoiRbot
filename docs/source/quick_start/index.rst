@@ -1,8 +1,8 @@
 .. _quickstart:
 
+====================
 Quick Start
-***********************
-
+====================
 
 Containment in Leader-Follower Networks for single-integrator systems
 ==================================================================================
@@ -29,7 +29,7 @@ Each robot is modelled as single-integrator dynamical system
 
 .. math::
 
-   \dot{x}_i(t) = u_i(t),
+    \dot{x}_i(t) = u_i(t),
 
 where for all :math:`i \in \{1, \ldots, N\}`, :math:`x_i \in \mathbb{R}^2` is the
 :math:`i`-th system state (i.e., position) and :math:`u_i \in \mathbb{R}^2`
@@ -49,11 +49,11 @@ To this end, the robots implement the dynamics
 
 .. math::
 
-  \begin{split}
-  \dot{x}_i(t) &= 0 \hspace{4cm} & \text{(leaders)},
-  \\
-  \dot{x}_i(t) &= \sum_{j \in \mathcal{N}_i} (x_j(t) - x_t(t)) & \text{(followers)}.
-  \end{split}
+    \begin{split}
+    \dot{x}_i(t) &= 0 \hspace{4cm} & \text{(leaders)},
+    \\
+    \dot{x}_i(t) &= \sum_{j \in \mathcal{N}_i} (x_j(t) - x_t(t)) & \text{(followers)}.
+    \end{split}
 
 
 Launch the simulation
@@ -69,5 +69,5 @@ In order to launch a simulation with :math:`6` robots, run in a terminal
 .. rubric:: References
 
 .. bibliography:: ../biblio.bib
-   :labelprefix: QS
-   :keyprefix: qs-
+    :labelprefix: QS
+    :keyprefix: qs-
