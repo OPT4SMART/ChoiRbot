@@ -8,10 +8,20 @@ Here we provide the API documentation for classes related to graph-based communi
 capabilities. The main class providing this functionality is :class:`~choirbot.communicator.Communicator`,
 but there are also additional internal classes implementing particular features.
 
-Main class
+Communicators
 ----------------------------
 
-.. autoclass:: choirbot.communicator.Communicator
+.. autoclass:: choirbot.communicator.BestEffortCommunicator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: choirbot.communicator.StaticCommunicator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: choirbot.communicator.TimeVaryingCommunicator
    :members:
    :undoc-members:
    :show-inheritance:

@@ -4,7 +4,7 @@ from typing import Type
 from .optimization_thread import OptimizationThread
 from .. import Pose
 from ..utils.position_getter import pose_subscribe
-from ..communicator import Communicator
+from ..communicator import TimeVaryingCommunicator
 from ..optimizer import Optimizer
 
 
@@ -57,7 +57,7 @@ class Guidance(Node):
         self.communicator = self._instantiate_communicator()
 
     def _instantiate_communicator(self):
-        return Communicator(self.agent_id, self.n_agents, self.in_neighbors)
+        return TimeVaryingCommunicator(self.agent_id, self.n_agents, self.in_neighbors)
 
 
 class OptimizationGuidance(Guidance):

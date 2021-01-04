@@ -2,7 +2,7 @@ import numpy as np
 from typing import Callable
 from geometry_msgs.msg import Vector3
 
-from ...communicator import Communicator
+from ...communicator import TimeVaryingCommunicator
 from ...optimizer import MPCOptimizer
 from ..guidance import OptimizationGuidance
 from ..optimization_thread import OptimizationThread
@@ -36,7 +36,7 @@ class MPCGuidance(OptimizationGuidance):
     
     def _instantiate_communicator(self):
         # communicator must have differentiated topics
-        return Communicator(self.agent_id, self.n_agents, self.in_neighbors,
+        return TimeVaryingCommunicator(self.agent_id, self.n_agents, self.in_neighbors,
             out_neighbors=self.out_neighbors, differentiated_topics=True)
     
     def initialize(self, prediction_horizon: int, system_matrices: dict,
