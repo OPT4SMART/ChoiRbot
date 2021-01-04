@@ -23,22 +23,21 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class Communicator(CommInterface, metaclass=Singleton):
+class BestEffortCommunicator(CommInterface, metaclass=Singleton):
+    # Best-effort communicator only supports asynchronous communication
 
-    def __init__(self, agent_id, size, in_neighbors, out_neighbors = None, synchronous_mode = True, differentiated_topics = False):
+    def __init__(self, agent_id, size, in_neighbors, out_neighbors = None, differentiated_topics = False):
         
         # initialize variables
         self.size = size
         self.rank = agent_id
         self.subscriptions = {}
         self.publishers = {}
-        self.callback_groups = {}
         self.neighbors = None
         self.out_neighbors = out_neighbors if out_neighbors is not None else in_neighbors
+        self.in_neighbors = in_neighbors
+        self.callback_groups = {j:None for j in in_neighbors}
         self.received_data = None
-        self.future = None
-        self.synchronous_mode = synchronous_mode
-        self.executor = SingleThreadedExecutor() if synchronous_mode else None
         self.current_label = 0
         self.differentiated_topics = differentiated_topics
 
@@ -52,25 +51,20 @@ class Communicator(CommInterface, metaclass=Singleton):
                 self.publishers[j] = self.node.create_publisher(ByteMultiArray, 'communicator_{}'.format(j), self.qos_profile)
         self._subscribe(in_neighbors)
     
+    # QoS profile for best-effort communication
     def _getQoSProfile(self):
-        profile = QoSProfile(history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL)
-        profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
-        profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
+        profile = QoSProfile(depth=10)
+        profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
+        profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
         profile.liveliness = QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC
         profile.deadline = Duration()
         profile.lifespan = Duration()
         return profile
 
-    def _subscribe(self, neighbors): # TODO time varying
+    def _subscribe(self, neighbors):
         for i in neighbors:
             if i not in self.subscriptions:
-                # use a specific callback group if in synchronous mode
-                if self.synchronous_mode:
-                    cbgroup = AuthorizationCallbackGroup()
-                    self.callback_groups[i] = cbgroup
-                else:
-                    cbgroup = None
-                
+                # decide topic name
                 topic_name = '/agent_{}/communicator'.format(i)
                 if self.differentiated_topics:
                     topic_name = '/agent_{}/communicator_{}'.format(i, self.rank)
@@ -80,7 +74,7 @@ class Communicator(CommInterface, metaclass=Singleton):
                     ByteMultiArray,
                     topic_name,
                     lambda msg, node=i: self._subscription_callback(msg, node),
-                    self.qos_profile, callback_group=cbgroup)
+                    self.qos_profile, callback_group=self.callback_groups[i])
 
     def neighbors_send(self, obj, neighbors):
         """Send data to neighbors
@@ -89,6 +83,11 @@ class Communicator(CommInterface, metaclass=Singleton):
             obj (Any): object to send
             neighbors (list): list of neighbors
         """
+        if self.differentiated_topics:
+            for j in neighbors:
+                if j not in self.publishers:
+                    raise RuntimeError("Cannot send to {} since it is not an out-neighbor".format(j))
+
         # convert obj to string
         data = dill.dumps(obj)
 
@@ -106,6 +105,86 @@ class Communicator(CommInterface, metaclass=Singleton):
         else:
             for j in neighbors:
                 self.publishers[j].publish(msg)
+    
+    def neighbors_receive_asynchronous(self, neighbors):
+        """Receive data (if any) from neighbors. Overwrite if multiple messages are received.
+
+        Args:
+            neighbors (list): list of neighbors
+
+        Returns:
+            dict: dict containing received data
+        """
+
+        for j in neighbors:
+            if j not in self.subscriptions:
+                raise RuntimeError("Cannot receive from {} since it is not an in-neighbor".format(j))
+        
+        self.neighbors = neighbors
+        
+        # initialize dictionary of received data
+        self.received_data = {}
+
+        # initialize specific executor
+        executor = SpinSomeExecutor()
+        timeout = False
+
+        # perform all pending callbacks without waiting for further work
+        while True:
+            rclpy.spin_once(self.node, executor=executor, timeout_sec=0)
+
+            # check for two consecutive timeouts
+            if executor.timeout and timeout:
+                break
+            
+            timeout = executor.timeout
+        
+        return self.received_data
+
+    def _subscription_callback(self, msg, node):
+        # discard messages for inactive in-neighbors
+        if node not in self.neighbors:
+            return False
+
+        # discard messages with old label
+        if self.current_label > int(msg.layout.dim[0].label):
+            return False
+
+        # build up full byte string
+        data = bytes(map(lambda x: x[0], msg.data))
+
+        # decode message
+        self.received_data[node] = dill.loads(data)
+
+        return True
+
+
+class TimeVaryingCommunicator(BestEffortCommunicator):
+
+    def __init__(self, agent_id, size, in_neighbors, out_neighbors = None, synchronous_mode = True, differentiated_topics = False):
+        
+        # initialize additional variables for synchronous communication
+        self.future = None
+        self.executor = None
+        self.synchronous_mode = synchronous_mode
+
+        # use a specific callback group and executor if in synchronous mode
+        if synchronous_mode:
+            self.executor = SingleThreadedExecutor()
+            self.callback_groups = {j:AuthorizationCallbackGroup() for j in in_neighbors}
+
+        # continue initialization
+        super().__init__(agent_id, size, in_neighbors, out_neighbors, differentiated_topics)
+    
+    # QoS profile for reliable communication
+    def _getQoSProfile(self):
+        profile = QoSProfile(history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL)
+        profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+        profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
+        profile.liveliness = QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC
+        profile.deadline = Duration()
+        profile.lifespan = Duration()
+        return profile
 
     def neighbors_receive(self, neighbors, event: Event = None):
         """Receive data from neighbors (waits until data are received from all neighbors)
@@ -119,7 +198,10 @@ class Communicator(CommInterface, metaclass=Singleton):
         if not self.synchronous_mode:
             raise Exception("Cannot perform synchronous receive because communicator is in asynchronous mode")
         
-        # self.subscribe(neighbors) # check subscriptions
+        for j in neighbors:
+            if j not in self.subscriptions:
+                raise RuntimeError("Cannot receive from {} since it is not an in-neighbor".format(j))
+        
         self.neighbors = neighbors
         self.received_data = {} # initialize dictionary of received data
         self.future = Future()
@@ -148,51 +230,19 @@ class Communicator(CommInterface, metaclass=Singleton):
         return self.received_data
     
     def neighbors_receive_asynchronous(self, neighbors):
-        """Receive data (if any) from neighbors. Overwrite if multiple messages are received.
-
-        Args:
-            neighbors (list): list of neighbors
-
-        Returns:
-            dict: dict containing received data
-        """
-        # TODO: make sure we only receive messages from requested neighbors
         if self.synchronous_mode:
             raise Exception("Cannot perform asynchronous receive because communicator is in synchronous mode")
         
-        # initialize dictionary of received data
-        self.received_data = {}
-
-        # initialize specific executor
-        executor = SpinSomeExecutor()
-        timeout = False
-
-        # perform all pending callbacks without waiting for further work
-        while True:
-            rclpy.spin_once(self.node, executor=executor, timeout_sec=0)
-
-            # check for two consecutive timeouts
-            if executor.timeout and timeout:
-                break
-            
-            timeout = executor.timeout
-        
-        return self.received_data
+        return super().neighbors_receive_asynchronous(neighbors)
 
     def _subscription_callback(self, msg, node):
-        # discard messages with old label
-        if self.current_label > int(msg.layout.dim[0].label):
-            return
 
-        # build up full byte string
-        data = bytes(map(lambda x: x[0], msg.data))
+        # perform actual callback and check status
+        if super()._subscription_callback(msg, node):
 
-        # decode message
-        self.received_data[node] = dill.loads(data)
-
-        # notify reception from all neighbors if necessary
-        if self.synchronous_mode and len(self.received_data) == len(self.neighbors):
-            self.future.set_result(1)
+            # notify reception from all neighbors if necessary
+            if self.synchronous_mode and len(self.received_data) == len(self.neighbors):
+                self.future.set_result(1)
 
     def neighbors_exchange(self, send_obj, in_neighbors, out_neighbors, dict_neigh, event: Event = None):
         """exchange information (synchronously) with neighbors
@@ -217,3 +267,17 @@ class Communicator(CommInterface, metaclass=Singleton):
         data = self.neighbors_receive(in_neighbors, event)
 
         return data
+
+class StaticCommunicator(TimeVaryingCommunicator):
+
+    def neighbors_send(self, obj):
+        return super().neighbors_send(obj, self.out_neighbors)
+    
+    def neighbors_receive(self, event: Event = None):
+        return super().neighbors_receive(self.in_neighbors, event)
+    
+    def neighbors_receive_asynchronous(self):
+        return super().neighbors_receive_asynchronous(self.in_neighbors)
+    
+    def neighbors_exchange(self, send_obj, dict_neigh, event: Event = None):
+        return super().neighbors_exchange(send_obj, self.in_neighbors, self.out_neighbors, dict_neigh, event)

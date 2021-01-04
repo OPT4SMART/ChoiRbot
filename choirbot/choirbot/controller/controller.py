@@ -2,7 +2,6 @@ from rclpy.node import Node
 from .. import Pose
 
 from ..utils.position_getter import pose_subscribe
-from ..communicator import Communicator
 
 
 class Controller(Node):
