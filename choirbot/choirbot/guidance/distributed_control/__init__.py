@@ -1,3 +1,3 @@
 from .distributed_control import DistributedControlGuidance
 from .formationcontrol import FormationControlGuidance
-from .containment import ContainmentGuidance
+from .containment import ContainmentGuidance, TimeVaryingContainmentGuidance

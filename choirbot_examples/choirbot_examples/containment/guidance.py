@@ -1,5 +1,5 @@
 import rclpy
-from choirbot.guidance.distributed_control import ContainmentGuidance
+from choirbot.guidance.distributed_control import TimeVaryingContainmentGuidance
 import time
 
 
@@ -8,8 +8,9 @@ def main():
     
     frequency = 100.0
     gain = 0.1
+    edge_prob = 0.8
 
-    guidance = ContainmentGuidance(frequency, gain, 'pubsub', 'odom')
+    guidance = TimeVaryingContainmentGuidance(frequency, gain, edge_prob, 'pubsub', 'odom')
 
     guidance.get_logger().info('Waiting for 5 seconds to let all nodes be ready')
     time.sleep(5)
