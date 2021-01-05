@@ -1,6 +1,7 @@
 import numpy as np
 import random
 from .distributed_control import DistributedControlGuidance
+from ...communicator import TimeVaryingCommunicator
 
 
 class ContainmentGuidance(DistributedControlGuidance):
@@ -23,22 +24,30 @@ class TimeVaryingContainmentGuidance(ContainmentGuidance):
         super().__init__(update_frequency, gain, pos_handler, pos_topic)
         self.edge_prob = edge_prob
     
+    def _instantiate_communicator(self):
+        # communicator must have differentiated topics
+        return TimeVaryingCommunicator(self.agent_id, self.n_agents, self.in_neighbors,
+            out_neighbors=self.out_neighbors, differentiated_topics=True)
+    
     def control(self):
         # skip if position is not available yet
         if self.current_pose.position is None:
             return
         
-        # decide in-neighbors
-        in_neigh = random.sample(self.in_neighbors, np.random.binomial(len(self.in_neighbors), self.edge_prob))
+        # decide neighbors and prepare messages
+        # messages are tuples of the type (position, bool) with bool = True if
+        # the neighbor is active from the perspective of the current robot
+        neigh = random.sample(self.in_neighbors, np.random.binomial(len(self.in_neighbors), self.edge_prob))
+        msg = {j:(self.current_pose.position,j in neigh) for j in self.in_neighbors}
         
         # exchange current position with neighbors
-        data = self.communicator.neighbors_exchange(self.current_pose.position, in_neigh, self.out_neighbors, False)
+        data = self.communicator.neighbors_exchange(msg, self.in_neighbors, self.out_neighbors, True)
 
-        # discard messages from non-in-neighbors (to make graph undirected)
-        filtered_data = {j:value for j, value in data.items() if j in in_neigh}
+        # discard messages from inactive neighbors (either from my or their perspective)
+        neighbor_positions = {j:value[0] for j, value in data.items() if j in neigh and value[1]}
 
         # compute input
-        u = self.evaluate_velocity(filtered_data)
+        u = self.evaluate_velocity(neighbor_positions)
 
         # send input to planner/controller
         self.send_input(u)
