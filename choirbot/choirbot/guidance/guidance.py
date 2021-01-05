@@ -57,7 +57,8 @@ class Guidance(Node):
         self.communicator = self._instantiate_communicator()
 
     def _instantiate_communicator(self):
-        return TimeVaryingCommunicator(self.agent_id, self.n_agents, self.in_neighbors)
+        return TimeVaryingCommunicator(self.agent_id, self.n_agents, self.in_neighbors,
+            out_neighbors=self.out_neighbors)
 
 
 class OptimizationGuidance(Guidance):

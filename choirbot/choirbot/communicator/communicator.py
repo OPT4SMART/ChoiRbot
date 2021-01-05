@@ -36,7 +36,7 @@ class BestEffortCommunicator(CommInterface, metaclass=Singleton):
         self.neighbors = None
         self.out_neighbors = out_neighbors if out_neighbors is not None else in_neighbors
         self.in_neighbors = in_neighbors
-        self.callback_groups = {j:None for j in in_neighbors}
+        self.callback_groups = self._get_callback_groups(in_neighbors)
         self.received_data = None
         self.current_label = 0
         self.differentiated_topics = differentiated_topics
@@ -60,6 +60,9 @@ class BestEffortCommunicator(CommInterface, metaclass=Singleton):
         profile.deadline = Duration()
         profile.lifespan = Duration()
         return profile
+    
+    def _get_callback_groups(self, in_neighbors):
+        return {j:None for j in in_neighbors}
 
     def _subscribe(self, neighbors):
         for i in neighbors:
@@ -165,13 +168,8 @@ class TimeVaryingCommunicator(BestEffortCommunicator):
         
         # initialize additional variables for synchronous communication
         self.future = None
-        self.executor = None
         self.synchronous_mode = synchronous_mode
-
-        # use a specific callback group and executor if in synchronous mode
-        if synchronous_mode:
-            self.executor = SingleThreadedExecutor()
-            self.callback_groups = {j:AuthorizationCallbackGroup() for j in in_neighbors}
+        self.executor = SingleThreadedExecutor() if synchronous_mode else None
 
         # continue initialization
         super().__init__(agent_id, size, in_neighbors, out_neighbors, differentiated_topics)
@@ -185,6 +183,9 @@ class TimeVaryingCommunicator(BestEffortCommunicator):
         profile.deadline = Duration()
         profile.lifespan = Duration()
         return profile
+    
+    def _get_callback_groups(self, in_neighbors):
+        return {j:AuthorizationCallbackGroup() for j in in_neighbors}
 
     def neighbors_receive(self, neighbors, event: Event = None):
         """Receive data from neighbors (waits until data are received from all neighbors)
