@@ -187,7 +187,7 @@ class TimeVaryingCommunicator(BestEffortCommunicator):
     def _get_callback_groups(self, in_neighbors):
         return {j:AuthorizationCallbackGroup() for j in in_neighbors}
 
-    def neighbors_receive(self, neighbors, event: Event = None):
+    def neighbors_receive(self, neighbors, stop_event: Event = None):
         """Receive data from neighbors (waits until data are received from all neighbors)
 
         Args:
@@ -210,12 +210,12 @@ class TimeVaryingCommunicator(BestEffortCommunicator):
             self.callback_groups[k].give_authorization()
 
         # receive a single message from all neighbors (check Event every 'timeout' seconds)
-        timeout = 0.2 if event is not None else None
+        timeout = 0.2 if stop_event is not None else None
         while not self.future.done():
             rclpy.spin_until_future_complete(self.node, self.future, executor=self.executor, timeout_sec=timeout)
 
             # check if external event has been set
-            if event is not None and event.is_set():
+            if stop_event is not None and stop_event.is_set():
                 # remove pending messages from topics
                 for k in self.callback_groups:
                     self.callback_groups[k].give_authorization(permanent=True)
@@ -245,7 +245,7 @@ class TimeVaryingCommunicator(BestEffortCommunicator):
             if self.synchronous_mode and len(self.received_data) == len(self.neighbors):
                 self.future.set_result(1)
 
-    def neighbors_exchange(self, send_obj, in_neighbors, out_neighbors, dict_neigh, event: Event = None):
+    def neighbors_exchange(self, send_obj, in_neighbors, out_neighbors, dict_neigh, stop_event: Event = None):
         """exchange information (synchronously) with neighbors
 
         Args:
@@ -265,7 +265,7 @@ class TimeVaryingCommunicator(BestEffortCommunicator):
                 raise RuntimeError('Communicator must be initialized with differentiated topics in order to use dict_neigh=True')
             for j in out_neighbors:
                 self.neighbors_send(send_obj[j], [j])
-        data = self.neighbors_receive(in_neighbors, event)
+        data = self.neighbors_receive(in_neighbors, stop_event)
 
         return data
 
@@ -274,11 +274,11 @@ class StaticCommunicator(TimeVaryingCommunicator):
     def neighbors_send(self, obj):
         return super().neighbors_send(obj, self.out_neighbors)
     
-    def neighbors_receive(self, event: Event = None):
-        return super().neighbors_receive(self.in_neighbors, event)
+    def neighbors_receive(self, stop_event: Event = None):
+        return super().neighbors_receive(self.in_neighbors, stop_event)
     
     def neighbors_receive_asynchronous(self):
         return super().neighbors_receive_asynchronous(self.in_neighbors)
     
-    def neighbors_exchange(self, send_obj, dict_neigh, event: Event = None):
-        return super().neighbors_exchange(send_obj, self.in_neighbors, self.out_neighbors, dict_neigh, event)
+    def neighbors_exchange(self, send_obj, dict_neigh, stop_event: Event = None):
+        return super().neighbors_exchange(send_obj, self.in_neighbors, self.out_neighbors, dict_neigh, stop_event)
