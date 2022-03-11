@@ -1,0 +1,16 @@
+services:
+    app:
+        image: dashing_baseline:latest
+        stdin_open: true
+        tty: true
+        build: .
+        user: rbccps
+        privileged: true
+        environment:
+            - DISPLAY=${DISPLAY}
+            - QT_X11_NO_MITSHM=1
+        volumes:
+            - /tmp/.X11-unix:/tmp/.X11-unix:rw
+            - ./src:/home/rbccps/mrs_ws/src
+            - roslogs:/home/rbccps/.ros/log/:rw
+        network_mode: host
