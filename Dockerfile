@@ -47,6 +47,15 @@ WORKDIR /home/rbccps/mrs_ws/
 COPY src /home/rbccps/mrs_ws/src/
 
 
+RUN colcon build --symlink-install
+
+RUN cd /home/rbccps/mrs_ws/src/ && \
+    pip3 install -r requirements.txt && \
+    pip3 install -r requirements_disropt.txt && \
+    pip3 install --no-deps disropt && \
+
+
+
 RUN echo 'source /opt/ros/dashing/setup.bash' >> ~/.bashrc
 
 
