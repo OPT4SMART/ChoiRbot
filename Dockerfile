@@ -8,10 +8,8 @@ RUN . /opt/ros/dashing/setup.sh && \
     cmake \
     git \
     apt-transport-https \
-    python3-colcon-common-extensions \
     software-properties-common \
     openssh-client \
-    gnupg2 \
     python3-pip \
     wget \
     && rm -rf /var/lib/apt/lists/* \
@@ -21,19 +19,8 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-RUN pip3 install -U pip
-RUN pip3 install -U setuptools
+RUN pip3 install -U pip setuptools
 
-RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list' && \
-    wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add - && \
-    apt-get update && \
-    sudo apt-get install -y gazebo11 &&\
-    rm -rf /var/lib/apt/lists/* \
-
-
-# Clone all the necessary sources and install deps through rosdep.
-RUN wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc -O - | sudo apt-key add - && \
-    sh -c 'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list'
 
 RUN groupadd -g 1000 rbccps && \
     useradd -d /home/rbccps -s /bin/bash -m rbccps -u 1000 -g 1000 && \
@@ -53,9 +40,9 @@ RUN cd /home/rbccps/mrs_ws/src/ && \
     pip3 install -r requirements.txt && \
     pip3 install -r requirements_disropt.txt && \
     pip3 install --no-deps disropt && \
-
+    apt-get install -y ros-dashing-turtlebot3* ros-dashing-gazebo-ros* ros-dashing-rviz2
 
 
 RUN echo 'source /opt/ros/dashing/setup.bash' >> ~/.bashrc
-
-
+RUN echo 'export GAZEBO_MODEL_PATH="${GAZEBO_MODEL_PATH}:/opt/ros/dashing/share/turtlebot3_gazebo/models"' >> ~/.bashrc
+RUN echo 'export TURTLEBOT3_MODEL=burger' >> ~/.bashrc
