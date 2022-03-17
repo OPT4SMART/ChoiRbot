@@ -120,5 +120,5 @@ This result is part of a project that has received funding from the European Res
 	 Wait for the bash script to execute. In another terminal 
 	 
 	 ```
-	 docker-compose exec warehouse_sim /bin/bash
+	 docker-compose exec app /bin/bash
 	 ```
