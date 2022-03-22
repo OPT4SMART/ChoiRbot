@@ -24,18 +24,14 @@ function helpFunction()
     echo ""
     echo "Usage: $0 -c <build/run>"
     echo "-c configuration specifying if the container should be built or run"
-    echo "-l flag enables the ELK stack for monitoring logs when run"
     exit 1
 }
 
-while getopts "c:l" opt
+while getopts "c:" opt
 do
     case "$opt" in
         c)
             cmdargs=$OPTARG
-            ;;
-        l)
-            logger=1
             ;;
         \?) #Invalid Option
             helpFunction
@@ -50,12 +46,7 @@ if [ $cmdargs == "build" ]; then
 elif [ $cmdargs == "run" ]; then
     filename=$(retFileNameFromGraphicsCard)
 
-    # Enable ELK stack if log flag is set
-    if [ ! -z $logger ]; then
-        docker-compose -f $filename --profile log up &
-    else
-        docker-compose -f $filename up &
-    fi
+    docker-compose -f $filename up &
 
     sleep 10
     #Check if the docker-compose process is running
