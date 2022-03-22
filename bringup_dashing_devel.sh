@@ -39,11 +39,11 @@ do
     esac
 done
 
-if [ $cmdargs == "build" ]; then
+if [[ $cmdargs == "build" ]]; then
     filename=$(retFileNameFromGraphicsCard)
     docker-compose -f $filename build
 
-elif [ $cmdargs == "run" ]; then
+elif [[ $cmdargs == "run" ]]; then
     filename=$(retFileNameFromGraphicsCard)
 
     docker-compose -f $filename up &

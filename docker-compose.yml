@@ -11,6 +11,5 @@ services:
             - QT_X11_NO_MITSHM=1
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
-            - ./src:/home/rbccps/mrs_ws/src
-            - roslogs:/home/rbccps/.ros/log/:rw
+            - ./:/home/rbccps/mrs_ws/src
         network_mode: host
