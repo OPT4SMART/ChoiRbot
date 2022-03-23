@@ -1,5 +1,10 @@
-## Welcome to GitHub Pages
+# Welcome to the ChoiRbot Page!
 
+
+## What is ChoiRbot?
+**ChoiRbot** is a ROS 2 package developed by [Andrea Testa](https://www.unibo.it/sitoweb/a.testa/en), [Andrea Camisa](https://www.unibo.it/sitoweb/a.camisa/en) and [Giuseppe Notarsefano](https://www.unibo.it/sitoweb/giuseppe.notarstefano/en) within the ERC excellence research project [OPT4SMART](http://opt4smart.dei.unibo.it/). The aim of **ChoiRbot** is to provide a comprehensive framework to easily simulate and run experiments on teams of cooperating robots, with a particular focus on peer-to-peer networks of robotic agents without a central coordinator.
+
+<!--
 You can use the [editor on GitHub](https://github.com/OPT4SMART/ChoiRbot/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
@@ -35,3 +40,4 @@ Your Pages site will use the layout and styles from the Jekyll theme you have se
 ### Support or Contact
 
 Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+-->
