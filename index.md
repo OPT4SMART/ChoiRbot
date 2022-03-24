@@ -13,6 +13,14 @@ With **ChoiRbot**, you can easily develop your new distributed optimization or c
 
 <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/NwqzIEBNIS4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
 
+#### Dynamic Task Allocation
+
+<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/uii1BjFGqMM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+
+### Distributed Formation Control
+
+<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/VIIXpzPTfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+
 <!--
 You can use the [editor on GitHub](https://github.com/OPT4SMART/ChoiRbot/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 

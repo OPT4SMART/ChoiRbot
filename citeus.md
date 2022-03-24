@@ -13,3 +13,5 @@ If you are you using ChoiRbot in research work to be published, please cite the 
     year={2021},
     publisher={IEEE}
     }
+
+You can read our paper also on [ArXiv](https://arxiv.org/pdf/2010.13431.pdf).
