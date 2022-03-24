@@ -6,6 +6,10 @@
 
 If you are you using ChoiRbot in research work to be published, please cite the accompanying paper "_A. Testa, A. Camisa, G. Notarstefano_, ChoiRbot: A ROS 2 toolbox for cooperative robotics, IEEE Robotics and Automation Letters, 6(2), 2714-2720, 2021". Find more [here](citeus).
 
+<p>If you like ChoiRbot, support us on GitHub!
+<a class="github-button" href="https://github.com/OPT4SMART/ChoiRbot" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star OPT4SMART/ChoiRbot on GitHub">Star</a>
+</p>
+
 ## What can you do with ChoiRbot?
 With **ChoiRbot**, you can easily develop your new distributed optimization or control scheme on a real network of cooperating robots. Take a look at the following implementations!
 
@@ -17,9 +21,13 @@ With **ChoiRbot**, you can easily develop your new distributed optimization or c
 
 <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/uii1BjFGqMM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
 
-### Distributed Formation Control
+#### Distributed Formation Control
 
 <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/VIIXpzPTfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 
 <!--
 You can use the [editor on GitHub](https://github.com/OPT4SMART/ChoiRbot/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
