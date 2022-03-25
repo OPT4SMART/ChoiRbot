@@ -4,13 +4,13 @@
   url: /
 
 - title: Installation
-  url: installation
+  url: /installation
 
 - title: Documentation
-  url: documentation
+  url: /documentation
 
 - title: Citing
-  url: citeus
+  url: /citeus
   # sublinks:
   #   - title: Sub-item 1
   #     url: index
