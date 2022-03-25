@@ -52,6 +52,8 @@
         {% endif %}
         <a {{current}} href={{ site.baseurl }}{{ entry.url }}>{{ entry.title }}</a>
       {% endfor %}
+      {{fullurl}}
+      {{page.url}}
       </div>
       <!-- Then we build the nav bar. -->
       <!-- <nav>
