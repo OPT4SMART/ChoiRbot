@@ -11,19 +11,7 @@ If you are you using ChoiRbot in research work to be published, please cite the 
 </p>
 
 ## What can you do with ChoiRbot?
-With **ChoiRbot**, you can easily develop your new distributed optimization or control scheme on a real network of cooperating robots. Take a look at the following implementations!
 
-#### Multi-Robot Pickup-and-Delivery
-
-<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/NwqzIEBNIS4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
-
-#### Dynamic Task Allocation
-
-<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/uii1BjFGqMM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
-
-#### Distributed Formation Control
-
-<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/VIIXpzPTfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
 
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
