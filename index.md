@@ -25,7 +25,6 @@ With **ChoiRbot**, you can easily develop your new distributed optimization or c
 
 <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/VIIXpzPTfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
 
-
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 

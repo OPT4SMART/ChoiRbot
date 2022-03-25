@@ -10,6 +10,7 @@
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/nav.css?v='' }}">
     {% include head-custom.html %}
   </head>
   <body>
@@ -17,7 +18,7 @@
 
     <header class="page-header" role="banner">
       <!-- <h1 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h1> -->
-      <h1 class="project-name"> <a href="." class="btn">Welcome to ChoiRbot!</a></h1>
+      <h1 class="project-name">Welcome to ChoiRbot!</h1>
       <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
       {% if site.github.is_project_page %}
         <a href="{{ site.github.repository_url }}" class="btn">View on GitHub</a>
@@ -30,8 +31,57 @@
       {% endif %}
     </header>
 
+    
     <main id="content" class="main-content" role="main">
+
+      {% for entry in site.data.navigation %}
+      {% capture fullurl %}{{ site.baseurl }}{{ entry.url }}{% endcapture %}
+          {% if fullurl == page.url %}
+              {% assign current_page = fullurl %}
+              {% break %}
+          {% elsif page.url contains fullurl %}
+              {% assign current_page = fullurl %}
+          {% endif %}
+      {% endfor %}
+      <div class="topnav">
+      {% for entry in site.data.navigation %}
+        {% if entry.url == current_page %}
+            {% assign current = ' class="active"' %}
+        {% else %}
+            <!-- We have to declare it 'null' to ensure it doesn't propagate. -->
+            {% assign current = null %}
+        {% endif %}
+        <a {{current}} href={{ site.baseurl }}{{ entry.url }}>{{ entry.title }}</a>
+      {% endfor %}
+      </div>
+      <!-- Then we build the nav bar. -->
+      <!-- <nav>
+        <ul>
+        {% for entry in site.data.navigation %}
+            {% if entry.url == current_page %}
+                {% assign current = ' style="background-color: #123456"' %}
+            {% else %}
+                {% assign current = null %}
+            {% endif %}
+            {% assign sublinks = entry.sublinks %}
+            {% if sublinks %}
+            <li{{ current }}>
+                <a href="{{ site.baseurl }}{{ entry.url }}">{{ entry.title }}</a>
+                <ul>
+                    {% for sublink in sublinks %}
+                    <li><a href="{{ site.baseurl }}{{ sublink.url }}">{{ sublink.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% else %}
+            <li{{ current }}><a href="{{ site.baseurl }}{{ entry.url }}">{{ entry.title }}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </nav> -->
+
       {{ content }}
+      
 
       <footer class="site-footer">
       <p> <span class="site-footer-credits">This result is part of a project that has received funding from the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme (grant agreement No 638992 - OPT4SMART). <a href="http://opt4smart.dei.unibo.it/">http://opt4smart.dei.unibo.it</a>.</span></p>
