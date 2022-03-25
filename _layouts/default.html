@@ -34,7 +34,7 @@
     <main id="content" class="main-content" role="main">
 
       {% for entry in site.data.navigation %}
-      {% capture fullurl %}{{ site.baseurl }}{{ entry.url }}{% endcapture %}
+      {% capture fullurl %}{{ entry.url }}{% endcapture %}
           {% if fullurl == page.url %}
               {% assign current_page = fullurl %}
               {% break %}
@@ -52,34 +52,9 @@
         {% endif %}
         <a {{current}} href={{ site.baseurl }}{{ entry.url }}>{{ entry.title }}</a>
       {% endfor %}
-      {{fullurl}}
-      {{page.url}}
+      <!-- {{fullurl}}
+      {{page.url}} -->
       </div>
-      <!-- Then we build the nav bar. -->
-      <!-- <nav>
-        <ul>
-        {% for entry in site.data.navigation %}
-            {% if entry.url == current_page %}
-                {% assign current = ' style="background-color: #123456"' %}
-            {% else %}
-                {% assign current = null %}
-            {% endif %}
-            {% assign sublinks = entry.sublinks %}
-            {% if sublinks %}
-            <li{{ current }}>
-                <a href="{{ site.baseurl }}{{ entry.url }}">{{ entry.title }}</a>
-                <ul>
-                    {% for sublink in sublinks %}
-                    <li><a href="{{ site.baseurl }}{{ sublink.url }}">{{ sublink.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </li>
-            {% else %}
-            <li{{ current }}><a href="{{ site.baseurl }}{{ entry.url }}">{{ entry.title }}</a></li>
-            {% endif %}
-        {% endfor %}
-        </ul>
-    </nav> -->
 
       {{ content }}
       
