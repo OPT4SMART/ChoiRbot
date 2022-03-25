@@ -1,5 +1,6 @@
 # ChoiRbot [![Documentation Status](https://readthedocs.org/projects/choirbot/badge/?version=latest)](https://choirbot.readthedocs.io/en/latest/?badge=latest)
-[**Reference docs**](https://choirbot.readthedocs.io/en/latest/)
+[**Website**](https://opt4smart.github.io/ChoiRbot/)
+| [**Reference docs**](https://choirbot.readthedocs.io/en/latest/)
 | [**Installation**](#requirements-and-installation)
 | [**Getting started**](#getting-started)
 
