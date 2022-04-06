@@ -10,8 +10,7 @@ class DoubleIntegrator(Integrator):
 
         # create input subscription
         self.u = np.zeros(3)
-        self.current_vel = np.zeros(3)
-        self.subscription = self.create_subscription(Vector3, 'u', self.input_callback, 1)
+        self.subscription = self.create_subscription(Vector3, 'acceleration', self.input_callback, 1)
         
         self.get_logger().info('Integrator {} started'.format(self.agent_id))
     
