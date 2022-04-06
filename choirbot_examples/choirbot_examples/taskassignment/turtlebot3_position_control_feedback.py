@@ -35,7 +35,7 @@ class Turtlebot3Feedback(Node):
         ************************************************************"""
         self.last_pose_x = 0.0
         self.last_pose_y = 0.0
-        self.current_pose = Pose(None, None)
+        self.current_pose = Pose(None, None, None, None)
         self.goal_pose_x = None
         self.goal_pose_y = None
         self.goal_pose_theta = None

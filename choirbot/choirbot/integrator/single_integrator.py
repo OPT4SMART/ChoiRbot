@@ -17,7 +17,6 @@ class SingleIntegrator(Integrator):
     def input_callback(self, msg):
         # save new input
         self.u = np.array([msg.x, msg.y, msg.z])
-        self.get_logger().info('New robot input is {}'.format(self.u))
 
     def integrate(self):
         self.current_pos += self.samp_time * self.u

@@ -14,7 +14,7 @@ class Visualizer(Node):
         self.agent_id = self.get_parameter('agent_id').value
         self.publisher_ = self.create_publisher(Marker, visualization_topic, 1)
         
-        self.current_pose = Pose(None, None)
+        self.current_pose = Pose(None, None, None, None)
         self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)
         self.timer = self.create_timer(1.0/update_frequency, self.publish_message)
 
