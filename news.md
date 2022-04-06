@@ -4,7 +4,7 @@
 
 You can now simulate second order dynamical systems in **ChoiRbot**! 
 We also included a script to simulate double integrator systems. More content coming soon! 
-You can try the new functionalities by download the *dev_quadrotor* branch:
+You can try the new functionalities by downloading the *dev_quadrotor* branch in the *src* directory of your workspace:
 
 	git clone -b dev_quadrotor https://github.com/OPT4SMART/ChoiRbot.git .
 	
