@@ -13,4 +13,4 @@ You can try the new functionalities by download the *dev_quadrotor* branch:
 
 Click on the badge [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6367979.svg)](https://doi.org/10.5281/zenodo.6367979) to read our new open access abstract *ChoiRbot: New Toolkits for Cooperative Robotics in the ROS 2 Framework*.
 The abstract has been presented at the *Third Italian Conference on Robotics and Intelligent Machines*. 
-Take a look at a five minutes presentation [here](https://youtu.be/2wb3RD0431Q).
+Take also a look at a five minutes presentation [here](https://youtu.be/2wb3RD0431Q).

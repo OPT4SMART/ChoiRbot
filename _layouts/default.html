@@ -49,6 +49,9 @@
         {% else %}
             <!-- We have to declare it 'null' to ensure it doesn't propagate. -->
             {% assign current = null %}
+            {% if entry.title == 'News' %}
+            {% assign current = ' class="news"' %}
+            {% endif %}
         {% endif %}
         <a {{current}} href={{ site.baseurl }}{{ entry.url }}>{{ entry.title }}</a>
       {% endfor %}
