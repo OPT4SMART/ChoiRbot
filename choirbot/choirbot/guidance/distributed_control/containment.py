@@ -6,16 +6,16 @@ from ...communicator import TimeVaryingCommunicator
 
 class ContainmentGuidance(DistributedControlGuidance):
 
-    def __init__(self, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(update_frequency, pos_handler, pos_topic)
+    def __init__(self, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None, input_topic = 'velocity'):
+        super().__init__(update_frequency, pos_handler, pos_topic, input_topic)
         self.containment_gain = gain
         self.is_leader = self.get_parameter('is_leader').value
 
-    def evaluate_velocity(self, neigh_data):
+    def evaluate_input(self, neigh_data):
         u = np.zeros(3)
         if not self.is_leader:
             for pos_ii in neigh_data.values():
-                u += self.containment_gain*(pos_ii - self.current_pose.position)
+                u += self.containment_gain*(pos_ii.position - self.current_pose.position)
         return u
 
 class TimeVaryingContainmentGuidance(ContainmentGuidance):
@@ -38,7 +38,7 @@ class TimeVaryingContainmentGuidance(ContainmentGuidance):
         # messages are tuples of the type (position, bool) with bool = True if
         # the neighbor is active from the perspective of the current robot
         neigh = random.sample(self.in_neighbors, np.random.binomial(len(self.in_neighbors), self.edge_prob))
-        msg = {j:(self.current_pose.position,j in neigh) for j in self.in_neighbors}
+        msg = {j:(self.current_pose,j in neigh) for j in self.in_neighbors}
         
         # exchange current position with neighbors
         data = self.communicator.neighbors_exchange(msg, self.in_neighbors, self.out_neighbors, True)
@@ -47,7 +47,7 @@ class TimeVaryingContainmentGuidance(ContainmentGuidance):
         neighbor_positions = {j:value[0] for j, value in data.items() if j in neigh and value[1]}
 
         # compute input
-        u = self.evaluate_velocity(neighbor_positions)
+        u = self.evaluate_input(neighbor_positions)
 
         # send input to planner/controller
         self.send_input(u)
