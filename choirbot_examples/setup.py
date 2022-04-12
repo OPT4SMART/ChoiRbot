@@ -4,6 +4,7 @@ from glob import glob
 package_name = 'choirbot_examples'
 scripts = {
     'containment':      ['guidance', 'integrator', 'rviz'],
+    'bearingformationcontrol': ['guidance', 'integrator' ],
     'formationcontrol': ['guidance', 'controller'],
     'mpc':              ['guidance', 'integrator', 'rviz'],
     'taskassignment':   ['guidance', 'table', 'planner', 'controller'],
