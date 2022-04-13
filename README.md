@@ -22,7 +22,7 @@ It relies on
 * dill
 * disropt (optional, but required for several features)
 
-Please, refer to the [readthedocs installation page](https://choirbot.readthedocs.io/en/latest/installation/index.html) for a more detailed installation guide.
+Please, refer to the [installation page](https://opt4smart.github.io/ChoiRbot/installation) for a more detailed installation guide.
 
 To install the toolbox, first source your ROS 2 installation. Then create a ROS 2 workspace and, inside the `src` directory, run:
 ```
