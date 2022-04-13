@@ -9,7 +9,14 @@
 | Documentation pages are currently being uploaded. The latest version will be available soon. |
 
 **ChoiRbot** is a ROS 2 toolbox developed within the excellence research program ERC in the project [OPT4SMART](http://opt4smart.dei.unibo.it).
-**ChoiRbot** provides a comprehensive set of libraries to execute complex distributed multi-robot tasks, such as model predictive control and task assignment, either in simulation or experimentally. The toolbox focuses on networks of heterogeneous robots without a central coordinator. It provides utilities for the solution of distributed optimization problems and can be also used to implement distributed feedback laws.
+**ChoiRbot** provides a comprehensive set of libraries to execute complex distributed multi-robot tasks, such as model predictive control and task assignment, either in simulation or experimentally. The toolbox focuses on networks of heterogeneous robots without a central coordinator. It provides utilities for the solution of distributed optimization problems and can be also used to implement distributed feedback laws. Specifically, the package allows you to
+
+- Encode distributed optimization and control algorithms
+- Perform peer-to-peer communications among robots
+- Develop planning and control schemes
+- Connect with external motion capture hardware (see also our [ROS 2 Vicon Bridge](https://github.com/OPT4SMART/ros2-vicon-receiver))
+- Run experiments on your robotic fleet
+- Perform realistic simulations with [Gazebo](http://gazebosim.org) and visualize data with [RVIZ](https://github.com/ros2/rviz)
 
 ## Requirements and Installation
 **ChoiRbot** requires ROS 2 Dashing Diademata to be installed on your system.
@@ -56,7 +63,7 @@ If you are you using **ChoiRbot** in research work to be published, please cite 
 
 ## Contributors
 **ChoiRbot** is developed by
-[Andrea Testa](https://www.unibo.it/sitoweb/a.testa),
+[Andrea Testa](https://andrea-testa.github.io),
 [Andrea Camisa](https://www.unibo.it/sitoweb/a.camisa) and
 [Giuseppe Notarstefano](https://www.unibo.it/sitoweb/giuseppe.notarstefano)
 
