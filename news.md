@@ -1,6 +1,19 @@
 # News
 
-#### 24 April 2022 - Extension to second order dynamical systems
+#### 6 April 2022 - Quadrotor Simulation and Control
+
+We developed a simulator and flatness based controllers for quadrotors! 
+You can try the new functionalities by downloading the *dev_quadrotor* branch in the *src* directory of your workspace:
+
+	git clone -b dev_quadrotor https://github.com/OPT4SMART/ChoiRbot.git .
+
+We also included a bearing formation control example with four quadrotors. Check it out by running
+
+	ros2 launch choirbot_examples quadrotorbearingformationcontrol.launch.py
+
+We are working to include a more realistic visualization and support to more recent ROS2 distros. More content coming soon!
+
+#### 6 April 2022 - Extension to second order dynamical systems
 
 You can now simulate second order dynamical systems in **ChoiRbot**! 
 We also included a script to simulate double integrator systems. More content coming soon! 
