@@ -5,6 +5,7 @@ package_name = 'choirbot_examples'
 scripts = {
     'containment':      ['guidance', 'integrator', 'rviz'],
     'bearingformationcontrol': ['guidance', 'integrator' ],
+    'quadrotorbearingformationcontrol': ['guidance', 'controller', 'integrator' ],
     'formationcontrol': ['guidance', 'controller'],
     'mpc':              ['guidance', 'integrator', 'rviz'],
     'taskassignment':   ['guidance', 'table', 'planner', 'controller'],
