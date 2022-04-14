@@ -1,6 +1,6 @@
 # News
 
-#### 6 April 2022 - Quadrotor Simulation and Control
+#### 14 April 2022 - Quadrotor Simulation and Control
 
 We developed a simulator and flatness based controllers for quadrotors! 
 You can try the new functionalities by downloading the *dev_quadrotor* branch in the *src* directory of your workspace:
