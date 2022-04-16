@@ -1,3 +1,5 @@
+# Applications and Videos
+
 With **ChoiRbot**, you can easily develop your new distributed optimization or control scheme on a real network of cooperating robots. Take a look at the following implementations!
 
 #### Multi-Robot Pickup-and-Delivery
