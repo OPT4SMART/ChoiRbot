@@ -17,7 +17,7 @@ class Planner(Node):
         super().__init__('planner', allow_undeclared_parameters=True,
             automatically_declare_parameters_from_overrides=True)
         self.agent_id = self.get_parameter('agent_id').value
-        self.current_pose = Pose(None, None)
+        self.current_pose = Pose(None, None, None, None)
         self.subscription = pose_subscribe(pos_handler, pos_topic, self,
             self.current_pose, self.pose_callback,
             callback_group=ReentrantCallbackGroup())

@@ -6,11 +6,11 @@ from time import sleep
 
 class DistributedControlGuidance(Guidance):
 
-    def __init__(self, update_frequency: float, pos_handler: str=None, pos_topic: str=None):
+    def __init__(self, update_frequency: float, pos_handler: str=None, pos_topic: str=None, input_topic: str = 'velocity'):
         super().__init__(pos_handler, pos_topic)
-        self.publisher_ = self.create_publisher(Vector3, 'velocity', 1)
+        self.publisher_ = self.create_publisher(Vector3, input_topic, 1)
         self.update_frequency = update_frequency
-        self.timer = self.create_timer(1.0/update_frequency, self.control)
+        self.timer = self.create_timer(1.0/self.update_frequency, self.control)
         self.get_logger().info('Guidance {} started'.format(self.agent_id))
 
     def control(self):
@@ -19,10 +19,10 @@ class DistributedControlGuidance(Guidance):
             return
         
         # exchange current position with neighbors
-        data = self.communicator.neighbors_exchange(self.current_pose.position, self.in_neighbors, self.out_neighbors, False)
+        data = self.communicator.neighbors_exchange(self.current_pose, self.in_neighbors, self.out_neighbors, False)
 
         # compute input
-        u = self.evaluate_velocity(data)
+        u = self.evaluate_input(data)
 
         # send input to planner/controller
         self.send_input(u)
@@ -36,6 +36,6 @@ class DistributedControlGuidance(Guidance):
 
         self.publisher_.publish(msg)
 
-    def evaluate_velocity(self, neigh_data):
+    def evaluate_input(self, neigh_data):
         raise NotImplementedError
 
