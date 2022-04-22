@@ -75,19 +75,19 @@ def generate_launch_description():
 
         # guidance
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_formationcontrol_guidance', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_formationcontrol_guidance', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'weights': weights}]))
         
         # controller
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_formationcontrol_controller', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_formationcontrol_controller', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # turtlebot spawner
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_turtlebot_spawner', output='screen',
+            package='choirbot_examples', executable='choirbot_turtlebot_spawner', output='screen',
             parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
     
     # include launcher for gazebo

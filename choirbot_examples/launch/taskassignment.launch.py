@@ -32,7 +32,7 @@ def generate_launch_description():
 
     # add task table executable
     robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_table', output='screen',
+            package='choirbot_examples', executable='choirbot_taskassignment_table', output='screen',
             prefix=['xterm -hold -e'],
             parameters=[{'N': N}]))
 
@@ -45,26 +45,26 @@ def generate_launch_description():
 
         # guidance
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_guidance', output='screen',
+            package='choirbot_examples', executable='choirbot_taskassignment_guidance', output='screen',
             prefix=['xterm -hold -e'],
-            node_namespace='agent_{}'.format(i),
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors}]))
         
         # planner
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_planner', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_taskassignment_planner', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # controller
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_controller', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_taskassignment_controller', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # turtlebot spawner
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_turtlebot_spawner', output='screen',
+            package='choirbot_examples', executable='choirbot_turtlebot_spawner', output='screen',
             parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
     
     # include launcher for gazebo

@@ -65,7 +65,7 @@ def generate_launch_description():
     # initialize launch description with rviz executable
     rviz_config_dir = get_package_share_directory('choirbot_examples')
     rviz_config_file = os.path.join(rviz_config_dir, 'rvizconf.rviz')
-    launch_description = [Node(package='rviz2', node_executable='rviz2', output='screen',
+    launch_description = [Node(package='rviz2', executable='rviz2', output='screen',
     arguments=['-d', rviz_config_file])]
     
     # add executables for each robot
@@ -80,22 +80,22 @@ def generate_launch_description():
         # guidance
         launch_description.append(Node(
             package='choirbot_examples',
-            node_executable='choirbot_bearingformationcontrol_guidance', 
+            executable='choirbot_bearingformationcontrol_guidance', 
             output='screen',
-            node_namespace='agent_{}'.format(i),
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'dd': dd, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'is_leader': is_leader, 'ort_proj': orth_proj_array}]))
         
         # integrator
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_bearingformationcontrol_integrator', 
+            package='choirbot_examples', executable='choirbot_bearingformationcontrol_integrator', 
             output='screen',
-            node_namespace='agent_{}'.format(i),
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': (i), 'init_pos': position}]))
 
         # RVIZ visualization
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_containment_rviz', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_containment_rviz', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
 
     return LaunchDescription(launch_description)
