@@ -50,7 +50,7 @@ class Guidance(Node):
         self.out_neighbors = self.get_parameter('out_neigh').value
 
         # initialize pose subscription
-        self.current_pose = Pose(None, None)
+        self.current_pose = Pose(None, None, None, None)
         self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)
 
         # initialize communicator

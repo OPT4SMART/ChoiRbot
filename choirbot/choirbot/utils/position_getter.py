@@ -26,9 +26,13 @@ def pose_subscribe(handler: str, topic: str, node: Node, dest_pose: 'Pose',
 def odom_callback(msg, dest_pose: 'Pose', callback: Callable):
     point = msg.pose.pose.position
     quat  = msg.pose.pose.orientation
+    linear   = msg.twist.twist.linear
+    angular  = msg.twist.twist.angular
 
     dest_pose.position = np.array([point.x, point.y, point.z])
     dest_pose.orientation = np.array([quat.x, quat.y, quat.z, quat.w])
+    dest_pose.velocity = np.array([linear.x, linear.y, linear.z])
+    dest_pose.angular = np.array([angular.x, angular.y, angular.z])
 
     if callback is not None:
         callback()

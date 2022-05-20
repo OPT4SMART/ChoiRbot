@@ -60,4 +60,13 @@ not required by **ChoiRbot**.
 
 Installation of Gazebo and Turtlebot3 files
 --------------------------------------------
-Coming soon
+**ChoiRbot** allows yo to easily simulate a team of Turtlebot3 mobile robots.
+You just need to perform the installation steps at this `link (PC Setup tab) <https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/>`_ and to clone the ROS 2 workspace provided `here (Gazebo Simulation tab) <https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/>`_.
+Then, be sure that the .bashrc file contains the following lines (notice that the paths may need to be adjusted according to your current installation).
+
+.. code-block:: bash
+
+	export TURTLEBOT3_MODEL=burger
+	source ~/turtlebot3_ws/install/setup.bash
+	export ROS_DOMAIN_ID=30 #TURTLEBOT3
+	export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models

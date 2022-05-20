@@ -1,6 +1,6 @@
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import PoseWithCovariance, Pose, Point
+from geometry_msgs.msg import PoseWithCovariance, Pose, Point, TwistWithCovariance, Twist, Quaternion, Vector3
 import numpy as np
 
 class Integrator(Node):
@@ -15,6 +15,10 @@ class Integrator(Node):
 
         # create odom publisher
         self.current_pos = np.zeros(3)
+        self.current_or = np.zeros(4)
+        self.current_or[3] = 1
+        self.current_vel = np.zeros(3)
+        self.current_ang_vel = np.zeros(3)
         self.odom_publisher = self.create_publisher(Odometry, 'odom', 10)
 
         # create integration/odometry timer(s)
@@ -44,7 +48,14 @@ class Integrator(Node):
 
     def send_odom(self):
         point = Point(x=self.current_pos[0], y=self.current_pos[1], z=self.current_pos[2])
-        pose = Pose(position=point)
+        quat = Quaternion(x=self.current_or[0], y=self.current_or[1], z=self.current_or[2], w=self.current_or[3])
+        pose = Pose(position=point, orientation=quat)
         posewc = PoseWithCovariance(pose=pose)
-        msg = Odometry(pose=posewc)
+
+        vel = Vector3(x=self.current_vel[0], y=self.current_vel[1], z=self.current_vel[2])
+        ang_vel = Vector3(x=self.current_ang_vel[0], y=self.current_ang_vel[1], z=self.current_ang_vel[2]) #float(self.agent_id)
+        twist = Twist(linear=vel, angular=ang_vel)
+        twistwc = TwistWithCovariance(twist=twist)
+
+        msg = Odometry(pose=posewc, twist=twistwc, child_frame_id=str(self.agent_id))
         self.odom_publisher.publish(msg)

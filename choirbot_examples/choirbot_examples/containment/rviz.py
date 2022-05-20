@@ -1,11 +1,11 @@
 import rclpy
-from choirbot.utils import Visualizer
+from choirbot.utils import SimpleVisualizer
 
 
 def main():
     rclpy.init()
 
-    visualizer = Visualizer(pose_handler='pubsub', pose_topic='odom')
+    visualizer = SimpleVisualizer(pose_handler='pubsub', pose_topic='odom')
 
     rclpy.spin(visualizer)
     rclpy.shutdown()

@@ -14,5 +14,5 @@ class Controller(Node):
         self.agent_id = self.get_parameter('agent_id').value
 
         # initialize pose subscription
-        self.current_pose = Pose(None, None)
+        self.current_pose = Pose(None, None, None, None)
         self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)
