@@ -4,7 +4,7 @@ services:
         stdin_open: true
         tty: true
         build: .
-        user: rbccps
+        user: choirbot
         privileged: true
         environment: 
             - DISPLAY=${DISPLAY}
@@ -13,7 +13,7 @@ services:
             - NVIDIA_DRIVER_CAPABILITIES=all
         volumes: 
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
-            - ./:/home/rbccps/mrs_ws/src
+            - ./:/home/choirbot/dev_ws/src
         network_mode: host
         deploy: 
             resources: 
