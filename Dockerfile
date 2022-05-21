@@ -1,4 +1,4 @@
-FROM tiryoh/ros2-desktop-vnc:galactic
+FROM tiryoh/ros2-desktop-vnc:dashing
 
 USER root
 RUN apt update -qq && apt-get install -y -q \
