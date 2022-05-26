@@ -2,7 +2,7 @@
 
 #### 21 May 2022 - Docker Container
 You can now run **ChoiRbot** in a Docker container! Check the installation procedure [here](installation).
-Thank you [srikrishna3118](https://github.com/srikrishna3118) for your pull request!
+Thank you [srikrishna3118](https://github.com/srikrishna3118) and [shubham1337](https://github.com/shubham1337) for your pull request!
 
 #### 14 April 2022 - Quadrotor Simulation and Control
 
