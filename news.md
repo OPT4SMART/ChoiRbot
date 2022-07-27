@@ -1,7 +1,7 @@
 # News
 
 #### 27 July 2022 - Workshop at IEEE CCTA 2022
-We will present **ChoiRbot** at the workshop "Distributed Cooperative Robotics: Numerical Methods and ROS 2 Software Tools", which will be held at the 2022 IEEE Conference on Control Technology and Applications. The content can be found [here](https://ccta2022.ieeecss.org/workshops/)
+We will present **ChoiRbot** at the workshop "Distributed Cooperative Robotics: Numerical Methods and ROS 2 Software Tools", which will be held at the 2022 IEEE Conference on Control Technology and Applications on August 22. The content can be found [here](https://ccta2022.ieeecss.org/workshops/)
 and [here](https://eventi.unibo.it/ccta22-choirbot-workshop)
 If you are interested in the workshop, you need to register at [this link](https://ccta2022.ieeecss.org/registration/registration-2/).
 
