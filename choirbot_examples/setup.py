@@ -9,6 +9,7 @@ scripts = {
     'formationcontrol': ['guidance', 'controller'],
     'mpc':              ['guidance', 'integrator', 'rviz'],
     'taskassignment':   ['guidance', 'table', 'planner', 'controller'],
+    'rl':               ['guidance', 'guidance_single', 'integrator', 'rviz'],
     }
 
 setup(

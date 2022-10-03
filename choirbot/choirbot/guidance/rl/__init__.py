@@ -1,1 +1,2 @@
 from .rl_guidance import DistributedRLGuidance, SingleAgentRLPolicyGuidance
+from .unicycle_rl_controller import DistributedUnicycleTensorflowRLController, SingleUnicycleTensorflowRLController
