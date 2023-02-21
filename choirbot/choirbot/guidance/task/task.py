@@ -18,8 +18,8 @@ class TaskGuidance(OptimizationGuidance):
     # che vengono gestiti in base alla strategia dinamica/statica scelta
 
     def __init__(self, optimizer: TaskOptimizer, executor: TaskExecutor,
-            data: RobotData, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(optimizer, TaskOptimizationThread, pos_handler, pos_topic)
+            data: RobotData, pose_handler: str=None, pose_topic: str=None):
+        super().__init__(optimizer, TaskOptimizationThread, pose_handler, pose_topic)
         self.data = data
         self.task_executor = executor
         self.current_task = None

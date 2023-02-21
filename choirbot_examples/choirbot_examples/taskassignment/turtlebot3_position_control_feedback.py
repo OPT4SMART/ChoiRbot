@@ -27,7 +27,7 @@ from choirbot import Pose
 
 class Turtlebot3Feedback(Node):
 
-    def __init__(self, robot_id, pos_handler: str=None, pos_topic: str=None):
+    def __init__(self, robot_id, pose_handler: str=None, pose_topic: str=None):
         super().__init__('agent_{}_turtlebot3_position_control'.format(robot_id))
 
         """************************************************************
@@ -59,7 +59,7 @@ class Turtlebot3Feedback(Node):
         self.cmd_vel_pub = self.create_publisher(Twist, '/agent_{}/cmd_vel'.format(robot_id), qos)
 
         # Initialise subscribers
-        self.position_sub = pose_subscribe(pos_handler, pos_topic, self, self.current_pose, self.pose_callback)
+        self.position_sub = pose_subscribe(pose_handler, pose_topic, self, self.current_pose, self.pose_callback)
 
         self.goal_sub = self.create_subscription(
             Point,

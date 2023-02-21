@@ -10,11 +10,11 @@ class FormationControlGuidance(DistributedControlGuidance):
     Implements a formation control law for systems....
     """
 
-    def __init__(self, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None, input_topic = 'velocity'):
+    def __init__(self, update_frequency: float, gain: float=0.1, pose_handler: str=None, pose_topic: str=None, input_topic = 'velocity'):
         """
         Init method
         """
-        super().__init__(update_frequency, pos_handler, pos_topic, input_topic)
+        super().__init__(update_frequency, pose_handler, pose_topic, input_topic)
         self.formation_control_gain = gain
         self.weights = self.get_parameter('weights').value
 

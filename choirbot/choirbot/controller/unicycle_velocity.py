@@ -7,8 +7,8 @@ import numpy as np
 
 class UnicycleVelocityController(Controller):
 
-    def __init__(self, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(pos_handler, pos_topic)
+    def __init__(self, pose_handler: str=None, pose_topic: str=None):
+        super().__init__(pose_handler, pose_topic)
         self.subscription = self.create_subscription(Vector3, 'velocity', self.control_callback, 1)
         self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 1)
         self.yaw = 0.0

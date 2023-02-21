@@ -1,12 +1,13 @@
 from .visualizer import Visualizer
 from visualization_msgs.msg import Marker
 import numpy as np
+from typing import Callable
 
 class SimpleVisualizer(Visualizer):
 
     def __init__(self, visualization_topic: str= '/visualization_marker', update_frequency: int= 25,
-            pose_handler: str=None, pose_topic: str=None):
-        super().__init__(update_frequency, pose_handler, pose_topic)
+            pose_handler: str=None, pose_topic: str=None, pose_callback: Callable=None,):
+        super().__init__(update_frequency, pose_handler, pose_topic, pose_callback)
         
         self.publisher_ = self.create_publisher(Marker, visualization_topic, 1)
         self.initialize_marker_data()

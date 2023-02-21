@@ -6,8 +6,8 @@ from time import sleep
 
 class DistributedControlGuidance(Guidance):
 
-    def __init__(self, update_frequency: float, pos_handler: str=None, pos_topic: str=None, input_topic: str = 'velocity'):
-        super().__init__(pos_handler, pos_topic)
+    def __init__(self, update_frequency: float, pose_handler: str=None, pose_topic: str=None, input_topic: str = 'velocity'):
+        super().__init__(pose_handler, pose_topic)
         self.publisher_ = self.create_publisher(Vector3, input_topic, 1)
         self.update_frequency = update_frequency
         self.timer = self.create_timer(1.0/self.update_frequency, self.control)

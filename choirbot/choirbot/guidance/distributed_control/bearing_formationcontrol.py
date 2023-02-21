@@ -8,8 +8,8 @@ class BearingFormationControlGuidance(DistributedControlGuidance):
     Implements a bearing-based formation control law for second order systems.
     """
     def __init__(self, update_frequency: float, prop_gain: float=1.0, deriv_gain=5.0, 
-                 pos_handler: str=None, pos_topic: str=None, input_topic = 'acceleration'):
-        super().__init__(update_frequency, pos_handler, pos_topic, input_topic)
+                 pose_handler: str=None, pose_topic: str=None, input_topic = 'acceleration'):
+        super().__init__(update_frequency, pose_handler, pose_topic, input_topic)
 
         self.is_leader = self.get_parameter('is_leader').value
         self.agent_dim = self.get_parameter('dd').value

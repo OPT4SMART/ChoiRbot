@@ -21,8 +21,8 @@ class MPCGuidance(OptimizationGuidance):
     # - no terminal constraint
     # - no terminal cost
 
-    def __init__(self, sampling_period: float, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(MPCOptimizer(), MPCOptimizationThread, pos_handler, pos_topic)
+    def __init__(self, sampling_period: float, pose_handler: str=None, pose_topic: str=None):
+        super().__init__(MPCOptimizer(), MPCOptimizationThread, pose_handler, pose_topic)
         self.sampling_period = sampling_period
         self.timer = self.create_timer(sampling_period, self.control)
         self.ctrl_publisher = self.create_publisher(Vector3, 'velocity', 1)

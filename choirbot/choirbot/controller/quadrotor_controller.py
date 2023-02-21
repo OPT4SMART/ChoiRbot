@@ -8,8 +8,8 @@ from .controller import Controller
 
 class QuadrotorController(Controller):
 
-    def __init__(self, pos_handler: str=None, pos_topic: str=None, update_frequency: float = 100.0, mass: float=0.03):
-        super().__init__(pos_handler, pos_topic)
+    def __init__(self, pose_handler: str=None, pose_topic: str=None, update_frequency: float = 100.0, mass: float=0.03):
+        super().__init__(pose_handler, pose_topic)
 
         self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
         self.K_p = np.array([0.2, 0.2, 1.0])

@@ -13,12 +13,12 @@ from .. import Pose
 
 class Planner(Node):
 
-    def __init__(self, pos_handler: str=None, pos_topic: str=None):
+    def __init__(self, pose_handler: str=None, pose_topic: str=None):
         super().__init__('planner', allow_undeclared_parameters=True,
             automatically_declare_parameters_from_overrides=True)
         self.agent_id = self.get_parameter('agent_id').value
         self.current_pose = Pose(None, None, None, None)
-        self.subscription = pose_subscribe(pos_handler, pos_topic, self,
+        self.subscription = pose_subscribe(pose_handler, pose_topic, self,
             self.current_pose, self.pose_callback,
             callback_group=ReentrantCallbackGroup())
 
@@ -30,8 +30,8 @@ class Planner(Node):
 
 class PointToPointPlanner(Planner):
 
-    def __init__(self, goal_tolerance: float=0.05, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(pos_handler, pos_topic)
+    def __init__(self, goal_tolerance: float=0.05, pose_handler: str=None, pose_topic: str=None):
+        super().__init__(pose_handler, pose_topic)
         self._goalreached_event = Event()
         self._abort_event = Event()
         self._lock = Lock()

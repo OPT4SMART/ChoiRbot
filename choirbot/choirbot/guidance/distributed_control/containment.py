@@ -6,8 +6,8 @@ from ...communicator import TimeVaryingCommunicator
 
 class ContainmentGuidance(DistributedControlGuidance):
 
-    def __init__(self, update_frequency: float, gain: float=0.1, pos_handler: str=None, pos_topic: str=None, input_topic = 'velocity'):
-        super().__init__(update_frequency, pos_handler, pos_topic, input_topic)
+    def __init__(self, update_frequency: float, gain: float=0.1, pose_handler: str=None, pose_topic: str=None, input_topic = 'velocity'):
+        super().__init__(update_frequency, pose_handler, pose_topic, input_topic)
         self.containment_gain = gain
         self.is_leader = self.get_parameter('is_leader').value
 
@@ -20,8 +20,8 @@ class ContainmentGuidance(DistributedControlGuidance):
 
 class TimeVaryingContainmentGuidance(ContainmentGuidance):
 
-    def __init__(self, update_frequency: float, gain: float=0.1, edge_prob = 0.8, pos_handler: str=None, pos_topic: str=None):
-        super().__init__(update_frequency, gain, pos_handler, pos_topic)
+    def __init__(self, update_frequency: float, gain: float=0.1, edge_prob = 0.8, pose_handler: str=None, pose_topic: str=None):
+        super().__init__(update_frequency, gain, pose_handler, pose_topic)
         self.edge_prob = edge_prob
     
     def _instantiate_communicator(self):

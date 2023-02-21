@@ -1,5 +1,5 @@
 from rclpy.node import Node
-from typing import Type
+from typing import Type, Callable
 
 from .optimization_thread import OptimizationThread
 from .. import Pose
@@ -33,7 +33,7 @@ class Guidance(Node):
         communicator: Neighboring communication facilities
     """
 
-    def __init__(self, pose_handler: str=None, pose_topic: str=None):
+    def __init__(self, pose_handler: str=None, pose_topic: str=None, pose_callback: Callable = None):
         """
         Args:
             pose_handler (str, optional): Pose handler (see
@@ -51,7 +51,7 @@ class Guidance(Node):
 
         # initialize pose subscription
         self.current_pose = Pose(None, None, None, None)
-        self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose)
+        self.subscription = pose_subscribe(pose_handler, pose_topic, self, self.current_pose, pose_callback)
 
         # initialize communicator
         self.communicator = self._instantiate_communicator()
@@ -75,7 +75,7 @@ class OptimizationGuidance(Guidance):
     """
 
     def __init__(self, optimizer: Optimizer, thread_t: Type[OptimizationThread],
-            pos_handler: str=None, pos_topic: str=None):
+            pose_handler: str=None, pose_topic: str=None, pose_callback: Callable = None):
         """
         Args:
             optimizer (:class:`~choirbot.optimizer.Optimizer`): optimizer to be run by thread
@@ -85,7 +85,7 @@ class OptimizationGuidance(Guidance):
                 :func:`~choirbot.utils.position_getter.pose_subscribe`). Defaults to None.
             pose_topic (str, optional): Topic where pose is published. Defaults to None.
         """
-        super().__init__(pos_handler, pos_topic)
+        super().__init__(pose_handler, pose_topic, pose_callback)
         
         # save optimizer
         self.optimizer = optimizer
