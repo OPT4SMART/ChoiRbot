@@ -62,7 +62,7 @@ In order to launch a simulation with :math:`6` robots, run in a terminal
 
 .. code-block:: bash
 
-	ros2 launch choirbot_examples containment.launch.py -n 6
+	ros2 launch choirbot_examples containment.launch.py N:=6
 
 
 
