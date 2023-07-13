@@ -11,16 +11,16 @@ import os
 
 
 def generate_launch_description():
-    ap = argparse.ArgumentParser(prog='ros2 launch choirbot_examples taskassignment.launch.py')
-    ap.add_argument("-n", "--number", help="number of robots", default=4, type=int)
-    ap.add_argument("-s", "--seed", help="seed for initial positions", default=3, type=int)
-
-    # parse arguments (exception thrown on error)
-    args, _ = ap.parse_known_args(sys.argv)
-    N = args.number
+    N=4
+    seed=3
+    for arg in sys.argv:
+        if arg.startswith("N:="):
+            N = int(arg.split(":=")[1])
+        if arg.startswith("seed:="):
+            seed = int(arg.split(":=")[1])
 
     # generate communication graph (this function also sets the seed)
-    Adj = binomial_random_graph(N, 0.2, seed=args.seed)
+    Adj = binomial_random_graph(N, 0.2, seed=seed)
 
     # generate initial positions in [-3, 3] with z = 0
     P = np.zeros((N, 3))
@@ -32,7 +32,7 @@ def generate_launch_description():
 
     # add task table executable
     robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_table', output='screen',
+            package='choirbot_examples', executable='choirbot_taskassignment_table', output='screen',
             prefix=['xterm -hold -e'],
             parameters=[{'N': N}]))
 
@@ -45,26 +45,26 @@ def generate_launch_description():
 
         # guidance
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_guidance', output='screen',
+            package='choirbot_examples', executable='choirbot_taskassignment_guidance', output='screen',
             prefix=['xterm -hold -e'],
-            node_namespace='agent_{}'.format(i),
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors}]))
         
         # planner
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_planner', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_taskassignment_planner', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # controller
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_taskassignment_controller', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_taskassignment_controller', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # turtlebot spawner
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_turtlebot_spawner', output='screen',
+            package='choirbot_examples', executable='choirbot_turtlebot_spawner', output='screen',
             parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
     
     # include launcher for gazebo

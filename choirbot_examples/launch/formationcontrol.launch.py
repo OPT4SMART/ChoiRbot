@@ -11,16 +11,16 @@ import os
 
 
 def generate_launch_description():
-    ap = argparse.ArgumentParser(prog='ros2 launch choirbot_examples formationcontrol.launch.py')
-    ap.add_argument("-l", "--length", help="length of hexagon sides", default=3, type=float)
-    ap.add_argument("-s", "--seed", help="seed for initial positions", default=5, type=float)
-
-    # parse arguments (exception thrown on error)
-    args, _ = ap.parse_known_args(sys.argv)
-    L = float(args.length)
+    L=3
+    seed=5
+    for arg in sys.argv:
+        if arg.startswith("L:="):
+            L = int(arg.split(":=")[1])
+        if arg.startswith("seed:="):
+            seed = int(arg.split(":=")[1])
 
     # set rng seed
-    np.random.seed(args.seed)
+    np.random.seed(seed)
 
     # communication matrix
     N = 6
@@ -75,19 +75,19 @@ def generate_launch_description():
 
         # guidance
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_formationcontrol_guidance', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_formationcontrol_guidance', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'weights': weights}]))
         
         # controller
         robot_launch.append(Node(
-            package='choirbot_examples', node_executable='choirbot_formationcontrol_controller', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_formationcontrol_controller', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # turtlebot spawner
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_turtlebot_spawner', output='screen',
+            package='choirbot_examples', executable='choirbot_turtlebot_spawner', output='screen',
             parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
     
     # include launcher for gazebo

@@ -9,16 +9,16 @@ import os
 
 
 def generate_launch_description():
-    ap = argparse.ArgumentParser(prog='ros2 launch choirbot_examples mpc.launch.py')
-    ap.add_argument("-n", "--number", help="number of robots", default=4, type=int)
-    ap.add_argument("-s", "--seed", help="seed for initial positions", default=10, type=int)
-
-    # parse arguments (exception thrown on error)
-    args, _ = ap.parse_known_args(sys.argv)
-    N = args.number
+    N=4
+    seed=10
+    for arg in sys.argv:
+        if arg.startswith("N:="):
+            N = int(arg.split(":=")[1])
+        if arg.startswith("seed:="):
+            seed = int(arg.split(":=")[1])
 
     # set rng seed
-    np.random.seed(args.seed)
+    np.random.seed(seed)
     
     # generate communication graph
     Adj = ring_graph(N)
@@ -32,7 +32,7 @@ def generate_launch_description():
     rviz_config_dir = get_package_share_directory('choirbot_examples')
     rviz_config_file = os.path.join(rviz_config_dir, 'rvizconf.rviz')
 
-    launch_description = [Node(package='rviz2', node_executable='rviz2', output='screen',
+    launch_description = [Node(package='rviz2', executable='rviz2', output='screen',
         arguments=['-d', rviz_config_file])]
 
     # add executables for each robot
@@ -45,20 +45,20 @@ def generate_launch_description():
 
         # guidance
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_mpc_guidance', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_mpc_guidance', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors}]))
 
         # integrator
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_mpc_integrator', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_mpc_integrator', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'init_pos': initial_pos}]))
 
         # rviz
         launch_description.append(Node(
-            package='choirbot_examples', node_executable='choirbot_mpc_rviz', output='screen',
-            node_namespace='agent_{}'.format(i),
+            package='choirbot_examples', executable='choirbot_mpc_rviz', output='screen',
+            namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
 
     return LaunchDescription(launch_description)
