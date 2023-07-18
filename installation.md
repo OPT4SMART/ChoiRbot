@@ -95,7 +95,7 @@ The following steps compose a Docker container with ROS 2 Foxy.
 
 - Navidate inside the ``src``. **NOTE:** Your entire ``src`` folder will be mounted as a volume in the container.
 
-- To build the image (changed the filename to docker-compose.yml if your system doesn't have an nvidia gpu):
+- To build the image (changed the filename to docker-compose_gpu.yml if your system has an nvidia gpu):
 
 	```
 	docker-compose -f docker-compose.yml build
