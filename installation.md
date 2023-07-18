@@ -65,6 +65,24 @@ The following steps compose a Docker container with ROS 2 Foxy.
 - Tested on docker version 20.10.7
 - Requires docker compose v1.28.0 or higher
 
+### Instructions to build the image and run the container (no GPU)
+
+- Navidate inside the ``src``. **NOTE:** Your entire ``src`` folder will be mounted as a volume in the container.
+
+- To build the image:
+
+	```
+	docker-compose -f docker-compose.yml build
+	```
+	
+	NOTE:  This step might be time consuming.
+
+- To run the container:
+	```
+	docker run -p 6080:80 --user root foxy_baseline
+	```
+ - Open your browser at ``http://127.0.0.1:6080/`` and click on Connect.
+
 ### Install the following packages if you have a dedicated NVidia graphics card
 
 -  Add the GPG key:
@@ -89,22 +107,6 @@ The following steps compose a Docker container with ROS 2 Foxy.
      
    	```
    	sudo systemctl restart docker
-   	``` 
 
-### Instructions to build the image and run the container
-
-- Navidate inside the ``src``. **NOTE:** Your entire ``src`` folder will be mounted as a volume in the container.
-
-- To build the image (changed the filename to docker-compose_gpu.yml if your system has an nvidia gpu):
-
-	```
-	docker-compose -f docker-compose.yml build
-	```
-	
-	NOTE:  This step might be time consuming.
-
-- To run the container:
-	```
-	docker run -p 6080:80 --user root foxy_baseline
-	```
- - Open your browser at ``http://127.0.0.1:6080/`` and click on Connect.
+### Instructions to build the image and run the container (with GPU) 
+More content coming soon.
