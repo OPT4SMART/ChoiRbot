@@ -1,15 +1,16 @@
+version: "3"
 services:
     app:
-        image: dashing_baseline:latest
+        image: foxy_baseline:latest
         stdin_open: true
         tty: true
         build: .
-        user: choirbot
+        user: ubuntu
         privileged: true
         environment:
             - DISPLAY=${DISPLAY}
             - QT_X11_NO_MITSHM=1
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
-            - ./:/home/choirbot/dev_ws/src
+            - ./:/home/ubuntu/dev_ws/src
         network_mode: host
