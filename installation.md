@@ -60,7 +60,7 @@ Then, be sure that the .bashrc file contains the following lines (notice that th
 	
 ## Docker Installation
 
-The following steps compose a Docker container with ROS 2 dashing and Gazebo-11. More content coming soon.
+The following steps compose a Docker container with ROS 2 Foxy.
 
 - Tested on docker version 20.10.7
 - Requires docker compose v1.28.0 or higher
@@ -93,27 +93,18 @@ The following steps compose a Docker container with ROS 2 dashing and Gazebo-11.
 
 ### Instructions to build the image and run the container
 
-- Place the Dockerfile, the docker-compose.yml file  and the docker-compose_gpu.yml file inside ~/your_workspace/. **NOTE:** Your entire src/ folder will be mounted as a volume in the container.
+- Navidate inside the ``src``. **NOTE:** Your entire ``src`` folder will be mounted as a volume in the container.
 
 - To build the image (changed the filename to docker-compose.yml if your system doesn't have an nvidia gpu):
 
 	```
-	docker-compose -f docker-compose_gpu.yml build
+	docker-compose -f docker-compose.yml build
 	```
 	
 	NOTE:  This step might be time consuming.
 
 - To run the container:
 	```
-	cd  ~/your_workspace/
+	docker run -p 6080:80 --user root foxy_baseline
 	```
-
-	```
-    docker-compose -f docker-compose_gpu.yml up -d
-	 ```
-	 
-	 Wait for the docker containers to run. In another terminal 
-	 
-	 ```
-	 docker-compose exec app /bin/bash
-	 ```
+ - Open your browser at ``http://127.0.0.1:6080/`` and click on Connect.
