@@ -48,6 +48,7 @@ class Guidance(Node):
         self.n_agents = self.get_parameter('N').value
         self.in_neighbors = self.get_parameter('in_neigh').value
         self.out_neighbors = self.get_parameter('out_neigh').value
+        self.weights = self.get_parameter_or('weights').value
 
         # initialize pose subscription
         self.current_pose = Pose(None, None, None, None)

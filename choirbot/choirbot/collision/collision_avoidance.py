@@ -31,8 +31,6 @@ class CollisionAvoidance(Node):
 
         # get parameters
         self.agent_id = self.get_parameter('agent_id').value
-        self.auto_trigger = self.get_parameter_or('auto_trigger').value
-        self.save_path = self.get_parameter_or('save_path').value
         self.node_frequency = node_frequency
 
         # initialize pose subscription

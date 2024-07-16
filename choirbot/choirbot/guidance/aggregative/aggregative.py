@@ -21,9 +21,7 @@ class AggregativeGuidance(OptimizationGuidance):
                          pose_topic=pose_topic,
                          pose_callback=pose_callback,
                          )
-        
-        self.weights = self.get_parameter('weights').value
-
+                
         self.freq_reference = freq_reference
         self.msg_topic = msg_topic
         self.msg_type = msg_type

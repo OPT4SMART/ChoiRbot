@@ -103,23 +103,3 @@ class UnicycleCollisionAvoidance(CollisionAvoidance):
         self.publisher_safe_input.publish(safe_input_msg)
 
     
-    def save_data(self):
-        if self.desired_input is None:
-            return
-        
-        if self.auto_trigger and os.path.exists(self.data_save_path + '/agent_0_costs.pkl'):
-            self.get_logger().info('Algorithm ended. Exiting...')
-            self.destroy_timer(self.timer_logger)
-            self.destroy_timer(self.timer_compute_safe_input)
-            self.send_safe_input([0.0,0.0])
-            return
-        
-        try:
-            self.get_logger().info(f'[agent_{self.agent_id}] - Saving data...')
-            min_barrier_list = self.safety_filter.get_min_barrier_value_list()
-
-            with open(self.data_save_path + f'/agent_{self.agent_id}_min_barriers.pkl', 'wb') as output:
-                dill.dump([min_barrier_list], output, dill.HIGHEST_PROTOCOL)
-            self.get_logger().info('###################### DATA SAVED ######################')
-        except Exception as e:
-            self.get_logger().error(f'Error while saving data: {e}')
