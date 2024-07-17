@@ -22,7 +22,7 @@ class SingleIntegratorCollisionAvoidance(CollisionAvoidance):
 
     def get_desired_input(self, msg):
         self.desired_input = [msg.linear.x, msg.linear.y]
-        self.desired_input_z = msg.z
+        self.desired_input_z = msg.linear.z
 
         
     def send_safe_input(self, safe_input):
