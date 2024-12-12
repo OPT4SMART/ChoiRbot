@@ -91,7 +91,7 @@ class AggregativeOptimizer(Optimizer):
         return cost
 
     def _generate_aggregative_fn(self):
-        return AffineForm(self.x,np.eye(self.agent_dim)*1/self.n_agents)
+        return AffineForm(self.x,np.eye(self.agent_dim))
 
     def optimize(self):
         # run the algorithm
