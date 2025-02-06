@@ -23,6 +23,7 @@ class SimpleGuidance(Guidance):
         self.targets = np.array(self.targets).reshape(-1, 3)
         self.id_target = 0
         self.goal_tolerance = 0.05 # [m]
+        self.target_list_completed = False
 
     def control(self):
         # skip if position is not available yet
@@ -48,15 +49,18 @@ class SimpleGuidance(Guidance):
 
     def evaluate_input(self):
 
-        if np.linalg.norm(self.current_pose.position[:2] - self.targets[self.id_target][:2]) <= self.goal_tolerance:
-            self.get_logger().info(f'[Agent{self.agent_id}] new targets: {self.targets[self.id_target]}')
-            self.id_target += 1
+        if not self.target_list_completed:
+
+            if np.linalg.norm(self.current_pose.position[:2] - self.targets[self.id_target][:2]) <= self.goal_tolerance:
+                self.get_logger().info(f'[Agent{self.agent_id}] new targets: {self.targets[self.id_target]}')
+                self.id_target += 1
+            
+            
+            if self.id_target >= len(self.targets):
+                self.get_logger().info(f'[Agent{self.agent_id}] Target list completed')
+                self.id_target -= 1
+                self.target_list_completed = True
         
-        if self.id_target >= len(self.targets):
-            self.get_logger().info(f'[Agent{self.agent_id}] Target list completed')
-            return None
-
-
         u = self.targets[self.id_target]
 
         return u
