@@ -49,14 +49,13 @@ class SimpleGuidance(Guidance):
     def evaluate_input(self):
 
         if np.linalg.norm(self.current_pose.position[:2] - self.targets[self.id_target][:2]) <= self.goal_tolerance:
-            self.get_logger().info(f'[Agent{self.agent_id}] new targets: {self.targets[self.id_target]}')
-            self.id_target += 1
+            if self.id_target == len(self.targets) - 1:
+                self.get_logger().info(f'[Agent{self.agent_id}] Reached final target')
+                return None
+            else:
+                self.get_logger().info(f'[Agent{self.agent_id}] Reached target {self.id_target}, moving to next target')
+                self.id_target += 1
         
-        if self.id_target >= len(self.targets):
-            self.get_logger().info(f'[Agent{self.agent_id}] Target list completed')
-            return None
-
-
         u = self.targets[self.id_target]
 
         return u
