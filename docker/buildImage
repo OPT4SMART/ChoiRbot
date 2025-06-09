@@ -1,0 +1,32 @@
+#!/bin/bash
+
+IMAGE_PATH=$1
+IMAGE_NAME=$2
+
+if [ -z $IMAGE_PATH ]; then
+  echo "You must provide the path to the directory with the Dockerfile you want to build"
+  echo "bash build-image.sh ./path/to/image image_name"
+  exit 1
+fi
+
+if [ -z $IMAGE_NAME ]; then
+  echo "You must provide the name of the image you want to build"
+  echo "bash build-image.sh ./path/to/image image_name"
+  exit 1
+fi
+
+if [ ! -d $IMAGE_PATH ]; then
+  echo "The path does not exist:"
+  echo "$1"
+  exit 1
+fi
+
+# Build base docker image
+docker build \
+  --file $IMAGE_PATH/Dockerfile \
+  --tag $IMAGE_NAME \
+  $IMAGE_PATH
+  # --memory=7000000000 \
+  # --cpuset-cpus="0-5" \
+  # --pull \
+  # --network=host \

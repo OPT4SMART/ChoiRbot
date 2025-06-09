@@ -1,0 +1,30 @@
+#!/bin/bash
+
+CONTAINER_NAME=$1
+IMAGE_NAME=$2
+DEV_NAME=opt4smart
+WS_NAME=choirbot_ws
+
+# Authorization
+xhost +
+
+# Run and create container
+docker run -it \
+  --privileged \
+  --gpus=all \
+  --network=host \
+  --env="DISPLAY" \
+  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+  --volume=/dev:/dev \
+  --volume=./$WS_NAME:/home/$DEV_NAME/$WS_NAME \
+  --name $CONTAINER_NAME \
+  $IMAGE_NAME
+  # -p 6080:80 \
+  # -p 10000:10000\
+  # --network=bridge \
+  # --ip 192.168.10.51 \
+  # --network=host \
+  # --cpuset-cpus="0-5" \
+  # --memory=7000000000 \
+  # --env="QT_X11_NO_MITSHM=1" \
+
