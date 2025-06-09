@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<robot name="Turtlebot">
+    <webots>
+        <plugin type="choirbot.webots_plugin.motor_ctrl_unicycle.MotorCtrlUnicycle" />
+    </webots>
+</robot>

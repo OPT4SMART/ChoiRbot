@@ -3,12 +3,13 @@ from glob import glob
 
 package_name = 'choirbot_examples'
 scripts = {
-    'containment':      ['guidance', 'integrator', 'rviz'],
     'bearingformationcontrol': ['guidance', 'integrator' ],
-    'quadrotorbearingformationcontrol': ['guidance', 'controller', 'integrator' ],
-    'formationcontrol': ['guidance', 'controller'],
+    'containment':      ['guidance', 'integrator', 'rviz'],
+    'formationcontrol': ['guidance', 'collision', 'controller', 'closestrobotgetter'],
     'mpc':              ['guidance', 'integrator', 'rviz'],
+    'quadrotorbearingformationcontrol': ['guidance', 'controller', 'integrator' ],
     'taskassignment':   ['guidance', 'table', 'planner', 'controller'],
+    'webots':   ['guidance', 'controller'],
     }
 
 setup(
@@ -22,6 +23,8 @@ setup(
         ('share/' + package_name, glob('launch/*.launch.py')),
         ('share/' + package_name, glob('resource/*.rviz')),
         ('share/' + package_name, glob('resource/*.sdf')),
+        ('share/' + package_name, glob('resource/*.urdf')),
+        ('share/' + package_name + '/worlds', glob('worlds/*.wbt')),
     ],
     install_requires=['setuptools', 'choirbot'],
     zip_safe=True,

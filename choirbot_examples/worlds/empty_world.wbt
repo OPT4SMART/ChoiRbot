@@ -1,0 +1,18 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  basicTimeStep 9.5
+}
+Viewpoint {
+  orientation -0.04412032657266676 -0.02672557642736789 0.9986686839726907 4.229739505840078
+  position 2.4361695111813675 5.176450542704275 0.7138687038568403
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  size 100 100
+  appearance Grass {
+    type "mossy"
+  }
+}
