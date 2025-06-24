@@ -20,7 +20,7 @@ With **ChoiRbot** you can develop a full-stack multi-robot application. Specific
 - Develop planning and control schemes
 - Connect with external motion capture hardware (see also our [ROS 2 Vicon Bridge](https://github.com/OPT4SMART/ros2-vicon-receiver))
 - Run experiments on your robotic fleet
-- Perform realistic simulations with [Gazebo](http://gazebosim.org) and visualize data with [RVIZ](https://github.com/ros2/rviz)
+- Perform realistic simulations with [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/getstarted/) and [Webots R2025a](https://cyberbotics.com/), visualizing data with [RVIZ](https://github.com/ros2/rviz)
 
 **ChoiRbot** is structured in a three-layer architecture. Specifically, there is a *Team Guidance* layer, a *RoboPlanning* layer and a *RoboControl* layer. The *Team Guidance* layer is responsible for taking high-level decisions and for managing the robot lifecycle. The *Team Guidance* layer uses communication with neighbors in order to perform its tasks. The *RoboPlanning* and *RoboControl* layers are responsible for lower-level control actions as driven by the upper layer. In case the user does not want to use external tools, we also provide a dynamics integration layer, named *RoboIntegration*, which can e.g. be used in conjunction with Rviz for visualization.
 
