@@ -73,7 +73,7 @@ This Docker utils has been tested on the following configuration:
 
 ### Nvidia drivers
 
-| :warning: Do you have a dedicated NVIDIA GPU? |
+| ⚠️ Do you have a dedicated NVIDIA GPU? |
 |:------------------------------------|
 | If not, just install docker following the official [guidelines](https://docs.docker.com/engine/install/ubuntu/) and jump directly to the [Building the Docker Image](#building-the-docker-image) section. |
 | If you have a dedicated NVIDIA GPU, follow the instructions below to install the NVIDIA drivers and the NVIDIA Container Toolkit. |
