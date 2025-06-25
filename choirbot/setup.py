@@ -1,5 +1,4 @@
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
 package_name = 'choirbot'
 
@@ -10,8 +9,7 @@ setup(
     maintainer_email='info@opt4smart.eu',
     description='ROS2 package for cooperative robotics',
     license='GNU General Public License v3.0',
-    packages=find_packages(),
-    # TODO data_files is deprecated, remove it
+    packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -24,7 +22,4 @@ setup(
         'console_scripts': [
         ],
     },
-    # we can also use "scripts" instead of declaring entry points:
-    # scripts=['scripts/test_script']
-    # (they must be standalone executables)
 )

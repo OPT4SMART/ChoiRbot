@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<sdf xmlns:xacro="http://www.ros.org/wiki/xacro" version="1.8">
+
+    <xacro:macro name="gazebo_plugins" params="prefix">
+        <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+            <!-- wheels -->
+            <left_joint>${prefix}wheel_left_joint</left_joint>
+            <right_joint>${prefix}wheel_right_joint</right_joint>
+
+            <!-- kinematics -->
+            <wheel_separation>0.160</wheel_separation>
+            <wheel_radius>0.033</wheel_radius>
+
+            <!-- limits -->
+            <max_linear_acceleration>1.0</max_linear_acceleration>
+            <min_linear_acceleration>-1.0</min_linear_acceleration>
+
+            <odom_topic>/model/${prefix}odom_diffdrive</odom_topic>
+            <tf_topic>/tf_diffdrive</tf_topic>
+            <child_frame_id>${prefix}base_footprint</child_frame_id>
+            <odom_publish_frequency>30</odom_publish_frequency>
+
+        </plugin>
+
+        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+            <topic>/model/${prefix}joint_states</topic>
+            <joint_name>${prefix}wheel_left_joint</joint_name>
+            <joint_name>${prefix}wheel_right_joint</joint_name>
+        </plugin>
+
+        <plugin name='gz::sim::systems::OdometryPublisher' filename='gz-sim-odometry-publisher-system'>
+            <odom_frame>odom</odom_frame>
+            <odom_publish_frequency>30</odom_publish_frequency>
+            <tf_topic>/tf</tf_topic>
+            <dimensions>3</dimensions>
+        </plugin>
+    </xacro:macro>
+</sdf>

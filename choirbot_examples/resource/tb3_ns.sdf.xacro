@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<sdf xmlns:xacro="http://www.ros.org/wiki/xacro" version="1.8">
+
+    <!-- arguments -->
+    <xacro:arg name="ns" default="agent_0"/>
+    <xacro:arg name="export_rsp" default="false"/>
+
+    <model name="$(arg ns)">
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- import the common TurtleBot3 body -->
+        <xacro:include filename="$(find choirbot_examples)/tb3_core.xacro"/>
+        <xacro:call macro="tb3_core" prefix="$(arg ns)/" export_rsp="$(arg export_rsp)"/>
+
+        <!-- Gazebo Harmonic plugins -->
+        <xacro:include filename="$(find choirbot_examples)/gazebo_plugins.xacro"/>
+        <xacro:call macro="gazebo_plugins" prefix="$(arg ns)/"/>
+
+    </model>
+</sdf>

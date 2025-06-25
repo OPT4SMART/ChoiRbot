@@ -176,10 +176,10 @@ class TimeVaryingCommunicator(BestEffortCommunicator):
     
     # QoS profile for reliable communication
     def _getQoSProfile(self):
-        profile = QoSProfile(history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL)
-        profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
-        profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
-        profile.liveliness = QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC
+        profile = QoSProfile(history=QoSHistoryPolicy.KEEP_ALL)
+        profile.reliability = QoSReliabilityPolicy.RELIABLE
+        profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
+        profile.liveliness = QoSLivelinessPolicy.AUTOMATIC
         profile.deadline = Duration()
         profile.lifespan = Duration()
         return profile
