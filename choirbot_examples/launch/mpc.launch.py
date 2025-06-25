@@ -4,9 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 from disropt.utils.graph_constructor import ring_graph
 import numpy as np
 import sys
-import argparse
 import os
-
 
 def generate_launch_description():
     N=4
@@ -45,19 +43,25 @@ def generate_launch_description():
 
         # guidance
         launch_description.append(Node(
-            package='choirbot_examples', executable='choirbot_mpc_guidance', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_mpc_guidance', 
+            output='screen',
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors}]))
 
         # integrator
         launch_description.append(Node(
-            package='choirbot_examples', executable='choirbot_mpc_integrator', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_mpc_integrator', 
+            output='screen',
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'init_pos': initial_pos}]))
 
         # rviz
         launch_description.append(Node(
-            package='choirbot_examples', executable='choirbot_mpc_rviz', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_mpc_rviz', 
+            output='screen',
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
 

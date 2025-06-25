@@ -1,14 +1,10 @@
 from launch import LaunchDescription
 from launch.actions import TimerAction, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
-from ament_index_python.packages import get_package_share_directory
+from launch_ros.substitutions import FindPackageShare
 import numpy as np
 import sys
-import argparse
-import os
-
 
 def generate_launch_description():
     L=3
@@ -74,25 +70,57 @@ def generate_launch_description():
         position = P[i, :].tolist()
 
         # guidance
-        robot_launch.append(Node(
-            package='choirbot_examples', executable='choirbot_formationcontrol_guidance', output='screen',
-            namespace='agent_{}'.format(i),
-            parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors, 'weights': weights}]))
+        robot_launch.append(
+            Node(
+                package='choirbot_examples', 
+                executable='choirbot_formationcontrol_guidance', 
+                output='screen',
+                namespace=f'agent_{i}',
+                parameters=[{
+                    'agent_id': i, 
+                    'N': N, 
+                    'in_neigh': in_neighbors, 
+                    'out_neigh': out_neighbors, 
+                    'weights': weights
+                }]
+            )
+        )
         
         # controller
-        robot_launch.append(Node(
-            package='choirbot_examples', executable='choirbot_formationcontrol_controller', output='screen',
-            namespace='agent_{}'.format(i),
-            parameters=[{'agent_id': i}]))
+        robot_launch.append(
+            Node(
+                package='choirbot_examples', 
+                executable='choirbot_formationcontrol_controller', 
+                output='screen',
+                namespace=f'agent_{i}',
+                parameters=[{'agent_id': i}]
+            )
+        )
         
-        # turtlebot spawner
-        launch_description.append(Node(
-            package='choirbot_examples', executable='choirbot_turtlebot_spawner', output='screen',
-            parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
-    
+        # spawn and setup tb3
+        robot_launch.append(
+            IncludeLaunchDescription(
+                PathJoinSubstitution([
+                    FindPackageShare('choirbot_examples'),
+                    'spawn_tb3.launch.py'
+                ]),
+                launch_arguments={
+                    'id': str(i),
+                    'x_pose':  str(position[0]),
+                    'y_pose':  str(position[1]),
+                }.items()
+            )
+        )
+
     # include launcher for gazebo
-    gazebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'gazebo.launch.py')
-    launch_description.append(IncludeLaunchDescription(PythonLaunchDescriptionSource(gazebo_launcher)))
+    launch_description.append(
+        IncludeLaunchDescription(
+            PathJoinSubstitution([
+                FindPackageShare('choirbot_examples'),
+                'gazebo.launch.py'
+            ]),
+        )
+    )
     
     # include delayed robot executables
     timer_action = TimerAction(period=10.0, actions=[LaunchDescription(robot_launch)])

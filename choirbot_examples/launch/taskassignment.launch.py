@@ -6,9 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 from disropt.utils.graph_constructor import binomial_random_graph
 import numpy as np
 import sys
-import argparse
 import os
-
 
 def generate_launch_description():
     N=4
@@ -32,7 +30,9 @@ def generate_launch_description():
 
     # add task table executable
     robot_launch.append(Node(
-            package='choirbot_examples', executable='choirbot_taskassignment_table', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_taskassignment_table', 
+            output='screen',
             prefix=['xterm -hold -e'],
             parameters=[{'N': N}]))
 
@@ -45,27 +45,51 @@ def generate_launch_description():
 
         # guidance
         robot_launch.append(Node(
-            package='choirbot_examples', executable='choirbot_taskassignment_guidance', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_taskassignment_guidance', 
+            output='screen',
             prefix=['xterm -hold -e'],
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i, 'N': N, 'in_neigh': in_neighbors, 'out_neigh': out_neighbors}]))
         
         # planner
         robot_launch.append(Node(
-            package='choirbot_examples', executable='choirbot_taskassignment_planner', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_taskassignment_planner', 
+            output='screen',
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # controller
         robot_launch.append(Node(
-            package='choirbot_examples', executable='choirbot_taskassignment_controller', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_taskassignment_controller', 
+            output='screen',
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
         
         # turtlebot spawner
-        launch_description.append(Node(
-            package='choirbot_examples', executable='choirbot_turtlebot_spawner', output='screen',
-            parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
+        # launch_description.append(Node(
+        #     package='choirbot_examples', 
+        #     executable='choirbot_turtlebot_spawner',
+        #     output='screen',
+        #     parameters=[{'namespace': 'agent_{}'.format(i), 'position': position}]))
+        
+        # spawn and setup tb3
+        launch_description.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    os.path.join(
+                        get_package_share_directory('choirbot_examples'),
+                        'spawn_tb3.launch.py')                    
+                ),
+                launch_arguments={
+                    'id': str(i),
+                    'x_pose':  str(position[0]),
+                    'y_pose':  str(position[1]),
+                }.items()
+            )
+        )
     
     # include launcher for gazebo
     gazebo_launcher = os.path.join(get_package_share_directory('choirbot_examples'), 'gazebo.launch.py')

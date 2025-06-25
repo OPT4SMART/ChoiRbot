@@ -1,14 +1,9 @@
 from launch import LaunchDescription
-from launch.actions import TimerAction, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 import numpy as np
 import sys
-import argparse
 import os
-
 
 def generate_launch_description():
     seed=3
@@ -94,14 +89,17 @@ def generate_launch_description():
             parameters=[{'agent_id': (i), 'init_pos': position}]))
         # integrator
         launch_description.append(Node(
-            package='choirbot_examples', executable='choirbot_bearingformationcontrol_integrator', 
+            package='choirbot_examples', 
+            executable='choirbot_bearingformationcontrol_integrator', 
             output='screen',
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': (i), 'init_pos': position}]))
 
         # RVIZ visualization
         launch_description.append(Node(
-            package='choirbot_examples', executable='choirbot_containment_rviz', output='screen',
+            package='choirbot_examples', 
+            executable='choirbot_containment_rviz', 
+            output='screen',
             namespace='agent_{}'.format(i),
             parameters=[{'agent_id': i}]))
 
