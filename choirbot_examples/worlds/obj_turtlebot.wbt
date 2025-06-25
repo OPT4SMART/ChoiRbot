@@ -1,0 +1,21 @@
+TurtleBot3Burger {
+  name "$NAME"
+  translation $X $Y $Z
+  rotation 1 0 0 0
+  controller "<extern>"
+  controllerArgs [
+    ""
+  ]
+  extensionSlot [
+    Solid {
+      name "imu_link"
+    }
+    GPS {
+    }
+    InertialUnit {
+      name "inertial_unit"
+    }
+    RobotisLds01 {
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+Robot {
+  name "$NAME"
+  translation $X $Y $Z
+  children [
+    Solid {
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 0 0
+            transparency 0.4
+            metalness 0
+          }
+          geometry Sphere {
+            radius 0.05
+          }
+        }
+      ]
+    }
+  ]
+}
