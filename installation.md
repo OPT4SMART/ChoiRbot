@@ -197,6 +197,11 @@ To build our Docker image for ChoiRbot, execute the following command in the ter
 docker compose -f choirbot_ws/src/docker/compose.yaml build dev
 ```
 
+| ⚠️ Do you have a dedicated NVIDIA GPU? |
+|:------------------------------------|
+| If not, instead of ``compose.yaml`` use ``compose_no_gpu.yaml``  |
+
+
 This command runs the `Dockerfile` and uses the `.env` file, both located in the `choirbot_ws/src/docker`.
 
 The building process can take a while (10-20mins), so be patient!
