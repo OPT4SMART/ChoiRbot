@@ -4,6 +4,12 @@
 | [**Installation**](#requirements-and-installation)
 | [**Getting started**](#getting-started)
 
+|🚨 **NEWS** 🚨|
+|:-------------|
+|**DOCKER** installer is now available [here](https://opt4smart.github.io/ChoiRbot/installation#docker-installation)! |
+| Package updated to [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/index.html) |
+| New simulators available: [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/getstarted/) and [Webots R2025a](https://cyberbotics.com/) |
+
 | :warning: Information for end users |
 |:------------------------------------|
 | Documentation pages are currently being uploaded. The latest version will be available soon. |
@@ -16,10 +22,10 @@
 - Develop planning and control schemes
 - Connect with external motion capture hardware (see also our [ROS 2 Vicon Bridge](https://github.com/OPT4SMART/ros2-vicon-receiver))
 - Run experiments on your robotic fleet
-- Perform realistic simulations with [Gazebo](http://gazebosim.org) and visualize data with [RVIZ](https://github.com/ros2/rviz)
+- Perform realistic simulations with [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/getstarted/) and [Webots R2025a](https://cyberbotics.com/), visualizing data with [RVIZ](https://github.com/ros2/rviz)
 
 ## Requirements and Installation
-**ChoiRbot** requires ROS 2 Dashing Diademata to be installed on your system.
+**ChoiRbot** requires ROS 2 Jazzy Jalisco to be installed on your system.
 
 It relies on
 
@@ -33,7 +39,7 @@ Please, refer to the [installation page](https://opt4smart.github.io/ChoiRbot/in
 
 To install the toolbox, first source your ROS 2 installation. Then create a ROS 2 workspace and, inside the `src` directory, run:
 ```
-git clone https://github.com/OPT4SMART/ChoiRbot.git .
+git clone --recursive https://github.com/OPT4SMART/ChoiRbot.git .
 ```
 
 Then, from the parent directory execute:

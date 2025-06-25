@@ -1,0 +1,40 @@
+services:
+  dev:
+    # Load .env file for arguments 
+    env_file: 
+      - .env
+
+    # Build the image using the same inputs you passed to the original scripts
+    image: ${IMAGE_NAME:-choirbot:jazzy}
+    build:
+      context: ${IMAGE_PATH:-.}
+      dockerfile: docker/Dockerfile
+      args:
+        - WS_NAME=${WS_NAME:-choirbot_ws}
+    container_name: ${CONTAINER_NAME:-choirbot_dev}
+
+    # Interactive shell
+    stdin_open: true 
+    tty: true        
+    user: ubuntu
+
+    # Privileged, GPU access and host networking
+    privileged: true
+    network_mode: host
+    hostname: localhost
+
+    # Environment variables
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+
+    # Volumes 
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /dev:/dev
+      - ../.:/home/ubuntu/${WS_NAME:-choirbot_ws}/src
+
+    # Optional resource constraints
+    # cpuset: "0-5"            # Pin to specific CPU cores
+    # mem_limit: 7g            # 7 GB memory limit
+    # shm_size: '8g'           # Set shared memory size
