@@ -88,8 +88,9 @@ RUN locale-gen en_US en_US.UTF-8  && \
     update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8  && \
     export LANG=en_US.UTF-8 && \
     add-apt-repository universe -y
-RUN curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/1.1.0/ros2-apt-source_1.1.0.noble_all.deb" && \
-    sudo apt install -y /tmp/ros2-apt-source.deb
+RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}') && \
+    curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb" && \
+    sudo dpkg -i /tmp/ros2-apt-source.deb
 RUN apt update && \
     apt upgrade -y && \
     apt install -y \
@@ -100,10 +101,10 @@ RUN apt update && \
         ros-${ROS_DISTRO}-ros-gz \
         ros-${ROS_DISTRO}-rqt-graph \
         ros-${ROS_DISTRO}-rviz2 \
-        ros-jazzy-webots-ros2-tests \
-        ros-jazzy-webots-ros2-turtlebot \
-        ros-jazzy-controller-manager \
-        ros-jazzy-laser-filters \
+        ros-${ROS_DISTRO}-webots-ros2-tests \
+        ros-${ROS_DISTRO}-webots-ros2-turtlebot \
+        ros-${ROS_DISTRO}-controller-manager \
+        ros-${ROS_DISTRO}-laser-filters \
         python3-colcon-common-extensions \
         python3-rosdep
 RUN rosdep init
@@ -129,14 +130,13 @@ RUN mkdir -p /home/${USERNAME}/${WS_NAME}
 # Create python venv
 ##########################################################
 RUN sudo apt update && sudo apt install -y python3-venv
-RUN mkdir /home/${USERNAME}/${WS_NAME}/venv
-ENV VIRTUAL_ENV /home/${USERNAME}/${WS_NAME}/venv
+RUN mkdir /home/${USERNAME}/venv
+ENV VIRTUAL_ENV /home/${USERNAME}/venv
 RUN python3 -m venv $VIRTUAL_ENV --system-site-packages
-RUN touch /home/${USERNAME}/${WS_NAME}/venv/COLCON_IGNORE
 
 ENV PATH "$VIRTUAL_ENV/bin:$PATH"
-ENV PYTHONPATH /home/${USERNAME}/${WS_NAME}/venv/lib/python3.12/site-packages:$PYTHONPATH
-RUN echo "source /home/$USERNAME/$WS_NAME/venv/bin/activate" >> /home/$USERNAME/.bashrc
+ENV PYTHONPATH /home/${USERNAME}/venv/lib/python3.12/site-packages:$PYTHONPATH
+RUN echo "source /home/${USERNAME}/venv/bin/activate" >> /home/${USERNAME}/.bashrc
 
 ##########################################################
 # Install ChoiRbot and Disropt requirements
@@ -151,7 +151,7 @@ RUN python3 -m pip install --upgrade pip && \
 # Clone Turtlebot3 simulation package
 ##########################################################
 RUN mkdir -p /home/${USERNAME}/turtlebot3_ws/src
-RUN git clone -b jazzy https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git /home/${USERNAME}/turtlebot3_ws/src/ && \
+RUN git clone -b ${ROS_DISTRO} https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git /home/${USERNAME}/turtlebot3_ws/src/ && \
     cd /home/${USERNAME}/turtlebot3_ws && \
     source /opt/ros/${ROS_DISTRO}/setup.bash && \
     rosdep install --from-paths src -y --ignore-src && \
@@ -182,7 +182,6 @@ RUN sudo chmod +x /home/${USERNAME}/final_setup.sh
 RUN echo 'PROMPT_DIRTRIM=1' >> /home/${USERNAME}/.bashrc && \
     echo 'export TURTLEBOT3_MODEL=burger' >> /home/${USERNAME}/.bashrc && \
     echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/${USERNAME}/.bashrc && \
-    echo 'export ROS_DOMAIN_ID=30' >> /home/${USERNAME}/.bashrc && \
     echo 'alias ros2-init="source /opt/ros/$ROS_DISTRO/setup.bash"' >> /home/${USERNAME}/.bashrc  && \
     echo 'alias ros2-build="python3 -m colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"' >> /home/${USERNAME}/.bashrc  && \
     echo 'alias ros2-source="source install/setup.bash"' >> /home/${USERNAME}/.bashrc  && \
